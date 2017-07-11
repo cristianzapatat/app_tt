@@ -1,0 +1,7 @@
+*react-native init "name project" (crear proyecto)
+
+*cd "name projecct"
+
+*npm install
+
+*react-native link
