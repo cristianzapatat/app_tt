@@ -19,7 +19,7 @@ import consts from '../constants/constants'
 const {width, height} = Dimensions.get('window')
 
 const ASPECT_RATIO = width / height
-const LATITUDE_DELTA = 0.005
+const LATITUDE_DELTA = 0.015
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class Taxitura extends Component {
@@ -174,22 +174,23 @@ export default class Taxitura extends Component {
             style={styles.imageOrder}
             source={{uri: this.state.order.order.url_pic}} />
           <View style={styles.nameUser}>
-            <Text style={styles.title}>
+            <Text style={styles.textLarge}>
               {this.state.order.order.name}
             </Text>
+            <Text style={styles.textSmall}>
+              A 300 metros
+            </Text>
           </View>
-          <View style={styles.buttons}>
-            <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null}) }}>
-              <View style={styles.button}>
-                <Text>Cancelar</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => { this.acceptOrder() }}>
-              <View style={styles.button}>
-                <Text>Aceptar</Text>
-              </View>
-            </TouchableOpacity>
+          <View style={styles.stateUser}>
+            <Text style={styles.textState}>
+              Usuario Recurrente
+            </Text>
           </View>
+          <TouchableOpacity onPress={() => { this.acceptOrder() }}>
+            <View style={styles.buttonAccept}>
+              <Text style={styles.textAccept}>Aceptar servicio</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       )
     } else {
@@ -256,22 +257,23 @@ export default class Taxitura extends Component {
     return (
       <View style={styles.all}>
         <View style={styles.nav}>
-          <Text style={styles.title}>
-            Taxitura
-          </Text>
-          <Text style={styles.connection}>
-            {this.state.connection.title}
-          </Text>
+          <Image source={require('../img/taxitura.png')} />
         </View>
         <View style={styles.container}>
+          <View style={styles.addreess}>
+            <Text style={styles.textAddreess}> Calle </Text>
+          </View>
           { this.generateMap() }
+          <View style={styles.footer}>
+            <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
+              <View style={styles.footerAccept}>
+                <Text style={styles.textFooter}>
+                  {this.state.button.title}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-        <Button
-          onPress={() => { this.processService(this.state.button.action) }}
-          title={this.state.button.title}
-          color={this.state.button.color}
-          disabled={!this.state.goOrder}
-        />
         <Modal isVisible={this.state.processOrder}>
           { this.generateOrder() }
         </Modal>
@@ -279,3 +281,9 @@ export default class Taxitura extends Component {
     )
   }
 }
+
+// <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null}) }}>
+//   <View style={styles.button}>
+//     <Text>Cancelar</Text>
+//   </View>
+// </TouchableOpacity>

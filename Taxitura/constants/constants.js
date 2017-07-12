@@ -3,10 +3,10 @@ module.exports = {
   disconnect: 'Desconetado',
   connect: 'Connectado',
   order: 'order',
-  arrive: 'Llegué',
+  arrive: 'Llegué!',
   colorArrive: '#4edb1d',
   actionArrive: 'arrive',
-  endService: 'Terminar Servicio',
+  endService: 'Llegamos!',
   colorEndService: 'rgba(227, 30, 41, 0.95)',
   actionEnd: 'end',
   endOrder: '#d43020'

@@ -4,32 +4,58 @@ export default StyleSheet.create({
   all: {
     flex: 1,
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#F5FCFF',
     flexDirection: 'column'
   },
   nav: {
-    backgroundColor: '#d29714',
+    flex: 0.11,
+    backgroundColor: '#ffaf18',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
     flexDirection: 'column'
   },
-  title: {
-    fontSize: 22,
-    color: '#242525',
-    textAlign: 'center'
-  },
-  connection: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#7d7e7e'
-  },
   container: {
-    flex: 2,
-    backgroundColor: '#14aad2'
+    flex: 1,
+    position: 'relative',
+    flexDirection: 'column',
+    backgroundColor: 'rgb(44, 213, 207)'
+  },
+  addreess: {
+    height: 40,
+    backgroundColor: 'rgba(26, 26, 26, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    zIndex: 2
+  },
+  textAddreess: {
+    color: 'rgb(255, 255, 255)',
+    fontSize: 15
   },
   map: {
     ...StyleSheet.absoluteFillObject
+  },
+  footer: {
+    backgroundColor: '#ffaf18',
+    zIndex: 2,
+    height: 80,
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  footerAccept: {
+    width: 330,
+    height: 50,
+    borderWidth: 0.8,
+    borderColor: 'rgb(255, 255, 255)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textFooter: {
+    color: 'rgb(255, 255, 255)',
+    fontSize: 24
   },
   radius: {
     height: 50,
@@ -69,31 +95,56 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    borderRadius: 4,
+    borderRadius: 6,
     borderColor: 'rgba(0, 0, 0, 0.1)'
   },
   imageOrder: {
-    width: 200,
-    height: 200
+    width: 120,
+    height: 120,
+    borderRadius: 60
   },
   nameUser: {
-    backgroundColor: '#d29714',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
-    flexDirection: 'column'
+    height: 30,
+    flexDirection: 'column',
+    marginTop: 10
   },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+  textLarge: {
+    fontSize: 22,
+    color: '#4d4d4d',
+    textAlign: 'center',
+    marginBottom: 0
   },
-  button: {
-    backgroundColor: 'lightblue',
-    padding: 12,
-    margin: 16,
+  textSmall: {
+    fontSize: 16,
+    color: '#4d4d4d',
+    textAlign: 'center',
+    marginTop: -5
+  },
+  stateUser: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 4,
-    borderColor: 'rgba(0, 0, 0, 0.1)'
+    height: 20,
+    flexDirection: 'column',
+    marginTop: 30
+  },
+  textState: {
+    fontSize: 18,
+    color: '#918c8c',
+    textAlign: 'center'
+  },
+  buttonAccept: {
+    backgroundColor: '#ffaf18',
+    width: 280,
+    height: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30
+  },
+  textAccept: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'rgb(255, 255, 255)'
   }
 })
