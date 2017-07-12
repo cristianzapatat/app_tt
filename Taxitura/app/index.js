@@ -264,7 +264,7 @@ export default class Taxitura extends Component {
             <Text style={styles.textAddreess}> Calle </Text>
           </View>
           { this.generateMap() }
-          <View style={styles.footer}>
+          <View style={[styles.footer, {display: (this.state.goOrder) ? 'flex' : 'none'}]}>
             <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
               <View style={styles.footerAccept}>
                 <Text style={styles.textFooter}>
