@@ -29,7 +29,10 @@ export default StyleSheet.create({
   },
   textAddreess: {
     color: 'rgb(255, 255, 255)',
-    fontSize: 15
+    fontSize: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center'
   },
   map: {
     ...StyleSheet.absoluteFillObject
@@ -146,5 +149,17 @@ export default StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: 'rgb(255, 255, 255)'
+  },
+  buttonCancel: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: 280,
+    height: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 18
+  },
+  textCancel: {
+    fontSize: 22,
+    color: '#ffaf18'
   }
 })

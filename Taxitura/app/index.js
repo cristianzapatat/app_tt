@@ -4,17 +4,18 @@ import {
   Text,
   View,
   Image,
-  Button,
   TouchableOpacity,
   Dimensions
 } from 'react-native'
 import '../UserAgent'
+import styles from '../style/app.style'
+import consts from '../constants/constants'
+
 import io from 'socket.io-client'
 import MapView from 'react-native-maps'
 import Modal from 'react-native-modal'
-
-import styles from '../style/app.style'
-import consts from '../constants/constants'
+import Geocoder from 'react-native-geocoding'
+Geocoder.setApiKey(consts.apiKeyGeocoder)
 
 const {width, height} = Dimensions.get('window')
 
@@ -40,6 +41,7 @@ export default class Taxitura extends Component {
         latitude: 0,
         longitude: 0
       },
+      address: '',
       connection: {
         state: false,
         title: consts.disconnect
@@ -120,6 +122,7 @@ export default class Taxitura extends Component {
       }
       this.setState({initialPosition: lastRegion})
       this.setState({markerPosition: lastRegion})
+      this.getAddress(lastRegion)
     })
   }
 
@@ -166,6 +169,15 @@ export default class Taxitura extends Component {
     }
   }
 
+  getAddress (region) {
+    if (region !== null) {
+      Geocoder.getFromLatLng(region.latitude, region.longitude).then(json => {
+        let pos = json.results[0].formatted_address.split(',')
+        this.setState({address: pos[0] + ', ' + pos[1]})
+      })
+    }
+  }
+
   generateOrder () {
     if (this.state.processOrder) {
       return (
@@ -189,6 +201,11 @@ export default class Taxitura extends Component {
           <TouchableOpacity onPress={() => { this.acceptOrder() }}>
             <View style={styles.buttonAccept}>
               <Text style={styles.textAccept}>Aceptar servicio</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null}) }}>
+            <View style={styles.buttonCancel}>
+              <Text style={styles.textCancel}>Cancelar</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -261,7 +278,7 @@ export default class Taxitura extends Component {
         </View>
         <View style={styles.container}>
           <View style={styles.addreess}>
-            <Text style={styles.textAddreess}> Calle </Text>
+            <Text style={styles.textAddreess}> {this.state.address} </Text>
           </View>
           { this.generateMap() }
           <View style={[styles.footer, {display: (this.state.goOrder) ? 'flex' : 'none'}]}>
@@ -281,9 +298,3 @@ export default class Taxitura extends Component {
     )
   }
 }
-
-// <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null}) }}>
-//   <View style={styles.button}>
-//     <Text>Cancelar</Text>
-//   </View>
-// </TouchableOpacity>
