@@ -15,6 +15,7 @@ import io from 'socket.io-client'
 import MapView from 'react-native-maps'
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
+import Polyline from '@mapbox/polyline'
 Geocoder.setApiKey(consts.apiKeyGeocoder)
 
 const {width, height} = Dimensions.get('window')
@@ -42,10 +43,12 @@ export default class Taxitura extends Component {
         longitude: 0
       },
       address: '',
+      addressMarker: '',
       connection: {
         state: false,
         title: consts.disconnect
       },
+      coords: [],
       order: null,
       processOrder: false,
       goOrder: false,
@@ -85,6 +88,17 @@ export default class Taxitura extends Component {
         this.setState({processOrder: true})
       }
     })
+    this.socket.on('accept', order => {
+      console.log(order)
+      console.log('\n')
+      console.log(this.state.order)
+      if (order.id === this.state.order.id) {
+        this.setState({goOrder: true})
+        this.getAddress(this.state.markerPositionOrder, false)
+        this.getDirections(`${this.state.markerPosition.latitude},${this.state.markerPosition.longitude}`,
+          `${this.state.markerPositionOrder.latitude},${this.state.markerPositionOrder.longitude}`)
+      }
+    })
   }
 
   componentDidMount () {
@@ -122,7 +136,7 @@ export default class Taxitura extends Component {
       }
       this.setState({initialPosition: lastRegion})
       this.setState({markerPosition: lastRegion})
-      this.getAddress(lastRegion)
+      this.getAddress(lastRegion, true)
     })
   }
 
@@ -130,10 +144,29 @@ export default class Taxitura extends Component {
     navigator.geolocation.clearWatch(this.watchID)
   }
 
+  async getDirections (startLoc, destinationLoc) {
+    try {
+      let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}`)
+      let respJson = await resp.json()
+      let points = Polyline.decode(respJson.routes[0].overview_polyline.points)
+      let coords = points.map((point, index) => {
+        return {
+          latitude: point[0],
+          longitude: point[1]
+        }
+      })
+      this.setState({coords: coords})
+      return coords
+    } catch (error) {
+      return error
+    }
+  }
+
   generateMap () {
     if (this.state.goOrder) {
       return (
         <MapView style={styles.map}
+          loadingEnabled
           region={this.state.initialPosition}
           rotateEnabled={this.state.goOrder}>
           <MapView.Marker
@@ -145,16 +178,24 @@ export default class Taxitura extends Component {
           </MapView.Marker>
           <MapView.Marker
             coordinate={this.state.markerPositionOrder}
-            title={'Cliente'}>
+            title={'Cliente'}
+            description={this.state.addressMarker}>
             <View style={styles.radius}>
               <View style={styles.markerOrder} />
             </View>
           </MapView.Marker>
+          <MapView.Polyline
+            coordinates={this.state.coords}
+            strokeWidth={3}
+            strokeColor='#007AFF' />
         </MapView>
       )
     } else {
       return (
         <MapView style={styles.map}
+          loadingEnabled
+          minZoomLevel={5}
+          maxZoomLevel={10}
           region={this.state.initialPosition}
           rotateEnabled={this.state.goOrder}>
           <MapView.Marker
@@ -169,11 +210,15 @@ export default class Taxitura extends Component {
     }
   }
 
-  getAddress (region) {
+  getAddress (region, flag) {
     if (region !== null) {
       Geocoder.getFromLatLng(region.latitude, region.longitude).then(json => {
         let pos = json.results[0].formatted_address.split(',')
-        this.setState({address: pos[0] + ', ' + pos[1]})
+        if (flag) {
+          this.setState({address: pos[0] + ', ' + pos[1]})
+        } else {
+          this.setState({addressMarker: pos[0] + ', ' + pos[1]})
+        }
       })
     }
   }
@@ -234,8 +279,6 @@ export default class Taxitura extends Component {
     data['accept'] = accept
     this.state.order = data
     this.socket.emit('app', data)
-    // se hace luego de que el servidor aseguro que el servicio si es de esta app
-    this.setState({goOrder: true})
   }
 
   processService (action) {
