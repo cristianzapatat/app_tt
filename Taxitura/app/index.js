@@ -10,6 +10,7 @@ import {
 import '../UserAgent'
 import styles from '../style/app.style'
 import consts from '../constants/constants'
+import util from '../util/util'
 
 import io from 'socket.io-client'
 import MapView from 'react-native-maps'
@@ -44,10 +45,8 @@ export default class Taxitura extends Component {
       },
       address: '',
       addressMarker: '',
-      connection: {
-        state: false,
-        title: consts.disconnect
-      },
+      distance: null,
+      connection: {},
       coords: [],
       order: null,
       processOrder: false,
@@ -63,40 +62,26 @@ export default class Taxitura extends Component {
 
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('message', data => {
-      this.state.connection.state = data.connection
-      if (this.state.connection.state) {
-        this.state.connection.title = consts.connect
-      }
+      this.state.connection = data.connection
     })
     this.socket.on('disconnect', reason => {
-      let data = {
-        title: consts.disconnect,
-        state: false
-      }
-      this.setState({connection: data})
-    })
-    this.socket.on('reconnect', (attemptNumber) => {
-      let data = {
-        title: consts.connect,
-        state: false
-      }
-      this.setState({connection: data})
+      this.setState({connection: {}})
     })
     this.socket.on('app', order => {
       if (order.action === consts.order && this.state.order === null) {
         this.state.order = order
+        this.getDistance(this.state.markerPosition,
+          {latitude: order.order.latitude, longitude: order.order.longitude})
         this.setState({processOrder: true})
       }
     })
     this.socket.on('accept', order => {
-      console.log(order)
-      console.log('\n')
-      console.log(this.state.order)
       if (order.id === this.state.order.id) {
         this.setState({goOrder: true})
         this.getAddress(this.state.markerPositionOrder, false)
-        this.getDirections(`${this.state.markerPosition.latitude},${this.state.markerPosition.longitude}`,
-          `${this.state.markerPositionOrder.latitude},${this.state.markerPositionOrder.longitude}`)
+        let startLoc = `${this.state.markerPosition.latitude},${this.state.markerPosition.longitude}`
+        let endLoc = `${this.state.markerPositionOrder.latitude},${this.state.markerPositionOrder.longitude}`
+        this.getDirections(startLoc, endLoc)
       }
     })
   }
@@ -157,6 +142,18 @@ export default class Taxitura extends Component {
       })
       this.setState({coords: coords})
       return coords
+    } catch (error) {
+      return error
+    }
+  }
+
+  async getDistance (start, end) {
+    try {
+      let startLoc = `${start.latitude},${start.longitude}`
+      let endLoc = `${end.latitude},${end.longitude}`
+      let data = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${startLoc}&destinations=${endLoc}&key=${consts.apiDistanceAndTime}&units=metric`)
+      let json = await data.json()
+      this.setState({distance: json})
     } catch (error) {
       return error
     }
@@ -224,7 +221,7 @@ export default class Taxitura extends Component {
   }
 
   generateOrder () {
-    if (this.state.processOrder) {
+    if (this.state.processOrder && this.state.distance != null) {
       return (
         <View style={styles.modalContent}>
           <Image
@@ -235,7 +232,7 @@ export default class Taxitura extends Component {
               {this.state.order.order.name}
             </Text>
             <Text style={styles.textSmall}>
-              A 300 metros
+              A {util.getMeters(this.state.distance.rows[0].elements[0].distance.value)}
             </Text>
           </View>
           <View style={styles.stateUser}>
@@ -272,7 +269,7 @@ export default class Taxitura extends Component {
     data['action'] = 'order'
     let accept = {
       nameCabman: 'Taxista de pruebas',
-      distance: 100,
+      distance: this.state.distance,
       latitude: this.state.markerPosition.latitude,
       longitude: this.state.markerPosition.longitude
     }
