@@ -7,20 +7,16 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native'
-import '../UserAgent'
 import styles from '../style/app.style'
 import consts from '../constants/constants'
 import util from '../util/util'
-
+import Map from './map'
 import io from 'socket.io-client'
-import MapView from 'react-native-maps'
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
-import Polyline from '@mapbox/polyline'
 Geocoder.setApiKey(consts.apiKeyGeocoder)
 
 const {width, height} = Dimensions.get('window')
-
 const ASPECT_RATIO = width / height
 const LATITUDE_DELTA = 0.015
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
@@ -47,7 +43,6 @@ export default class Taxitura extends Component {
       addressMarker: '',
       distance: null,
       connection: {},
-      coords: [],
       order: null,
       processOrder: false,
       goOrder: false,
@@ -79,21 +74,15 @@ export default class Taxitura extends Component {
       if (order.id === this.state.order.id) {
         this.setState({goOrder: true})
         this.getAddress(this.state.markerPositionOrder, false)
-        let startLoc = `${this.state.markerPosition.latitude},${this.state.markerPosition.longitude}`
-        let endLoc = `${this.state.markerPositionOrder.latitude},${this.state.markerPositionOrder.longitude}`
-        this.getDirections(startLoc, endLoc)
       }
     })
   }
 
   componentDidMount () {
     navigator.geolocation.getCurrentPosition(position => {
-      let lat = parseFloat(position.coords.latitude)
-      let long = parseFloat(position.coords.longitude)
-
       let initialRegion = {
-        latitude: lat,
-        longitude: long,
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude),
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
@@ -110,12 +99,9 @@ export default class Taxitura extends Component {
     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
-      let lat = parseFloat(position.coords.latitude)
-      let long = parseFloat(position.coords.longitude)
-
       let lastRegion = {
-        latitude: lat,
-        longitude: long,
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude),
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
@@ -129,24 +115,6 @@ export default class Taxitura extends Component {
     navigator.geolocation.clearWatch(this.watchID)
   }
 
-  async getDirections (startLoc, destinationLoc) {
-    try {
-      let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${destinationLoc}`)
-      let respJson = await resp.json()
-      let points = Polyline.decode(respJson.routes[0].overview_polyline.points)
-      let coords = points.map((point, index) => {
-        return {
-          latitude: point[0],
-          longitude: point[1]
-        }
-      })
-      this.setState({coords: coords})
-      return coords
-    } catch (error) {
-      return error
-    }
-  }
-
   async getDistance (start, end) {
     try {
       let startLoc = `${start.latitude},${start.longitude}`
@@ -156,54 +124,6 @@ export default class Taxitura extends Component {
       this.setState({distance: json})
     } catch (error) {
       return error
-    }
-  }
-
-  generateMap () {
-    if (this.state.goOrder) {
-      return (
-        <MapView style={styles.map}
-          loadingEnabled
-          region={this.state.initialPosition}
-          rotateEnabled={this.state.goOrder}>
-          <MapView.Marker
-            coordinate={this.state.markerPosition}
-            title={'Tú'}>
-            <View style={styles.radius}>
-              <View style={styles.marker} />
-            </View>
-          </MapView.Marker>
-          <MapView.Marker
-            coordinate={this.state.markerPositionOrder}
-            title={'Cliente'}
-            description={this.state.addressMarker}>
-            <View style={styles.radius}>
-              <View style={styles.markerOrder} />
-            </View>
-          </MapView.Marker>
-          <MapView.Polyline
-            coordinates={this.state.coords}
-            strokeWidth={3}
-            strokeColor='#007AFF' />
-        </MapView>
-      )
-    } else {
-      return (
-        <MapView style={styles.map}
-          loadingEnabled
-          minZoomLevel={5}
-          maxZoomLevel={10}
-          region={this.state.initialPosition}
-          rotateEnabled={this.state.goOrder}>
-          <MapView.Marker
-            coordinate={this.state.markerPosition}
-            title={'Tú'}>
-            <View style={styles.radius}>
-              <View style={styles.marker} />
-            </View>
-          </MapView.Marker>
-        </MapView>
-      )
     }
   }
 
@@ -308,9 +228,6 @@ export default class Taxitura extends Component {
   }
 
   render () {
-    const { region } = this.props
-    console.log(region)
-
     return (
       <View style={styles.all}>
         <View style={styles.nav}>
@@ -320,7 +237,12 @@ export default class Taxitura extends Component {
           <View style={styles.addreess}>
             <Text style={styles.textAddreess}> {this.state.address} </Text>
           </View>
-          { this.generateMap() }
+          <Map
+            goOrder={this.state.goOrder}
+            initial={this.state.initialPosition}
+            markerMe={this.state.markerPosition}
+            markerOrder={this.state.markerPositionOrder}
+            address={this.state.addressMarker} />
           <View style={[styles.footer, {display: (this.state.goOrder) ? 'flex' : 'none'}]}>
             <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
               <View style={styles.footerAccept}>
