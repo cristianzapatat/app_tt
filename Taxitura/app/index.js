@@ -14,6 +14,7 @@ import Map from './map'
 import io from 'socket.io-client'
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
+import * as Progress from 'react-native-progress'
 Geocoder.setApiKey(consts.apiKeyGeocoder)
 
 const {width, height} = Dimensions.get('window')
@@ -24,6 +25,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 export default class Taxitura extends Component {
   constructor (props) {
     super(props)
+    console.ignoredYellowBox = ['Setting a timer']
     this.state = {
       initialPosition: {
         latitude: 0,
@@ -50,10 +52,9 @@ export default class Taxitura extends Component {
         title: consts.arrive,
         color: consts.colorArrive,
         action: consts.actionArrive
-      }
+      },
+      time: 1
     }
-
-    console.ignoredYellowBox = ['Setting a timer']
 
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('message', data => {
@@ -68,6 +69,7 @@ export default class Taxitura extends Component {
         this.getDistance(this.state.markerPosition,
           {latitude: order.order.latitude, longitude: order.order.longitude})
         this.setState({processOrder: true})
+        this.reductionTime()
       }
     })
     this.socket.on('accept', order => {
@@ -93,10 +95,10 @@ export default class Taxitura extends Component {
       Alert.alert(
         'Alerta GPS',
         'Favor enceder su GPS',
-        [ {text: 'OK', onPress: () => console.log(JSON.stringify(error))} ]
+        [ {text: 'OK', onPress: () => console.log('cryzat\n' + JSON.stringify(error))} ]
       )
     },
-    {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000})
+    {enableHighAccuracy: false, timeout: 20000, maximumAge: 20000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
@@ -165,16 +167,36 @@ export default class Taxitura extends Component {
               <Text style={styles.textAccept}>Aceptar servicio</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null}) }}>
+          <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null, time: 1}) }}>
             <View style={styles.buttonCancel}>
               <Text style={styles.textCancel}>Cancelar</Text>
             </View>
           </TouchableOpacity>
+          <Progress.Bar
+            progress={this.state.time}
+            width={280}
+            color={'rgb(163, 153, 167)'}
+            borderColor={'rgb(163, 153, 167)'}
+            style={styles.progress} />
         </View>
       )
     } else {
       return (<View />)
     }
+  }
+
+  reductionTime () {
+    let idSet = setInterval(() => {
+      let time = this.state.time
+      if (time <= 0.0) {
+        this.setState({ processOrder: false })
+        this.setState({ order: null, time: 1 })
+        clearInterval(idSet)
+      } else {
+        time = time - 0.025
+        this.setState({time})
+      }
+    }, 250)
   }
 
   acceptOrder () {
@@ -183,7 +205,7 @@ export default class Taxitura extends Component {
       longitude: this.state.order.order.longitude
     }
     this.state.markerPositionOrder = position
-    this.setState({processOrder: false})
+    this.setState({processOrder: false, time: 1})
 
     let data = this.state.order
     data['action'] = 'order'

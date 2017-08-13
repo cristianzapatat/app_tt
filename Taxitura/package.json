@@ -13,6 +13,7 @@
 		"react-native-geocoding": "^0.2.0",
 		"react-native-maps": "^0.15.3",
 		"react-native-modal": "^2.4.0",
+		"react-native-progress": "^3.3.0",
 		"socket.io-client": "^2.0.3"
 	},
 	"devDependencies": {

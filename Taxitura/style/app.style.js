@@ -161,5 +161,8 @@ export default StyleSheet.create({
   textCancel: {
     fontSize: 22,
     color: '#ffaf18'
+  },
+  progress: {
+    marginTop: 15
   }
 })

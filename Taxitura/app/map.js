@@ -7,6 +7,10 @@ import MapView from 'react-native-maps'
 import Root from './root.js'
 
 export default class Map extends Component {
+  constructor (props) {
+    super(props)
+    console.ignoredYellowBox = ['Setting a timer']
+  }
   render () {
     const { region } = this.props
     console.log(region)
