@@ -44,7 +44,6 @@ export default class Taxitura extends Component {
       address: '',
       addressMarker: '',
       distance: null,
-      connection: {},
       order: null,
       processOrder: false,
       goOrder: false,
@@ -58,12 +57,6 @@ export default class Taxitura extends Component {
     }
 
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
-    this.socket.on('message', data => {
-      this.state.connection = data.connection
-    })
-    this.socket.on('disconnect', reason => {
-      this.setState({connection: {}})
-    })
     this.socket.on('app', order => {
       if (order.action === consts.order && this.state.order === null) {
         this.state.order = order
@@ -75,13 +68,24 @@ export default class Taxitura extends Component {
     })
     this.socket.on('accept', order => {
       if (order.id === this.state.order.id) {
+        this.state.order = order
         this.setState({goOrder: true})
         this.getAddress(this.state.markerPositionOrder, false)
       }
     })
+    this.socket.on('arrive', order => {
+      if (order.id === this.state.order.id) {
+        this.state.order = order
+        this.setState({button: {
+          title: consts.endService,
+          color: consts.colorEndService,
+          action: consts.actionEnd
+        }})
+      }
+    })
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.analitycPosition()
   }
 
@@ -102,11 +106,11 @@ export default class Taxitura extends Component {
       this.setState({markerPosition: initialRegion})
       this.setState({renderGPS: true})
     },
-    error => {
-      console.log(error)
+    err => {
+      console.log(err)
       this.setState({renderGPS: false})
     },
-    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000})
+    {enableHighAccuracy: false, timeout: 1000, maximumAge: 1000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
@@ -120,11 +124,11 @@ export default class Taxitura extends Component {
       this.getAddress(lastRegion, true)
       this.setState({renderGPS: true})
     },
-    error => {
-      console.log(error)
+    err => {
+      console.log(err)
       this.setState({renderGPS: false})
     },
-    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000, distanceFilter: 2})
+    {enableHighAccuracy: false, timeout: 1000, maximumAge: 1000, distanceFilter: 2})
   }
 
   async getDistance (start, end) {
@@ -230,25 +234,10 @@ export default class Taxitura extends Component {
     this.socket.emit('app', data)
   }
 
-  processService (action) {
-    let data = this.state.order
-    let now = {
-      nameCabman: 'Taxista de pruebas',
-      latitude: this.state.markerPosition.latitude,
-      longitude: this.state.markerPosition.longitude
-    }
-    data[action] = now
-    data.action = action
-    if (action === consts.actionArrive) {
-      this.state.order = data
-      this.socket.emit('app', data)
-      this.setState({button: {
-        title: consts.endService,
-        color: consts.colorEndService,
-        action: consts.actionEnd
-      }})
-    } else if (action === consts.actionEnd) {
-      this.socket.emit('app', data)
+  processService (msn) {
+    this.state.order.action = msn
+    this.socket.emit('app', this.state.order)
+    if (msn === consts.actionEnd) {
       this.setState({button: {
         title: consts.arrive,
         color: consts.colorArrive,
