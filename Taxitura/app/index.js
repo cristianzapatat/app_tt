@@ -1,6 +1,6 @@
+/* global fetch:true */
 import React, { Component } from 'react'
 import {
-  Alert,
   Text,
   View,
   Image,
@@ -48,6 +48,7 @@ export default class Taxitura extends Component {
       order: null,
       processOrder: false,
       goOrder: false,
+      renderGPS: true,
       button: {
         title: consts.arrive,
         color: consts.colorArrive,
@@ -80,7 +81,16 @@ export default class Taxitura extends Component {
     })
   }
 
-  componentDidMount () {
+  componentWillMount () {
+    this.analitycPosition()
+  }
+
+  componentWillUnmount () {
+    navigator.geolocation.clearWatch(this.watchID)
+    this.setState({renderGPS: false})
+  }
+
+  analitycPosition () {
     navigator.geolocation.getCurrentPosition(position => {
       let initialRegion = {
         latitude: parseFloat(position.coords.latitude),
@@ -90,15 +100,13 @@ export default class Taxitura extends Component {
       }
       this.setState({initialPosition: initialRegion})
       this.setState({markerPosition: initialRegion})
+      this.setState({renderGPS: true})
     },
     error => {
-      Alert.alert(
-        'Alerta GPS',
-        'Favor enceder su GPS',
-        [ {text: 'OK', onPress: () => console.log('cryzat\n' + JSON.stringify(error))} ]
-      )
+      console.log(error)
+      this.setState({renderGPS: false})
     },
-    {enableHighAccuracy: false, timeout: 20000, maximumAge: 20000})
+    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
@@ -110,11 +118,13 @@ export default class Taxitura extends Component {
       this.setState({initialPosition: lastRegion})
       this.setState({markerPosition: lastRegion})
       this.getAddress(lastRegion, true)
-    })
-  }
-
-  componentWillUnmount () {
-    navigator.geolocation.clearWatch(this.watchID)
+      this.setState({renderGPS: true})
+    },
+    error => {
+      console.log(error)
+      this.setState({renderGPS: false})
+    },
+    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000, distanceFilter: 2})
   }
 
   async getDistance (start, end) {
@@ -249,6 +259,26 @@ export default class Taxitura extends Component {
     }
   }
 
+  changeGPS () {
+    if (this.state.renderGPS) {
+      return (
+        <Map
+          goOrder={this.state.goOrder}
+          initial={this.state.initialPosition}
+          markerMe={this.state.markerPosition}
+          markerOrder={this.state.markerPositionOrder}
+          address={this.state.addressMarker} />
+      )
+    } else {
+      return (
+        <View style={styles.notgps}>
+          <Image source={require('../img/gps_disenabled.png')} />
+          <Text style={styles.textGps}>Favor enceder el GPS</Text>
+        </View>
+      )
+    }
+  }
+
   render () {
     return (
       <View style={styles.all}>
@@ -257,15 +287,10 @@ export default class Taxitura extends Component {
         </View>
         <View style={styles.container}>
           <View style={styles.addreess}>
-            <Text style={styles.textAddreess}> {this.state.address} </Text>
+            <Text style={styles.textAddreess}>{this.state.address}</Text>
           </View>
-          <Map
-            goOrder={this.state.goOrder}
-            initial={this.state.initialPosition}
-            markerMe={this.state.markerPosition}
-            markerOrder={this.state.markerPositionOrder}
-            address={this.state.addressMarker} />
-          <View style={[styles.footer, {display: (this.state.goOrder) ? 'flex' : 'none'}]}>
+          { this.changeGPS() }
+          <View style={[styles.footer, {display: (this.state.goOrder && this.state.renderGPS) ? 'flex' : 'none'}]}>
             <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
               <View style={styles.footerAccept}>
                 <Text style={styles.textFooter}>
@@ -275,7 +300,7 @@ export default class Taxitura extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Modal isVisible={this.state.processOrder}>
+        <Modal isVisible={(this.state.processOrder && this.state.renderGPS)}>
           { this.generateOrder() }
         </Modal>
       </View>

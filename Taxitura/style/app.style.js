@@ -16,8 +16,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
-    flexDirection: 'column',
-    backgroundColor: 'rgb(44, 213, 207)'
+    flexDirection: 'column'
   },
   addreess: {
     height: 40,
@@ -35,7 +34,18 @@ export default StyleSheet.create({
     textAlign: 'center'
   },
   map: {
-    ...StyleSheet.absoluteFillObject
+    flex: 1
+  },
+  notgps: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1
+  },
+  textGps: {
+    marginTop: 5,
+    fontSize: 20
   },
   footer: {
     backgroundColor: '#ffaf18',
