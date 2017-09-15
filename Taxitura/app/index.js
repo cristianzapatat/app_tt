@@ -22,6 +22,9 @@ const ASPECT_RATIO = width / height
 const LATITUDE_DELTA = 0.015
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
+let service = null
+let orders = []
+
 export default class Taxitura extends Component {
   constructor (props) {
     super(props)
@@ -44,7 +47,6 @@ export default class Taxitura extends Component {
       address: '',
       addressMarker: '',
       distance: null,
-      order: null,
       processOrder: false,
       goOrder: false,
       renderGPS: true,
@@ -58,24 +60,26 @@ export default class Taxitura extends Component {
 
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('app', order => {
-      if (order.action === consts.order && this.state.order === null) {
-        this.state.order = order
+      if (order.action === consts.order && service === null) {
+        service = order
         this.getDistance(this.state.markerPosition,
           {latitude: order.order.latitude, longitude: order.order.longitude})
         this.setState({processOrder: true})
         this.reductionTime()
+      } else if (order.action === consts.order && service !== null) {
+        orders.push(order)
       }
     })
     this.socket.on('accept', order => {
-      if (order.id === this.state.order.id) {
-        this.state.order = order
+      if (order.id === service.id) {
+        service = order
         this.setState({goOrder: true})
         this.getAddress(this.state.markerPositionOrder, false)
       }
     })
     this.socket.on('arrive', order => {
-      if (order.id === this.state.order.id) {
-        this.state.order = order
+      if (order.id === service.id) {
+        service = order
         this.setState({button: {
           title: consts.endService,
           color: consts.colorEndService,
@@ -162,10 +166,10 @@ export default class Taxitura extends Component {
         <View style={styles.modalContent}>
           <Image
             style={styles.imageOrder}
-            source={{uri: this.state.order.order.url_pic}} />
+            source={{uri: service.order.url_pic}} />
           <View style={styles.nameUser}>
             <Text style={styles.textLarge}>
-              {this.state.order.order.name}
+              {service.order.name}
             </Text>
             <Text style={styles.textSmall}>
               A {util.getMeters(this.state.distance.rows[0].elements[0].distance.value)}
@@ -181,7 +185,7 @@ export default class Taxitura extends Component {
               <Text style={styles.textAccept}>Aceptar servicio</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { this.setState({processOrder: false, order: null, time: 1}) }}>
+          <TouchableOpacity onPress={() => { this.cancelOrder() }}>
             <View style={styles.buttonCancel}>
               <Text style={styles.textCancel}>Cancelar</Text>
             </View>
@@ -213,15 +217,19 @@ export default class Taxitura extends Component {
     }, 250)
   }
 
+  cancelOrder () {
+    this.setState({processOrder: false, time: 1})
+    service = null
+  }
+
   acceptOrder () {
     let position = {
-      latitude: this.state.order.order.latitude,
-      longitude: this.state.order.order.longitude
+      latitude: service.order.latitude,
+      longitude: service.order.longitude
     }
     this.state.markerPositionOrder = position
     this.setState({processOrder: false, time: 1})
-
-    let data = this.state.order
+    let data = service
     data['action'] = 'order'
     let accept = {
       nameCabman: 'Taxista de pruebas',
@@ -230,13 +238,13 @@ export default class Taxitura extends Component {
       longitude: this.state.markerPosition.longitude
     }
     data['accept'] = accept
-    this.state.order = data
+    service = data
     this.socket.emit('app', data)
   }
 
   processService (msn) {
-    this.state.order.action = msn
-    this.socket.emit('app', this.state.order)
+    service.action = msn
+    this.socket.emit('app', service)
     if (msn === consts.actionEnd) {
       this.setState({button: {
         title: consts.arrive,
@@ -244,7 +252,7 @@ export default class Taxitura extends Component {
         action: consts.actionArrive
       }})
       this.setState({goOrder: false})
-      this.setState({order: null})
+      service = null
     }
   }
 
