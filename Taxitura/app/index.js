@@ -1,4 +1,5 @@
 /* global fetch:true */
+/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
   Text,
@@ -11,9 +12,11 @@ import styles from '../style/app.style'
 import consts from '../constants/constants'
 import util from '../util/util'
 import Map from './map'
+import Bounceable from '../util/bounceable'
 import io from 'socket.io-client'
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
+import GPSState from 'react-native-gps-state'
 import * as Progress from 'react-native-progress'
 Geocoder.setApiKey(consts.apiKeyGeocoder)
 
@@ -50,12 +53,15 @@ export default class Taxitura extends Component {
       processOrder: false,
       goOrder: false,
       renderGPS: true,
+      renderGPSText: consts.offGPS,
+      renderGPSImg: true,
       button: {
         title: consts.arrive,
         color: consts.colorArrive,
         action: consts.actionArrive
       },
-      time: 1
+      time: 1,
+      enableHighAccuracy: false
     }
 
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
@@ -89,13 +95,25 @@ export default class Taxitura extends Component {
     })
   }
 
-  componentDidMount () {
-    this.analitycPosition()
+  componentWillMount () {
+    this.getStatus()
   }
 
   componentWillUnmount () {
     navigator.geolocation.clearWatch(this.watchID)
-    this.setState({renderGPS: false})
+    this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
+  }
+
+  getStatus () {
+    GPSState.getStatus().then(status => {
+      if (status === GPSState.RESTRICTED) {
+        this.setState({renderGPS: false})
+      } else if (status === GPSState.DENIED) {
+        this.setState({renderGPS: false, renderGPSText: consts.deniedGPS, renderGPSImg: false})
+      } else {
+        this.analitycPosition()
+      }
+    })
   }
 
   analitycPosition () {
@@ -109,12 +127,14 @@ export default class Taxitura extends Component {
       this.setState({initialPosition: initialRegion})
       this.setState({markerPosition: initialRegion})
       this.setState({renderGPS: true})
+      if (!this.state.enableHighAccuracy) {
+        this.setState({enableHighAccuracy: true})
+      }
     },
     err => {
-      console.log(err)
-      this.setState({renderGPS: false})
+      this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
     },
-    {enableHighAccuracy: false, timeout: 1000, maximumAge: 1000})
+    {enableHighAccuracy: this.state.enableHighAccuracy, timeout: 1000, maximumAge: 1000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
@@ -127,12 +147,14 @@ export default class Taxitura extends Component {
       this.setState({markerPosition: lastRegion})
       this.getAddress(lastRegion, true)
       this.setState({renderGPS: true})
+      if (!this.state.enableHighAccuracy) {
+        this.setState({enableHighAccuracy: true})
+      }
     },
     err => {
-      console.log(err)
-      this.setState({renderGPS: false})
+      this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
     },
-    {enableHighAccuracy: false, timeout: 1000, maximumAge: 1000, distanceFilter: 2})
+    {enableHighAccuracy: this.state.enableHighAccuracy, timeout: 1000, maximumAge: 1000, distanceFilter: 2})
   }
 
   async getDistance (start, end) {
@@ -267,12 +289,35 @@ export default class Taxitura extends Component {
           address={this.state.addressMarker} />
       )
     } else {
-      return (
-        <View style={styles.notgps}>
-          <Image source={require('../img/gps_disenabled.png')} />
-          <Text style={styles.textGps}>Favor enceder el GPS</Text>
-        </View>
-      )
+      if (this.state.renderGPSImg) {
+        return (
+          <View style={styles.notgps}>
+            <Image source={require('../img/gps_disenabled.png')} />
+            <Text style={styles.textGps}>{this.state.renderGPSText}</Text>
+            <Bounceable
+              onPress={() => { this.getStatus() }}
+              level={1.1}>
+              <View>
+                <Image source={require('../img/gps_reload.png')} style={styles.imgReload} />
+              </View>
+            </Bounceable>
+          </View>
+        )
+      } else {
+        return (
+          <View style={styles.notgps}>
+            <Image source={require('../img/gps_denied.png')} />
+            <Text style={styles.textGps}>{this.state.renderGPSText}</Text>
+            <Bounceable
+              onPress={() => { this.getStatus() }}
+              level={1.1}>
+              <View>
+                <Image source={require('../img/gps_reload.png')} style={styles.imgReload} />
+              </View>
+            </Bounceable>
+          </View>
+        )
+      }
     }
   }
 

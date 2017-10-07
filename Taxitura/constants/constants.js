@@ -9,5 +9,7 @@ module.exports = {
   colorArrive: '#4edb1d',
   actionArrive: 'arrive',
   endService: 'Llegamos!',
-  actionEnd: 'end'
+  actionEnd: 'end',
+  offGPS: 'Favor encender su GPS',
+  deniedGPS: 'Taxitura no cuenta con permisos de GPS'
 }

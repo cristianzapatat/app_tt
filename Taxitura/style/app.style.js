@@ -45,7 +45,8 @@ export default StyleSheet.create({
   },
   textGps: {
     marginTop: 5,
-    fontSize: 20
+    fontSize: 20,
+    textAlign: 'center'
   },
   footer: {
     backgroundColor: '#ffaf18',
@@ -174,5 +175,8 @@ export default StyleSheet.create({
   },
   progress: {
     marginTop: 15
+  },
+  imgReload: {
+    marginTop: 10
   }
 })
