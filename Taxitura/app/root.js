@@ -1,3 +1,4 @@
+'use strict'
 /* global fetch:true */
 import React, { Component } from 'react'
 
