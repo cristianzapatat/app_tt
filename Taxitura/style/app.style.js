@@ -3,14 +3,8 @@ import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   all: {
     flex: 1,
+    marginTop: 50,
     ...StyleSheet.absoluteFillObject,
-    flexDirection: 'column'
-  },
-  nav: {
-    flex: 0.11,
-    backgroundColor: '#ffaf18',
-    justifyContent: 'center',
-    alignItems: 'center',
     flexDirection: 'column'
   },
   container: {

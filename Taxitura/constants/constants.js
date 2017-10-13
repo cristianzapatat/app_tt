@@ -15,5 +15,8 @@ module.exports = {
   actionEnd: 'end',
   offGPS: 'Favor encender su GPS',
   deniedGPS: 'Taxitura no cuenta con permisos de GPS',
-  deniedAccess: 'acceso_denegado'
+  deniedAccess: 'acceso_denegado',
+
+  persistenceFile: '/persistence',
+  fileLogin: '/login.json'
 }

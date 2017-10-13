@@ -1,9 +1,9 @@
 'use strict'
 import React, {Component} from 'react'
 import {View, Image} from 'react-native'
-import styles from '../style/app.style'
+import styles from '../style/header.style'
 
-export default class HeaderIcon extends Component {
+export default class Header extends Component {
   render () {
     return (
       <View style={styles.nav}>

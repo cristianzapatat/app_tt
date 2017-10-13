@@ -14,7 +14,6 @@ import consts from '../constants/constants'
 import util from '../util/util'
 import Map from './map'
 import Bounceable from '../util/bounceable'
-import HeaderIcon from '../util/headerIcon'
 import io from 'socket.io-client'
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
@@ -326,7 +325,6 @@ export default class Taxitura extends Component {
   render () {
     return (
       <View style={styles.all}>
-        <HeaderIcon />
         <View style={styles.container}>
           <View style={styles.addreess}>
             <Text style={styles.textAddreess}>{this.state.address}</Text>
