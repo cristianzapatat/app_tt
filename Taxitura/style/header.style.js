@@ -2,8 +2,7 @@ import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
   nav: {
-    flex: 1,
-    ...StyleSheet.absoluteFillObject,
+    height: 50,
     backgroundColor: '#ffaf18',
     justifyContent: 'center',
     alignItems: 'center',

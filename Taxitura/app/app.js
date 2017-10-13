@@ -7,7 +7,8 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  BackHandler
 } from 'react-native'
 import styles from '../style/app.style'
 import consts from '../constants/constants'
@@ -100,9 +101,20 @@ export default class Taxitura extends Component {
     this.getStatus()
   }
 
+  componentDidMount () {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      const { navigation } = this.props
+      if (navigation.state.routeName === 'app') {
+        BackHandler.exitApp()
+      }
+      return false
+    })
+  }
+
   componentWillUnmount () {
     navigator.geolocation.clearWatch(this.watchID)
     this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
+    BackHandler.removeEventListener('hardwareBackPress')
   }
 
   getStatus () {

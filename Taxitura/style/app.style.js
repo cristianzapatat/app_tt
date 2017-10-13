@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   all: {
     flex: 1,
-    marginTop: 50,
     ...StyleSheet.absoluteFillObject,
     flexDirection: 'column'
   },
