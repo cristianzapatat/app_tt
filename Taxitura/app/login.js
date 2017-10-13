@@ -3,7 +3,7 @@
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
-  View, TouchableOpacity, Text, KeyboardAvoidingView
+  View, TouchableOpacity, Text, KeyboardAvoidingView, Keyboard
 } from 'react-native'
 import styles from '../style/app.style'
 import consts from '../constants/constants'
@@ -21,7 +21,10 @@ export default class Login extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      value: {},
+      value: {
+        id: 7806756688,
+        password: '123456'
+      },
       options: {
         fields: {
           id: {
@@ -60,6 +63,7 @@ export default class Login extends Component {
 
   async login () {
     let form = this.refs.form.getValue()
+    Keyboard.dismiss()
     if (form) {
       if (form.id && form.password) {
         try {
@@ -74,6 +78,7 @@ export default class Login extends Component {
               fs.createFile(consts.persistenceFile, consts.fileLogin, token)
                 .then(status => {
                   this.setState({ animating: false })
+                  this.props.navigation.navigate('app')
                   if (!status) {
                     this.setMessage('Archivo error')
                   }
