@@ -4,14 +4,14 @@ import fs from 'react-native-fs'
 
 const patch = fs.DocumentDirectoryPath
 
-function exists (patch) {
-  return fs.exists(patch).then(exists => {
+function exists (route) {
+  return fs.exists(route).then(exists => {
     return exists
   })
 }
 
-function createDirectory (patch) {
-  return fs.mkdir(patch)
+function createDirectory (route) {
+  return fs.mkdir(route)
     .then((sucess) => { return true })
     .catch((err) => { return false })
 }
@@ -34,15 +34,22 @@ function createFile (directory, file, content) {
   })
 }
 
-function writeFile (patch, content) {
-  return fs.writeFile(patch, content, 'utf8')
+function writeFile (file, content) {
+  content = JSON.stringify(content)
+  return fs.writeFile(file, content, 'utf8')
     .then(sucess => { return true })
     .catch(err => { return true })
 }
 
-function readFile (patch) {
-  return fs.readFile(patch, 'utf8')
-    .then(response => { return response })
+function readFile (file) {
+  return exists(`${patch}${file}`).then(exists => {
+    if (exists) {
+      return fs.readFile(`${patch}${file}`, 'utf8')
+          .then(response => { return JSON.parse(response) })
+    } else {
+      return null
+    }
+  })
 }
 
 module.exports = {
