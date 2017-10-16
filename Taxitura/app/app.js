@@ -1,6 +1,4 @@
 'use strict'
-/* global fetch:true */
-/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
   Text,
@@ -14,6 +12,7 @@ import styles from '../style/app.style'
 import consts from '../constants/constants'
 import util from '../util/util'
 import Map from './map'
+import Header from '../components/header'
 import Bounceable from '../util/bounceable'
 import io from 'socket.io-client'
 import Modal from 'react-native-modal'
@@ -65,7 +64,6 @@ export default class Taxitura extends Component {
       time: 1,
       enableHighAccuracy: false
     }
-
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('app', order => {
       if (order.action === consts.order && service === null) {
@@ -331,6 +329,16 @@ export default class Taxitura extends Component {
           </View>
         )
       }
+    }
+  }
+
+  static navigationOptions = ({navigation}) => {
+    return {
+      headerLeft: null,
+      header: <Header
+        login
+        navigate={navigation}
+      />
     }
   }
 

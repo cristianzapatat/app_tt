@@ -7,45 +7,60 @@ import * as Progress from 'react-native-progress'
 import consts from '../constants/constants'
 import fs from '../util/fs'
 import styles from '../style/main.style'
-import Header from '../components/header'
 import Login from './login'
 import App from './app'
 
-const RouteNavigation = StackNavigator(
-  {
-    login: {screen: Login},
-    app: {screen: App}
-  },
-  {
-    initialRouteName: 'login',
-    mode: 'card',
-    headerMode: 'none'
-  }
-)
+const roots = {
+  login: {screen: Login},
+  app: {screen: App}
+}
+
+const config = {
+  mode: 'card'
+}
+
+config['initialRouteName'] = 'login'
+const RouteNavigationLogin = StackNavigator(roots, config)
+
+config['initialRouteName'] = 'app'
+const RouteNavigationApp = StackNavigator(roots, config)
 
 export default class Main extends Component {
   constructor () {
     super()
     this.state = {
-      loading: true
+      loading: true,
+      rendering: false
     }
   }
 
   componentDidMount () {
     fs.readFile(`${consts.persistenceFile}${consts.fileLogin}`)
       .then(response => {
-        this.setState({ loading: false })
         if (response) {
+          this.setState({ rendering: true })
         }
+        this.setState({ loading: false })
       })
+  }
+
+  isRendering () {
+    if (this.state.rendering) {
+      return (
+        <RouteNavigationApp />
+      )
+    } else {
+      return (
+        <RouteNavigationLogin />
+      )
+    }
   }
 
   render () {
     if (!this.state.loading) {
       return (
         <View style={styles.container}>
-          <Header />
-          <RouteNavigation />
+          { this.isRendering() }
         </View>
       )
     } else {

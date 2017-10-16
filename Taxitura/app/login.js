@@ -1,12 +1,11 @@
 'use strict'
-/* global fetch:true */
-/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
   View, TouchableOpacity, Text, KeyboardAvoidingView, Keyboard
 } from 'react-native'
 import styles from '../style/app.style'
 import consts from '../constants/constants'
+import Header from '../components/header'
 import t from 'tcomb-form-native'
 import * as Progress from 'react-native-progress'
 import fs from '../util/fs'
@@ -108,6 +107,11 @@ export default class Login extends Component {
       this.setState({ statusLogin: false, messageLogin: '' })
     }
     this.setState({value})
+  }
+
+  static navigationOptions = {
+    headerLeft: null,
+    header: <Header />
   }
 
   render () {
