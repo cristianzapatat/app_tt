@@ -18,7 +18,6 @@ export default class Map extends Component {
     if (this.props.goOrder) {
       return (
         <MapView style={styles.map}
-          loadingEnabled
           region={this.props.initial}
           rotateEnabled={this.props.goOrder}>
           <MapView.Marker
@@ -50,7 +49,6 @@ export default class Map extends Component {
     } else {
       return (
         <MapView style={styles.map}
-          loadingEnabled
           region={this.props.initial}
           rotateEnabled={this.props.goOrder}>
           <MapView.Marker
