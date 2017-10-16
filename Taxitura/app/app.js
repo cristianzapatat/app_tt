@@ -1,4 +1,6 @@
 'use strict'
+/* global fetch:true */
+/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
   Text,
@@ -143,9 +145,9 @@ export default class Taxitura extends Component {
       }
     },
     err => {
-      this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
+      // this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
     },
-    {enableHighAccuracy: this.state.enableHighAccuracy, timeout: 1000, maximumAge: 1000})
+    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
@@ -337,7 +339,7 @@ export default class Taxitura extends Component {
       headerLeft: null,
       header: <Header
         login
-        navigate={navigation}
+        navigation={navigation}
       />
     }
   }

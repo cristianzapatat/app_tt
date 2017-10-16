@@ -1,9 +1,12 @@
 'use strict'
+/* global fetch:true */
+/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
   View, TouchableOpacity, Text, KeyboardAvoidingView, Keyboard
 } from 'react-native'
-import styles from '../style/app.style'
+import styles from '../style/login.style'
+import styleForm from '../style/form.style'
 import consts from '../constants/constants'
 import Header from '../components/header'
 import t from 'tcomb-form-native'
@@ -25,6 +28,7 @@ export default class Login extends Component {
         password: '123456'
       },
       options: {
+        stylesheet: styleForm,
         fields: {
           id: {
             label: 'Cédula',
@@ -33,7 +37,7 @@ export default class Login extends Component {
             autoCorrect: false,
             returnKeyType: 'next',
             onSubmitEditing: () => { this.refs.form.getComponent('password').refs.input.focus() },
-            error: 'Ingrese su cédula'
+            onFocus: () => { this.onFocus() }
           },
           password: {
             label: 'Constraseña',
@@ -43,11 +47,11 @@ export default class Login extends Component {
             returnKeyType: 'go',
             secureTextEntry: true,
             onSubmitEditing: () => { this.login() },
-            error: 'Ingrese su contraseña'
+            onFocus: () => { this.onFocus() }
           }
         }
       },
-      animating: false,
+      loading: false,
       statusLogin: false,
       messageLogin: ''
     }
@@ -61,12 +65,12 @@ export default class Login extends Component {
   }
 
   async login () {
-    let form = this.refs.form.getValue()
     Keyboard.dismiss()
+    let form = this.refs.form.getValue()
     if (form) {
       if (form.id && form.password) {
         try {
-          this.setState({animating: true})
+          this.setState({loading: true})
           let url = consts.loginService(form.id, form.password)
           let response = await fetch(url)
           let token = await response.json()
@@ -76,22 +80,22 @@ export default class Login extends Component {
               token['password'] = form.password
               fs.createFile(consts.persistenceFile, consts.fileLogin, token)
                 .then(status => {
-                  this.setState({ animating: false })
+                  this.setState({ loading: false })
                   this.props.navigation.navigate('app')
                   if (!status) {
                     this.setMessage('Archivo error')
                   }
                 })
             } else {
-              this.setState({value: {id: form.id, password: ''}, animating: false})
+              this.setState({value: {id: form.id, password: ''}, loading: false})
               this.setMessage('Acceso denegado\nVerifique sus credenciales')
             }
           } else {
-            this.setState({value: {id: form.id, password: ''}, animating: false})
+            this.setState({value: {id: form.id, password: ''}, loading: false})
             this.setMessage('Acceso denegado\nVerifique sus credenciales')
           }
         } catch (error) {
-          this.setState({animating: false})
+          this.setState({loading: false})
           this.setMessage('Se presento un error en la autenticación\nIntento de nuevo')
         }
       } else {
@@ -109,6 +113,10 @@ export default class Login extends Component {
     this.setState({value})
   }
 
+  onFocus () {
+    this.setState({ loading: false, statusLogin: false, messageLogin: '' })
+  }
+
   static navigationOptions = {
     headerLeft: null,
     header: <Header />
@@ -117,30 +125,37 @@ export default class Login extends Component {
   render () {
     return (
       <View style={styles.all}>
-        <KeyboardAvoidingView behavior='padding'>
-          <Form
-            ref='form'
-            type={LoginForm}
-            options={this.state.options}
-            value={this.state.value}
-            onChange={this.onChange.bind(this)}
-          />
-          <View style={{ flexDirection: 'row', alignItems: 'center', display: this.state.animating ? 'flex' : 'none' }} >
-            <Progress.CircleSnail
-              size={80}
-              animating={this.state.animating}
-              thickness={5}
-            />
+        <KeyboardAvoidingView behavior='padding' style={styles.container}>
+          <View style={styles.form}>
+            <Form
+              ref='form'
+              type={LoginForm}
+              options={this.state.options}
+              value={this.state.value}
+              onChange={this.onChange.bind(this)} />
+            <TouchableOpacity onPress={() => {
+              Keyboard.dismiss()
+              this.login()
+            }}>
+              <View style={styles.button}>
+                <Text style={styles.text}>
+                  Ingresar
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => { this.login() }}>
-            <View>
-              <Text>
-                Ingresar
-              </Text>
+          <View style={styles.response}>
+            <View style={[{ display: this.state.loading ? 'flex' : 'none' }, styles.loading]}>
+              <Progress.CircleSnail
+                size={80}
+                animating={this.state.loading}
+                thickness={5}
+                color={['#2980b9']}
+              />
             </View>
-          </TouchableOpacity>
-          <View style={[{display: this.state.statusLogin ? 'flex' : 'none'}]}>
-            <Text>{this.state.messageLogin}</Text>
+            <View style={[{display: this.state.statusLogin ? 'flex' : 'none'}, styles.message]}>
+              <Text style={[styles.text, styles.error]}>{this.state.messageLogin}</Text>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </View>

@@ -73,7 +73,7 @@ export default class Main extends Component {
           <Progress.CircleSnail
             style={styles.loading}
             size={50}
-            color={['#133b8e']}
+            color={['#2980b9']}
             animating={this.state.loading}
             thickness={5}
           />

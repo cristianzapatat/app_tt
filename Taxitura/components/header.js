@@ -1,11 +1,14 @@
 'use strict'
 import React, {Component} from 'react'
 import {View, Image, TouchableOpacity} from 'react-native'
+import fs from '../util/fs'
+import consts from '../constants/constants'
 import styles from '../style/header.style'
 
 export default class Header extends Component {
   logout () {
-    this.props.navigate.navigate('login')
+    this.props.navigation.navigate('login')
+    fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
   }
 
   render () {

@@ -38,7 +38,7 @@ function writeFile (file, content) {
   content = JSON.stringify(content)
   return fs.writeFile(file, content, 'utf8')
     .then(sucess => { return true })
-    .catch(err => { return true })
+    .catch(err => { return false })
 }
 
 function readFile (file) {
@@ -52,8 +52,15 @@ function readFile (file) {
   })
 }
 
+function deleteFile (file) {
+  return fs.unlink(`${patch}${file}`)
+    .then(sucess => { return true })
+    .catch(err => { return false })
+}
+
 module.exports = {
   patch,
   createFile,
-  readFile
+  readFile,
+  deleteFile
 }
