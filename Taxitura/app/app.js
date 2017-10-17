@@ -147,7 +147,7 @@ export default class Taxitura extends Component {
     err => {
       // this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
     },
-    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000})
+    {enableHighAccuracy: this.state.enableHighAccuracy, timeout: 1000, maximumAge: 1000})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
