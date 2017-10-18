@@ -3,7 +3,7 @@
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
-  View, TouchableOpacity, Text, KeyboardAvoidingView, Keyboard
+  View, TouchableOpacity, Text, KeyboardAvoidingView, Keyboard, BackHandler, Platform
 } from 'react-native'
 import styles from '../style/login.style'
 import styleForm from '../style/form.style'
@@ -54,6 +54,24 @@ export default class Login extends Component {
       loading: false,
       statusLogin: false,
       messageLogin: ''
+    }
+  }
+
+  componentWillMount () {
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        const { navigation } = this.props
+        if (navigation.state.routeName === 'login') {
+          BackHandler.exitApp()
+        }
+        return false
+      })
+    }
+  }
+
+  componentWillUnmount () {
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress')
     }
   }
 

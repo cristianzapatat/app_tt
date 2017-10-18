@@ -5,7 +5,7 @@ import fs from '../util/fs'
 import consts from '../constants/constants'
 import styles from '../style/header.style'
 
-export default class Header extends Component {
+class Header extends Component {
   logout () {
     this.props.navigation.navigate('login')
     fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
@@ -26,3 +26,5 @@ export default class Header extends Component {
     )
   }
 }
+
+module.exports = Header

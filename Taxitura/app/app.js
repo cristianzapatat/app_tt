@@ -8,7 +8,9 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  BackHandler
+  BackHandler,
+  AppState,
+  Platform
 } from 'react-native'
 import styles from '../style/app.style'
 import consts from '../constants/constants'
@@ -63,8 +65,7 @@ export default class Taxitura extends Component {
         color: consts.colorArrive,
         action: consts.actionArrive
       },
-      time: 1,
-      enableHighAccuracy: false
+      time: 1
     }
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('app', order => {
@@ -99,22 +100,32 @@ export default class Taxitura extends Component {
 
   componentWillMount () {
     this.getStatus()
-  }
-
-  componentDidMount () {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      const { navigation } = this.props
-      if (navigation.state.routeName === 'app') {
-        BackHandler.exitApp()
+    AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'background') {
+        this.componentWillUnmount()
       }
-      return false
     })
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', () => {
+        const { navigation } = this.props
+        if (navigation.state.routeName === 'app') {
+          BackHandler.exitApp()
+        }
+        return false
+      })
+    }
   }
 
   componentWillUnmount () {
+    this.closeSession()
+  }
+
+  closeSession () {
     navigator.geolocation.clearWatch(this.watchID)
-    this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
-    BackHandler.removeEventListener('hardwareBackPress')
+    AppState.removeEventListener('change')
+    if (Platform.OS === 'android') {
+      BackHandler.removeEventListener('hardwareBackPress')
+    }
   }
 
   getStatus () {
@@ -137,17 +148,17 @@ export default class Taxitura extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
-      this.setState({initialPosition: initialRegion})
-      this.setState({markerPosition: initialRegion})
-      this.setState({renderGPS: true})
-      if (!this.state.enableHighAccuracy) {
-        this.setState({enableHighAccuracy: true})
-      }
+      this.getAddress(initialRegion, true)
+      this.setState({
+        initialPosition: initialRegion,
+        markerPosition: initialRegion,
+        renderGPS: true
+      })
     },
     err => {
-      // this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
+      this.getStatus()
     },
-    {enableHighAccuracy: this.state.enableHighAccuracy, timeout: 1000, maximumAge: 1000})
+    {enableHighAccuracy: true, timeout: 10000, maximumAge: 500})
 
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
@@ -156,18 +167,17 @@ export default class Taxitura extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
-      this.setState({initialPosition: lastRegion})
-      this.setState({markerPosition: lastRegion})
       this.getAddress(lastRegion, true)
-      this.setState({renderGPS: true})
-      if (!this.state.enableHighAccuracy) {
-        this.setState({enableHighAccuracy: true})
-      }
+      this.setState({
+        initialPosition: lastRegion,
+        markerPosition: lastRegion,
+        renderGPS: true
+      })
     },
     err => {
-      this.setState({renderGPS: false, renderGPSText: consts.offGPS, renderGPSImg: true})
+      this.getStatus()
     },
-    {enableHighAccuracy: this.state.enableHighAccuracy, timeout: 1000, maximumAge: 1000, distanceFilter: 2})
+    {enableHighAccuracy: true, timeout: 10000, maximumAge: 500, distanceFilter: 1})
   }
 
   async getDistance (start, end) {
