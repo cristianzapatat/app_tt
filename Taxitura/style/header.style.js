@@ -6,7 +6,9 @@ export default StyleSheet.create({
     backgroundColor: '#ffaf18',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    zIndex: 1,
+    ...StyleSheet.absoluteFillObject
   },
   menu: {
     position: 'absolute',

@@ -94,16 +94,21 @@ export default class Login extends Component {
           let token = await response.json()
           if (token) {
             if (token.token) {
-              token['id'] = form.id
-              token['password'] = form.password
-              fs.createFile(consts.persistenceFile, consts.fileLogin, token)
-                .then(status => {
-                  this.setState({ loading: false })
-                  this.props.navigation.navigate('app')
-                  if (!status) {
-                    this.setMessage('Archivo error')
-                  }
-                })
+              if (!token.activo) { // TODO cambiar condición
+                token['id'] = form.id
+                token['password'] = form.password
+                fs.createFile(consts.persistenceFile, consts.fileLogin, token)
+                  .then(status => {
+                    this.setState({ loading: false })
+                    this.props.navigation.navigate('app', { token })
+                    if (!status) {
+                      this.setMessage('Archivo error')
+                    }
+                  })
+              } else {
+                this.setState({value: {id: form.id, password: ''}, loading: false})
+                this.setMessage('Usuario inactivo\nComuníquese con soporte')
+              }
             } else {
               this.setState({value: {id: form.id, password: ''}, loading: false})
               this.setMessage('Acceso denegado\nVerifique sus credenciales')
@@ -135,14 +140,10 @@ export default class Login extends Component {
     this.setState({ loading: false, statusLogin: false, messageLogin: '' })
   }
 
-  static navigationOptions = {
-    headerLeft: null,
-    header: <Header />
-  }
-
   render () {
     return (
       <View style={styles.all}>
+        <Header />
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
           <View style={styles.form}>
             <Form

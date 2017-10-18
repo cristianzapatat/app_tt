@@ -16,7 +16,8 @@ const roots = {
 }
 
 const config = {
-  mode: 'card'
+  mode: 'card',
+  headerMode: 'none'
 }
 
 config['initialRouteName'] = 'login'
@@ -34,7 +35,7 @@ export default class Main extends Component {
     }
   }
 
-  componentDidMount () {
+  componentWillMount () {
     fs.readFile(`${consts.persistenceFile}${consts.fileLogin}`)
       .then(response => {
         if (response) {
