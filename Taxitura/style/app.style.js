@@ -17,7 +17,7 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(26, 26, 26, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
+    flexDirection: 'row',
     zIndex: 2
   },
   textAddreess: {
@@ -26,6 +26,20 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center'
+  },
+  loading: {
+    position: 'absolute',
+    right: 0,
+    marginRight: 5
+  },
+  over: {
+    position: 'absolute',
+    zIndex: 1,
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.19)'
   },
   notgps: {
     flex: 1,

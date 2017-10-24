@@ -3,6 +3,10 @@ module.exports = {
   loginService: (id, pass) => {
     return `http://www.taxitura.com/auth?user=${id}&password=${pass}`
   },
+  getCoords: (start, end) => {
+    return `https://maps.googleapis.com/maps/api/directions/json?origin=
+      ${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}`
+  },
   apiKeyGeocoder: 'AIzaSyCuixa1UeWyGrleFN_w7ceAJE9oYYmz1lU',
   apiDistanceAndTime: 'AIzaSyCPDys-IZuq1CqhFr6cVEc-rMeT5Z33iKE',
   disconnect: 'Desconetado',

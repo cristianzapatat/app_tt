@@ -23,6 +23,7 @@ import io from 'socket.io-client'
 import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
 import GPSState from 'react-native-gps-state'
+import Polyline from '@mapbox/polyline'
 import * as Progress from 'react-native-progress'
 Geocoder.setApiKey(consts.apiKeyGeocoder)
 
@@ -33,7 +34,9 @@ let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 let service = null
 let orders = []
+let waitId = null
 let user
+let coords = []
 
 export default class Taxitura extends Component {
   constructor (props) {
@@ -43,7 +46,6 @@ export default class Taxitura extends Component {
     } else {
       this.logout()
     }
-    console.ignoredYellowBox = ['Setting a timer']
     this.state = {
       initialPosition: {
         latitude: 3.8863253,
@@ -67,6 +69,7 @@ export default class Taxitura extends Component {
       renderGPS: true,
       renderGPSText: consts.offGPS,
       renderGPSImg: true,
+      loading: true,
       button: {
         title: consts.arrive,
         color: consts.colorArrive,
@@ -76,21 +79,36 @@ export default class Taxitura extends Component {
     }
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('app', order => {
-      if (order.action === consts.order && service === null) {
+      if (order.action === consts.order && service === null && waitId === null) { // wait = validar esperar del accept
         service = order
         this.getDistance(this.state.markerPosition,
           {latitude: service.position_user.latitude, longitude: service.position_user.longitude})
         this.setState({processOrder: true})
         this.reductionTime()
-      } else if (order.action === consts.order && service !== null) {
+      } else if (order.action === consts.order) {
         orders.push(order)
       }
     })
     this.socket.on('accept', order => {
-      if (order.service.id === service.service.id) {
-        service = order
-        this.setState({goOrder: true})
-        this.getAddress(this.state.markerPositionOrder, false)
+      if (order !== null) {
+        if (order.service.id === waitId) {
+          if (service === null) {
+            service = order
+            this.getCoords(this.state.markerPosition, service.position_user)
+            this.getAddress(this.state.markerPositionOrder, false)
+            this.state.markerPositionOrder = {
+              latitude: service.position_user.latitude,
+              longitude: service.position_user.longitude
+            }
+            this.setState({goOrder: true, loading: false})
+          } else {
+            this.cleanService()
+          }
+        } else {
+          this.cleanService()
+        }
+      } else {
+        this.cleanService()
       }
     })
     this.socket.on('arrive', order => {
@@ -114,10 +132,10 @@ export default class Taxitura extends Component {
         }
       }
     })
+    this.getStatus()
   }
 
   componentWillMount () {
-    this.getStatus()
     AppState.addEventListener('change', (nextAppState) => {
       if (nextAppState === 'background') {
         this.componentWillUnmount()
@@ -145,11 +163,14 @@ export default class Taxitura extends Component {
   }
 
   getStatus () {
+    if (!this.state.loading) {
+      this.setState({ loading: true })
+    }
     GPSState.getStatus().then(status => {
       if (status === GPSState.RESTRICTED) {
-        this.setState({renderGPS: false})
+        this.setState({renderGPS: false, loading: false})
       } else if (status === GPSState.DENIED) {
-        this.setState({renderGPS: false, renderGPSText: consts.deniedGPS, renderGPSImg: false})
+        this.setState({renderGPS: false, renderGPSText: consts.deniedGPS, renderGPSImg: false, loading: false})
       } else {
         this.analitycPosition()
       }
@@ -157,36 +178,12 @@ export default class Taxitura extends Component {
   }
 
   analitycPosition () {
-    navigator.geolocation.getCurrentPosition(position => {
-      let initialRegion = {
-        latitude: parseFloat(position.coords.latitude),
-        longitude: parseFloat(position.coords.longitude)
-      }
-      this.uploadPosition(initialRegion)
-      this.getAddress(initialRegion, true)
-      this.setState({
-        initialPosition: {
-          latitude: initialRegion.latitude,
-          longitude: initialRegion.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
-        },
-        markerPosition: initialRegion,
-        renderGPS: true
-      })
-    },
-    err => {
-      this.getStatus()
-    },
-    {enableHighAccuracy: true, timeout: 10000, maximumAge: 500})
-
     this.watchID = navigator.geolocation.watchPosition(position => {
       let lastRegion = {
         latitude: parseFloat(position.coords.latitude),
         longitude: parseFloat(position.coords.longitude)
       }
       this.uploadPosition(lastRegion)
-      this.getAddress(lastRegion, true)
       this.setState({
         initialPosition: {
           latitude: lastRegion.latitude,
@@ -195,13 +192,15 @@ export default class Taxitura extends Component {
           longitudeDelta: LONGITUDE_DELTA
         },
         markerPosition: lastRegion,
-        renderGPS: true
+        renderGPS: true,
+        loading: false
       })
+      this.getAddress(lastRegion, true)
     },
     err => {
       this.getStatus()
     },
-    {enableHighAccuracy: true, timeout: 10000, maximumAge: 500, distanceFilter: 1})
+    {enableHighAccuracy: true, timeout: 20000, maximumAge: 5000, distanceFilter: 10})
   }
 
   uploadPosition (position) {
@@ -229,6 +228,22 @@ export default class Taxitura extends Component {
     }
   }
 
+  async getCoords (start, end) {
+    try {
+      let resp = await fetch(consts.getCoords(start, end))
+      let respJson = await resp.json()
+      let points = Polyline.decode(respJson.routes[0].overview_polyline.points)
+      coords = points.map((point, index) => {
+        return {
+          latitude: point[0],
+          longitude: point[1]
+        }
+      })
+    } catch (error) {
+      return error
+    }
+  }
+
   getAddress (region, flag) {
     if (region !== null) {
       Geocoder.getFromLatLng(region.latitude, region.longitude).then(json => {
@@ -236,7 +251,7 @@ export default class Taxitura extends Component {
         if (flag) {
           this.setState({address: pos[0] + ', ' + pos[1]})
         } else {
-          this.setState({addressMarker: pos[0] + ', ' + pos[1]})
+          this.state.addressMarker = `${pos[0]}, ${pos[1]}`
         }
       })
     }
@@ -298,6 +313,13 @@ export default class Taxitura extends Component {
     }, 250)
   }
 
+  cleanService () {
+    service = null
+    waitId = null
+    coords = []
+    this.setState({loading: false})
+  }
+
   cancelOrder () {
     this.setState({processOrder: false, time: 1})
     service = null
@@ -306,11 +328,8 @@ export default class Taxitura extends Component {
   acceptOrder () {
     this.setState({
       processOrder: false,
-      time: 1,
-      markerPositionOrder: {
-        latitude: service.position_user.latitude,
-        longitude: service.position_user.longitude
-      }
+      loading: true,
+      time: 1
     })
     service['cabman'] = {
       id: user.cedula,
@@ -323,6 +342,8 @@ export default class Taxitura extends Component {
       longitude: this.state.markerPosition.longitude
     }
     this.socket.emit('app', service)
+    waitId = service.service.id
+    service = null
   }
 
   processService (msn) {
@@ -334,8 +355,8 @@ export default class Taxitura extends Component {
         color: consts.colorArrive,
         action: consts.actionArrive
       }})
+      this.cleanService()
       this.setState({goOrder: false})
-      service = null
     }
   }
 
@@ -359,7 +380,8 @@ export default class Taxitura extends Component {
           markerMe={this.state.markerPosition}
           markerOrder={this.state.markerPositionOrder}
           address={this.state.addressMarker}
-          onRegionChange={this.onRegionChange} />
+          onRegionChange={this.onRegionChange}
+          coords={coords} />
       )
     } else {
       if (this.state.renderGPSImg) {
@@ -394,34 +416,36 @@ export default class Taxitura extends Component {
     }
   }
 
-  getBody () {
-    return (
-      <View style={styles.container}>
-        <View style={styles.addreess}>
-          <Text style={styles.textAddreess}>{this.state.address}</Text>
-        </View>
-        { this.changeGPS() }
-        <View style={[styles.footer, {display: (this.state.goOrder && this.state.renderGPS) ? 'flex' : 'none'}]}>
-          <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
-            <View style={styles.footerAccept}>
-              <Text style={styles.textFooter}>
-                {this.state.button.title}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
-
   render () {
     return (
       <View style={styles.all}>
         <Header
           renderLogout
           onPress={() => { this.logout() }} />
-        { this.getBody() }
-        <Modal isVisible={(this.state.processOrder && this.state.renderGPS)}>
+        <View style={styles.container}>
+          <View style={styles.addreess}>
+            <Text style={styles.textAddreess}>{this.state.address}</Text>
+            <Progress.CircleSnail
+              style={[{display: this.state.loading ? 'flex' : 'none'}, styles.loading]}
+              size={30}
+              color={['#2980b9']}
+              strokeCap={'round'}
+              animating={this.state.loading}
+            />
+          </View>
+          { this.changeGPS() }
+          <View style={[{display: this.state.loading ? 'flex' : 'none'}, styles.over]} />
+          <View style={[styles.footer, {display: (this.state.goOrder && this.state.renderGPS && !this.state.loading) ? 'flex' : 'none'}]}>
+            <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
+              <View style={styles.footerAccept}>
+                <Text style={styles.textFooter}>
+                  {this.state.button.title}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <Modal isVisible={(this.state.processOrder && this.state.renderGPS && !this.state.loading)}>
           { this.generateOrder() }
         </Modal>
       </View>

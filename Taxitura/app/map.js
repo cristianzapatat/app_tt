@@ -5,13 +5,8 @@ import {Image} from 'react-native'
 import '../UserAgent'
 import styles from '../style/map.style'
 import MapView from 'react-native-maps'
-import Root from './root.js'
 
 export default class Map extends Component {
-  constructor (props) {
-    super(props)
-    console.ignoredYellowBox = ['Setting a timer']
-  }
   render () {
     if (this.props.goOrder) {
       return (
@@ -34,15 +29,10 @@ export default class Map extends Component {
               source={require('../img/user.png')}
               style={styles.img} />
           </MapView.Marker>
-          <Root
-            startLoc={{
-              latitude: this.props.markerMe.latitude,
-              longitude: this.props.markerMe.longitude
-            }}
-            endLoc={{
-              latitude: this.props.markerOrder.latitude,
-              longitude: this.props.markerOrder.longitude
-            }} />
+          <MapView.Polyline
+            coordinates={this.props.coords}
+            strokeWidth={3}
+            strokeColor='#007AFF' />
         </MapView>
       )
     } else {
