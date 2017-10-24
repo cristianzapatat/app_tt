@@ -27,9 +27,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center'
   },
-  map: {
-    flex: 1
-  },
   notgps: {
     flex: 1,
     flexDirection: 'column',
@@ -64,35 +61,6 @@ export default StyleSheet.create({
   textFooter: {
     color: 'rgb(255, 255, 255)',
     fontSize: 24
-  },
-  radius: {
-    height: 50,
-    width: 50,
-    borderRadius: 50 / 2,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 122, 255, 0.3)',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  marker: {
-    height: 20,
-    width: 20,
-    borderWidth: 3,
-    borderColor: 'white',
-    borderRadius: 20 / 2,
-    overflow: 'hidden',
-    backgroundColor: '#007AFF'
-  },
-  markerOrder: {
-    height: 20,
-    width: 20,
-    borderWidth: 3,
-    borderColor: 'white',
-    borderRadius: 20 / 2,
-    overflow: 'hidden',
-    backgroundColor: '#ff9100'
   },
   order: {
     flex: 1

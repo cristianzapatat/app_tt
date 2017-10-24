@@ -55,6 +55,11 @@ export default class Login extends Component {
       statusLogin: false,
       messageLogin: ''
     }
+    if (consts.message) {
+      this.state.statusLogin = true
+      this.state.messageLogin = consts.message
+      consts.message = null
+    }
   }
 
   componentWillMount () {
@@ -100,7 +105,8 @@ export default class Login extends Component {
                 fs.createFile(consts.persistenceFile, consts.fileLogin, token)
                   .then(status => {
                     this.setState({ loading: false })
-                    this.props.navigation.navigate('app', { token })
+                    consts.user = token
+                    this.props.navigation.navigate('app')
                     if (!status) {
                       this.setMessage('Archivo error')
                     }

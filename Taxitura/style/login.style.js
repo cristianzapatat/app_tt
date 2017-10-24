@@ -8,7 +8,8 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   container: {
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   form: {
     flex: 0.6,

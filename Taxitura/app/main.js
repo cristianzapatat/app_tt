@@ -35,11 +35,17 @@ export default class Main extends Component {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     fs.readFile(`${consts.persistenceFile}${consts.fileLogin}`)
       .then(response => {
         if (response) {
-          this.setState({ rendering: true })
+          consts.user = response
+          if (!consts.user.activo) {
+            this.state.rendering = true
+          } else {
+            consts.user = null
+            consts.message = 'Usuario inactivo\nComuníquese con soporte'
+          }
         }
         this.setState({ loading: false })
       })

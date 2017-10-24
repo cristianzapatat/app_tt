@@ -18,5 +18,8 @@ module.exports = {
   deniedAccess: 'acceso_denegado',
 
   persistenceFile: '/persistence',
-  fileLogin: '/login.txt'
+  fileLogin: '/login.txt',
+
+  user: null,
+  message: null
 }

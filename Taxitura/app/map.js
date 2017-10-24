@@ -1,9 +1,9 @@
 'use strict'
 import React, { Component } from 'react'
-import {View} from 'react-native'
+import {Image} from 'react-native'
 
 import '../UserAgent'
-import styles from '../style/app.style'
+import styles from '../style/map.style'
 import MapView from 'react-native-maps'
 import Root from './root.js'
 
@@ -18,21 +18,21 @@ export default class Map extends Component {
         <MapView style={styles.map}
           loadingEnabled
           region={this.props.initial}
-          rotateEnabled={this.props.goOrder}>
+          rotateEnabled={this.props.goOrder}
+          onRegionChange={this.props.onRegionChange}>
           <MapView.Marker
             coordinate={this.props.markerMe}
             title={'Tú'}>
-            <View style={styles.radius}>
-              <View style={styles.marker} />
-            </View>
+            <Image
+              source={require('../img/cab.png')}
+              style={styles.img} />
           </MapView.Marker>
           <MapView.Marker
             coordinate={this.props.markerOrder}
-            title={'Cliente'}
-            description={this.props.address}>
-            <View style={styles.radius}>
-              <View style={styles.markerOrder} />
-            </View>
+            title={'Cliente'}>
+            <Image
+              source={require('../img/user.png')}
+              style={styles.img} />
           </MapView.Marker>
           <Root
             startLoc={{
@@ -50,13 +50,14 @@ export default class Map extends Component {
         <MapView style={styles.map}
           loadingEnabled
           region={this.props.initial}
-          rotateEnabled={this.props.goOrder}>
+          rotateEnabled={this.props.goOrder}
+          onRegionChange={this.props.onRegionChange}>
           <MapView.Marker
             coordinate={this.props.markerMe}
             title={'Tú'}>
-            <View style={styles.radius}>
-              <View style={styles.marker} />
-            </View>
+            <Image
+              source={require('../img/cab.png')}
+              style={styles.img} />
           </MapView.Marker>
         </MapView>
       )
