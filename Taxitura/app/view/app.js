@@ -5,26 +5,26 @@ import React, { Component } from 'react'
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   Dimensions,
   BackHandler,
   AppState,
   Platform
 } from 'react-native'
-import styles from '../style/app.style'
-import consts from '../constants/constants'
-import util from '../util/util'
-import fs from '../util/fs'
-import Map from './map'
-import Header from '../components/header'
-import Bounceable from '../util/bounceable'
 import io from 'socket.io-client'
-import Modal from 'react-native-modal'
 import Geocoder from 'react-native-geocoding'
 import GPSState from 'react-native-gps-state'
 import Polyline from '@mapbox/polyline'
 import * as Progress from 'react-native-progress'
+
+import styles from '../style/app.style'
+import Container from '../component/container'
+import Map from '../component/map'
+import NoGps from '../component/noGps'
+import OrderModal from '../component/orderModal'
+import consts from '../constant/constant'
+import fs from '../util/fs'
+
 Geocoder.setApiKey(consts.apiKeyGeocoding)
 
 const {width, height} = Dimensions.get('window')
@@ -64,18 +64,18 @@ export default class Taxitura extends Component {
       address: '',
       addressMarker: '',
       distance: null,
+      time: null,
       processOrder: false,
       goOrder: false,
       renderGPS: true,
-      renderGPSText: consts.offGPS,
-      renderGPSImg: true,
+      noGpsText: consts.offGPS,
+      noGps: true,
       loading: true,
       button: {
         title: consts.arrive,
         color: consts.colorArrive,
         action: consts.actionArrive
-      },
-      time: 1
+      }
     }
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('app', order => {
@@ -83,8 +83,7 @@ export default class Taxitura extends Component {
         service = order
         this.getDistance(this.state.markerPosition,
           {latitude: service.position_user.latitude, longitude: service.position_user.longitude})
-        this.setState({processOrder: true})
-        this.reductionTime()
+        this.setState({ processOrder: true })
       } else if (order.action === consts.order) {
         orders.push(order)
       }
@@ -164,7 +163,7 @@ export default class Taxitura extends Component {
       if (status === GPSState.RESTRICTED) {
         this.setState({renderGPS: false, loading: false})
       } else if (status === GPSState.DENIED) {
-        this.setState({renderGPS: false, renderGPSText: consts.deniedGPS, renderGPSImg: false, loading: false})
+        this.setState({renderGPS: false, noGpsText: consts.deniedGPS, noGps: false, loading: false})
       } else {
         this.analitycPosition()
       }
@@ -214,9 +213,12 @@ export default class Taxitura extends Component {
     try {
       let data = await fetch(consts.getDistanceMatrix(start, end))
       let json = await data.json()
-      this.setState({distance: json})
-    } catch (error) {
-      return error
+      this.setState({
+        distance: json.rows[0].elements[0].distance.value,
+        time: json.rows[0].elements[0].duration.value
+      })
+    } catch (err) {
+      this.setState({distance: null, time: null})
     }
   }
 
@@ -231,7 +233,7 @@ export default class Taxitura extends Component {
           longitude: point[1]
         }
       })
-    } catch (error) {
+    } catch (err) {
       coords = [
         {latitude: start.latitude, longitude: start.longitude},
         {latitude: end.latitude, longitude: end.longitude}
@@ -258,62 +260,6 @@ export default class Taxitura extends Component {
     }
   }
 
-  generateOrder () {
-    if (this.state.processOrder && this.state.distance != null) {
-      return (
-        <View style={styles.modalContent}>
-          <Image
-            style={styles.imageOrder}
-            source={{uri: service.user.url_pic}} />
-          <View style={styles.nameUser}>
-            <Text style={styles.textLarge}>
-              {service.user.name}
-            </Text>
-            <Text style={styles.textSmall}>
-              A {util.getMeters(this.state.distance.rows[0].elements[0].distance.value)}
-            </Text>
-          </View>
-          <View style={styles.stateUser}>
-            <Text style={styles.textState}>
-              Usuario Recurrente
-            </Text>
-          </View>
-          <TouchableOpacity onPress={() => { this.acceptOrder() }}>
-            <View style={styles.buttonAccept}>
-              <Text style={styles.textAccept}>Aceptar servicio</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => { this.cancelOrder() }}>
-            <View style={styles.buttonCancel}>
-              <Text style={styles.textCancel}>Cancelar</Text>
-            </View>
-          </TouchableOpacity>
-          <Progress.Bar
-            progress={this.state.time}
-            width={280}
-            color={'rgb(163, 153, 167)'}
-            borderColor={'rgb(163, 153, 167)'}
-            style={styles.progress} />
-        </View>
-      )
-    } else {
-      return (<View />)
-    }
-  }
-
-  reductionTime () {
-    let idSet = setInterval(() => {
-      let time = this.state.time
-      if (time <= 0.0) {
-        this.setState({ processOrder: false, order: null, time: 1 })
-        clearInterval(idSet)
-      } else {
-        time = time - 0.025
-        this.setState({time})
-      }
-    }, 250)
-  }
-
   cleanService () {
     service = null
     waitId = null
@@ -322,15 +268,14 @@ export default class Taxitura extends Component {
   }
 
   cancelOrder () {
-    this.setState({processOrder: false, time: 1})
+    this.setState({processOrder: false, distance: null, time: null})
     service = null
   }
 
   acceptOrder () {
     this.setState({
       processOrder: false,
-      loading: true,
-      time: 1
+      loading: true
     })
     service['cabman'] = {
       id: user.cedula,
@@ -339,12 +284,15 @@ export default class Taxitura extends Component {
     }
     service['position_cabman'] = {
       distance: this.state.distance,
+      time: this.state.time,
       latitude: this.state.markerPosition.latitude,
       longitude: this.state.markerPosition.longitude
     }
     this.socket.emit('app', service)
     waitId = service.service.id
     service = null
+    this.state.distance = null
+    this.state.time = null
   }
 
   processService (msn) {
@@ -372,7 +320,7 @@ export default class Taxitura extends Component {
     LONGITUDE_DELTA = region.longitudeDelta
   }
 
-  changeGPS () {
+  _drawMap () {
     if (this.state.renderGPS) {
       return (
         <Map
@@ -385,44 +333,39 @@ export default class Taxitura extends Component {
           coords={coords} />
       )
     } else {
-      if (this.state.renderGPSImg) {
-        return (
-          <View style={styles.notgps}>
-            <Image source={require('../img/gps_disenabled.png')} />
-            <Text style={styles.textGps}>{this.state.renderGPSText}</Text>
-            <Bounceable
-              onPress={() => { this.getStatus() }}
-              level={1.1}>
-              <View>
-                <Image source={require('../img/gps_reload.png')} style={styles.imgReload} />
-              </View>
-            </Bounceable>
-          </View>
-        )
-      } else {
-        return (
-          <View style={styles.notgps}>
-            <Image source={require('../img/gps_denied.png')} />
-            <Text style={styles.textGps}>{this.state.renderGPSText}</Text>
-            <Bounceable
-              onPress={() => { this.getStatus() }}
-              level={1.1}>
-              <View>
-                <Image source={require('../img/gps_reload.png')} style={styles.imgReload} />
-              </View>
-            </Bounceable>
-          </View>
-        )
-      }
+      return (
+        <NoGps
+          onPress={() => { this.getStatus() }}
+          visible={this.state.noGps}
+          text={this.state.noGpsText} />
+      )
+    }
+  }
+
+  _drawModal () {
+    if (this.state.processOrder && this.state.renderGPS &&
+      !this.state.loading && this.state.distance != null) {
+      return (
+        <OrderModal
+          isVisible
+          nameUser={service ? service.user.name : null}
+          uri={service ? service.user.url_pic : null}
+          distance={(this.state.distance) ? this.state.distance : 0}
+          accept={() => { this.acceptOrder() }}
+          cancel={() => { this.cancelOrder() }} />
+      )
+    } else {
+      return (
+        <View />
+      )
     }
   }
 
   render () {
     return (
-      <Header
+      <Container
         renderMenu
-        onPress={() => { this.logout() }}
-      >
+        onPress={() => { this.logout() }}>
         <View style={styles.enter}>
           <View style={styles.addreess}>
             <Text style={styles.textAddreess}>{this.state.address}</Text>
@@ -431,10 +374,9 @@ export default class Taxitura extends Component {
               size={30}
               color={['#2980b9']}
               strokeCap={'round'}
-              animating={this.state.loading}
-            />
+              animating={this.state.loading} />
           </View>
-          { this.changeGPS() }
+          { this._drawMap() }
           <View style={[{display: this.state.loading ? 'flex' : 'none'}, styles.over]} />
           <View style={[styles.footer, {display: (this.state.goOrder && this.state.renderGPS && !this.state.loading) ? 'flex' : 'none'}]}>
             <TouchableOpacity onPress={() => { this.processService(this.state.button.action) }}>
@@ -446,10 +388,8 @@ export default class Taxitura extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Modal isVisible={(this.state.processOrder && this.state.renderGPS && !this.state.loading)}>
-          { this.generateOrder() }
-        </Modal>
-      </Header>
+        { this._drawModal() }
+      </Container>
     )
   }
 }

@@ -7,17 +7,6 @@ export default StyleSheet.create({
     height: height,
     backgroundColor: 'transparent'
   },
-  nav: {
-    height: 50,
-    backgroundColor: '#ffaf18',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    ...StyleSheet.absoluteFillObject
-  },
-  menu: {
-    height: '100%'
-  },
   container: {
     position: 'absolute',
     left: 0,

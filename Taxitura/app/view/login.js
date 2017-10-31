@@ -5,12 +5,13 @@ import React, { Component } from 'react'
 import {
   View, TouchableOpacity, Text, KeyboardAvoidingView, Keyboard, BackHandler, Platform
 } from 'react-native'
-import styles from '../style/login.style'
-import styleForm from '../style/form.style'
-import consts from '../constants/constants'
-import Header from '../components/header'
 import t from 'tcomb-form-native'
 import * as Progress from 'react-native-progress'
+
+import styles from '../style/login.style'
+import styleForm from '../style/form.style'
+import Container from '../component/container'
+import consts from '../constant/constant'
 import fs from '../util/fs'
 
 const Form = t.form.Form
@@ -148,7 +149,7 @@ export default class Login extends Component {
 
   render () {
     return (
-      <Header>
+      <Container>
         <KeyboardAvoidingView behavior='padding' style={styles.enter}>
           <View style={styles.form}>
             <Form
@@ -182,7 +183,7 @@ export default class Login extends Component {
             </View>
           </View>
         </KeyboardAvoidingView>
-      </Header>
+      </Container>
     )
   }
 }

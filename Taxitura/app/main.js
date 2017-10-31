@@ -4,11 +4,11 @@ import React, { Component } from 'react'
 import { View, Image } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import * as Progress from 'react-native-progress'
-import consts from '../constants/constants'
-import fs from '../util/fs'
-import styles from '../style/main.style'
-import Login from './login'
-import App from './app'
+import consts from './constant/constant'
+import fs from './util/fs'
+import styles from './style/main.style'
+import Login from './view/login'
+import App from './view/app'
 
 const roots = {
   login: {screen: Login},

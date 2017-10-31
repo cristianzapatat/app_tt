@@ -2,7 +2,7 @@
 import React, { Component } from 'react'
 import {Image} from 'react-native'
 
-import '../UserAgent'
+import '../../UserAgent'
 import styles from '../style/map.style'
 import MapView from 'react-native-maps'
 
@@ -19,7 +19,7 @@ export default class Map extends Component {
             coordinate={this.props.markerMe}
             title={'Tú'}>
             <Image
-              source={require('../img/cab.png')}
+              source={require('../../img/cab.png')}
               style={styles.img} />
           </MapView.Marker>
           <MapView.Marker
@@ -27,7 +27,7 @@ export default class Map extends Component {
             title={'Cliente'}
             description={this.props.address}>
             <Image
-              source={require('../img/user.png')}
+              source={require('../../img/user.png')}
               style={styles.img} />
           </MapView.Marker>
           <MapView.Polyline
@@ -47,7 +47,7 @@ export default class Map extends Component {
             coordinate={this.props.markerMe}
             title={'Tú'}>
             <Image
-              source={require('../img/cab.png')}
+              source={require('../../img/cab.png')}
               style={styles.img} />
           </MapView.Marker>
         </MapView>
