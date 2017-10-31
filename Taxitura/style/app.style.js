@@ -1,15 +1,8 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  all: {
+  enter: {
     flex: 1,
-    ...StyleSheet.absoluteFillObject,
-    flexDirection: 'column'
-  },
-  container: {
-    flex: 1,
-    marginTop: 50,
-    position: 'relative',
     flexDirection: 'column'
   },
   addreess: {
@@ -17,8 +10,7 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(26, 26, 26, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
-    zIndex: 2
+    flexDirection: 'row'
   },
   textAddreess: {
     color: 'rgb(255, 255, 255)',
@@ -45,8 +37,7 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1
+    alignItems: 'center'
   },
   textGps: {
     marginTop: 5,
@@ -55,11 +46,10 @@ export default StyleSheet.create({
   },
   footer: {
     backgroundColor: '#ffaf18',
-    zIndex: 2,
     height: 80,
     width: '100%',
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'

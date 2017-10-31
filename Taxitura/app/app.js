@@ -25,7 +25,7 @@ import Geocoder from 'react-native-geocoding'
 import GPSState from 'react-native-gps-state'
 import Polyline from '@mapbox/polyline'
 import * as Progress from 'react-native-progress'
-Geocoder.setApiKey(consts.apiKeyGeocoder)
+Geocoder.setApiKey(consts.apiKeyGeocoding)
 
 const {width, height} = Dimensions.get('window')
 const ASPECT_RATIO = width / height
@@ -79,7 +79,7 @@ export default class Taxitura extends Component {
     }
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     this.socket.on('app', order => {
-      if (order.action === consts.order && service === null && waitId === null) { // wait = validar esperar del accept
+      if (order.action === consts.order && service === null && waitId === null) {
         service = order
         this.getDistance(this.state.markerPosition,
           {latitude: service.position_user.latitude, longitude: service.position_user.longitude})
@@ -94,13 +94,7 @@ export default class Taxitura extends Component {
         if (order.service.id === waitId) {
           if (service === null) {
             service = order
-            this.getCoords(this.state.markerPosition, service.position_user)
-            this.getAddress(this.state.markerPositionOrder, false)
-            this.state.markerPositionOrder = {
-              latitude: service.position_user.latitude,
-              longitude: service.position_user.longitude
-            }
-            this.setState({goOrder: true, loading: false})
+            this.getInfoOrder(this.state.markerPosition, service.position_user)
           } else {
             this.cleanService()
           }
@@ -218,9 +212,7 @@ export default class Taxitura extends Component {
 
   async getDistance (start, end) {
     try {
-      let startLoc = `${start.latitude},${start.longitude}`
-      let endLoc = `${end.latitude},${end.longitude}`
-      let data = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${startLoc}&destinations=${endLoc}&key=${consts.apiDistanceAndTime}&units=metric`)
+      let data = await fetch(consts.getDistanceMatrix(start, end))
       let json = await data.json()
       this.setState({distance: json})
     } catch (error) {
@@ -228,9 +220,9 @@ export default class Taxitura extends Component {
     }
   }
 
-  async getCoords (start, end) {
+  async getInfoOrder (start, end) {
     try {
-      let resp = await fetch(consts.getCoords(start, end))
+      let resp = await fetch(consts.getDirections(start, end))
       let respJson = await resp.json()
       let points = Polyline.decode(respJson.routes[0].overview_polyline.points)
       coords = points.map((point, index) => {
@@ -240,8 +232,17 @@ export default class Taxitura extends Component {
         }
       })
     } catch (error) {
-      return error
+      coords = [
+        {latitude: start.latitude, longitude: start.longitude},
+        {latitude: end.latitude, longitude: end.longitude}
+      ]
     }
+    this.getAddress(end, false)
+    this.state.markerPositionOrder = {
+      latitude: end.latitude,
+      longitude: end.longitude
+    }
+    this.setState({goOrder: true, loading: false})
   }
 
   getAddress (region, flag) {
@@ -418,11 +419,11 @@ export default class Taxitura extends Component {
 
   render () {
     return (
-      <View style={styles.all}>
-        <Header
-          renderLogout
-          onPress={() => { this.logout() }} />
-        <View style={styles.container}>
+      <Header
+        renderMenu
+        onPress={() => { this.logout() }}
+      >
+        <View style={styles.enter}>
           <View style={styles.addreess}>
             <Text style={styles.textAddreess}>{this.state.address}</Text>
             <Progress.CircleSnail
@@ -448,7 +449,7 @@ export default class Taxitura extends Component {
         <Modal isVisible={(this.state.processOrder && this.state.renderGPS && !this.state.loading)}>
           { this.generateOrder() }
         </Modal>
-      </View>
+      </Header>
     )
   }
 }

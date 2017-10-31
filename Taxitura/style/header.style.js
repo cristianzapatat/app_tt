@@ -1,22 +1,28 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
+
+const {width, height} = Dimensions.get('window')
 
 export default StyleSheet.create({
+  all: {
+    height: height,
+    backgroundColor: 'transparent'
+  },
   nav: {
     height: 50,
     backgroundColor: '#ffaf18',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    zIndex: 1,
     ...StyleSheet.absoluteFillObject
   },
   menu: {
-    position: 'absolute',
-    right: 0,
-    marginRight: 5
+    height: '100%'
   },
-  logout: {
-    width: 30,
-    height: 30
+  container: {
+    position: 'absolute',
+    left: 0,
+    top: 50,
+    height: (height - 50),
+    width: width
   }
 })

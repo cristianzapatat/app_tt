@@ -1,13 +1,8 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  all: {
+  enter: {
     flex: 1,
-    ...StyleSheet.absoluteFillObject,
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  container: {
     alignItems: 'center',
     justifyContent: 'center'
   },

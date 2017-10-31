@@ -1,19 +1,21 @@
 'use strict'
 import React, {Component} from 'react'
-import {View, Image, TouchableOpacity} from 'react-native'
+import {View, Image} from 'react-native'
+import Menu from './menu'
 import styles from '../style/header.style'
 
 class Header extends Component {
   render () {
     return (
-      <View style={styles.nav}>
-        <Image source={require('../img/taxitura.png')} />
-        <View style={[styles.menu, {display: this.props.renderLogout ? 'flex' : 'none'}]}>
-          <TouchableOpacity onPress={this.props.onPress}>
-            <Image
-              source={require('../img/logout.png')}
-              style={styles.logout} />
-          </TouchableOpacity>
+      <View style={styles.all}>
+        <View style={styles.nav}>
+          <Image source={require('../img/taxitura.png')} />
+        </View>
+        <Menu
+          style={[{display: this.props.renderMenu ? 'flex' : 'none'}, styles.menu]}
+          fnLogout={this.props.onPress} />
+        <View style={styles.container}>
+          {this.props.children}
         </View>
       </View>
     )

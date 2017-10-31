@@ -148,9 +148,8 @@ export default class Login extends Component {
 
   render () {
     return (
-      <View style={styles.all}>
-        <Header />
-        <KeyboardAvoidingView behavior='padding' style={styles.container}>
+      <Header>
+        <KeyboardAvoidingView behavior='padding' style={styles.enter}>
           <View style={styles.form}>
             <Form
               ref='form'
@@ -183,7 +182,7 @@ export default class Login extends Component {
             </View>
           </View>
         </KeyboardAvoidingView>
-      </View>
+      </Header>
     )
   }
 }

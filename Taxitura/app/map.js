@@ -24,7 +24,8 @@ export default class Map extends Component {
           </MapView.Marker>
           <MapView.Marker
             coordinate={this.props.markerOrder}
-            title={'Cliente'}>
+            title={'Cliente'}
+            description={this.props.address}>
             <Image
               source={require('../img/user.png')}
               style={styles.img} />
