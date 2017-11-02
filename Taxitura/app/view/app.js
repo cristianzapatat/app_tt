@@ -315,6 +315,11 @@ export default class Taxitura extends Component {
     fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
   }
 
+  goListServives () {
+    this.componentWillUnmount()
+    this.props.navigation.navigate('listService')
+  }
+
   onRegionChange (region) {
     LATITUDE_DELTA = region.latitudeDelta
     LONGITUDE_DELTA = region.longitudeDelta
@@ -365,6 +370,8 @@ export default class Taxitura extends Component {
     return (
       <Container
         renderMenu
+        isListServives
+        goListServives={() => { this.goListServives() }}
         onPress={() => { this.logout() }}>
         <View style={styles.enter}>
           <View style={styles.addreess}>

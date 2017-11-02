@@ -9,10 +9,12 @@ import fs from './util/fs'
 import styles from './style/main.style'
 import Login from './view/login'
 import App from './view/app'
+import ListService from './view/listService'
 
 const roots = {
   login: {screen: Login},
-  app: {screen: App}
+  app: {screen: App},
+  listService: {screen: ListService}
 }
 
 const config = {

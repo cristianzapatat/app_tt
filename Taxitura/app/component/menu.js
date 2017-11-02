@@ -19,10 +19,15 @@ export default class Menu extends Component {
       transform: [{
         translateX: this.state.animated.interpolate({
           inputRange: [0, 1],
-          outputRange: [100, 0]
+          outputRange: [120, 0]
         })
       }]
     }
+  }
+
+  _callBack (call) {
+    this.showOrHide()
+    call()
   }
 
   showOrHide () {
@@ -33,7 +38,7 @@ export default class Menu extends Component {
           transform: [{
             translateX: this.state.animated.interpolate({
               inputRange: [0, 1],
-              outputRange: [0, 100]
+              outputRange: [0, 120]
             })
           }]
         }
@@ -85,6 +90,22 @@ export default class Menu extends Component {
           </TouchableOpacity>
         </View>
         <Animated.View style={[styles.menuSide, this.state.styleMenu]}>
+          <View style={[{display: this.props.isListServives ? 'flex' : 'none'}, styles.item]}>
+            <TouchableOpacity onPress={() => { this._callBack(this.props.goListServives) }} style={styles.element}>
+              <Image
+                source={require('../../img/service.png')}
+                style={styles.icon} />
+              <Text style={[styles.text]}>Servicios</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[{display: this.props.isMap ? 'flex' : 'none'}, styles.item]}>
+            <TouchableOpacity onPress={() => { this._callBack(this.props.goMap) }} style={styles.element}>
+              <Image
+                source={require('../../img/map.png')}
+                style={styles.icon} />
+              <Text style={[styles.text]}>Mapa</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.item}>
             <TouchableOpacity onPress={this.props.fnLogout} style={styles.element}>
               <Image

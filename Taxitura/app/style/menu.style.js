@@ -30,7 +30,7 @@ export default StyleSheet.create({
     marginTop: 8,
     marginLeft: 10,
     height: 32,
-    width: 80
+    width: 110
   },
   element: {
     flexDirection: 'row',
