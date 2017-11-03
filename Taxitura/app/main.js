@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import { View, Image } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import * as Progress from 'react-native-progress'
+import io from 'socket.io-client'
+
 import consts from './constant/constant'
 import fs from './util/fs'
 import styles from './style/main.style'
@@ -35,6 +37,8 @@ export default class Main extends Component {
       loading: true,
       rendering: false
     }
+    this.socket = io(consts.serverSock, { transports: ['websocket'] })
+    consts.socket = this.socket
   }
 
   componentDidMount () {

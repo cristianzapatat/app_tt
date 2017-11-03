@@ -1,6 +1,5 @@
 'use strict'
 import React, { Component } from 'react'
-import {Image} from 'react-native'
 
 import '../../UserAgent'
 import styles from '../style/map.style'
@@ -17,19 +16,13 @@ export default class Map extends Component {
           onRegionChange={this.props.onRegionChange}>
           <MapView.Marker
             coordinate={this.props.markerMe}
-            title={'Tú'}>
-            <Image
-              source={require('../../img/cab.png')}
-              style={styles.img} />
-          </MapView.Marker>
+            title={'Tú'}
+            image={require('../../img/cab.png')} />
           <MapView.Marker
             coordinate={this.props.markerOrder}
             title={'Cliente'}
-            description={this.props.address}>
-            <Image
-              source={require('../../img/user.png')}
-              style={styles.img} />
-          </MapView.Marker>
+            description={this.props.address}
+            image={require('../../img/user.png')} />
           <MapView.Polyline
             coordinates={this.props.coords}
             strokeWidth={3}
@@ -45,11 +38,8 @@ export default class Map extends Component {
           onRegionChange={this.props.onRegionChange}>
           <MapView.Marker
             coordinate={this.props.markerMe}
-            title={'Tú'}>
-            <Image
-              source={require('../../img/cab.png')}
-              style={styles.img} />
-          </MapView.Marker>
+            title={'Tú'}
+            image={require('../../img/cab.png')} />
         </MapView>
       )
     }

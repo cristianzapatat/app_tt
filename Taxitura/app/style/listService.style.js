@@ -21,5 +21,19 @@ export default StyleSheet.create({
   },
   list: {
     marginBottom: 25
+  },
+  loading: {
+    position: 'absolute',
+    right: 0,
+    marginRight: 5
+  },
+  over: {
+    position: 'absolute',
+    zIndex: 1,
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.19)'
   }
 })

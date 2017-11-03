@@ -32,5 +32,8 @@ module.exports = {
   fileLogin: '/login.txt',
 
   user: null,
-  message: null
+  message: null,
+  position: null,
+  socket: null,
+  view: 'login'
 }

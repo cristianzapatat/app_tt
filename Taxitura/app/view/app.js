@@ -2,16 +2,7 @@
 /* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Dimensions,
-  BackHandler,
-  AppState,
-  Platform
-} from 'react-native'
-import io from 'socket.io-client'
+import { Text, View, TouchableOpacity, Dimensions, BackHandler, AppState, Platform } from 'react-native'
 import Geocoder from 'react-native-geocoding'
 import GPSState from 'react-native-gps-state'
 import Polyline from '@mapbox/polyline'
@@ -43,6 +34,7 @@ export default class Taxitura extends Component {
     super(props)
     if (consts.user) {
       user = consts.user
+      consts.view = 'app'
     } else {
       this.logout()
     }
@@ -77,9 +69,8 @@ export default class Taxitura extends Component {
         action: consts.actionArrive
       }
     }
-    this.socket = io(consts.serverSock, { transports: ['websocket'] })
-    this.socket.on('app', order => {
-      if (order.action === consts.order && service === null && waitId === null) {
+    consts.socket.on('app', order => {
+      if (consts.view === 'app' && order.action === consts.order && service === null && waitId === null) {
         service = order
         this.getDistance(this.state.markerPosition,
           {latitude: service.position_user.latitude, longitude: service.position_user.longitude})
@@ -88,7 +79,7 @@ export default class Taxitura extends Component {
         orders.push(order)
       }
     })
-    this.socket.on('accept', order => {
+    consts.socket.on('accept', order => {
       if (order !== null) {
         if (order.service.id === waitId) {
           if (service === null) {
@@ -104,7 +95,7 @@ export default class Taxitura extends Component {
         this.cleanService()
       }
     })
-    this.socket.on('arrive', order => {
+    consts.socket.on('arrive', order => {
       if (order.service.id === service.service.id) {
         service = order
         this.setState({button: {
@@ -114,14 +105,20 @@ export default class Taxitura extends Component {
         }})
       }
     })
-    this.socket.on('getPositionApp', data => {
+    consts.socket.on('deleteService', order => {
+      this.deleteService(order)
+      if (service === order) {
+        this.cancelOrder(false)
+      }
+    })
+    consts.socket.on('getPositionApp', data => {
       if (service) {
         if (data.user.id === service.user.id && data.service.id === service.service.id) {
           let response = {
             position: this.state.markerPosition,
             user: service.user
           }
-          this.socket.emit('returnPositionApp', response)
+          consts.socket.emit('returnPositionApp', response)
         }
       }
     })
@@ -176,6 +173,9 @@ export default class Taxitura extends Component {
         latitude: parseFloat(position.coords.latitude),
         longitude: parseFloat(position.coords.longitude)
       }
+      consts.position = lastRegion
+      consts.position['latitudeDelta'] = LATITUDE_DELTA
+      consts.position['longitudeDelta'] = LONGITUDE_DELTA
       this.uploadPosition(lastRegion)
       this.setState({
         initialPosition: {
@@ -191,6 +191,7 @@ export default class Taxitura extends Component {
       this.getAddress(lastRegion, true)
     },
     err => {
+      consts.position = null
       this.getStatus()
     },
     {enableHighAccuracy: true, timeout: 20000, maximumAge: 5000, distanceFilter: 10})
@@ -205,7 +206,7 @@ export default class Taxitura extends Component {
         },
         cabman: { id: user.cedula }
       }
-      this.socket.emit('savePositionCab', response)
+      consts.socket.emit('savePositionCab', response)
     }
   }
 
@@ -267,37 +268,46 @@ export default class Taxitura extends Component {
     this.setState({loading: false})
   }
 
-  cancelOrder () {
+  cancelOrder (status) {
+    if (status) {
+      service['cabman'] = {
+        id: user.cedula
+      }
+      consts.socket.emit('addServiceCanceled', service)
+    }
     this.setState({processOrder: false, distance: null, time: null})
     service = null
+    waitId = null
   }
 
   acceptOrder () {
-    this.setState({
-      processOrder: false,
-      loading: true
-    })
-    service['cabman'] = {
-      id: user.cedula,
-      name: user.nombre,
-      photo: 'https://thumbs.dreamstime.com/b/taxista-14436793.jpg'
+    if (service) {
+      this.setState({
+        processOrder: false,
+        loading: true
+      })
+      service['cabman'] = {
+        id: user.cedula,
+        name: user.nombre,
+        photo: 'https://thumbs.dreamstime.com/b/taxista-14436793.jpg'
+      }
+      service['position_cabman'] = {
+        distance: this.state.distance,
+        time: this.state.time,
+        latitude: this.state.markerPosition.latitude,
+        longitude: this.state.markerPosition.longitude
+      }
+      consts.socket.emit('app', service)
+      waitId = service.service.id
+      service = null
+      this.state.distance = null
+      this.state.time = null
     }
-    service['position_cabman'] = {
-      distance: this.state.distance,
-      time: this.state.time,
-      latitude: this.state.markerPosition.latitude,
-      longitude: this.state.markerPosition.longitude
-    }
-    this.socket.emit('app', service)
-    waitId = service.service.id
-    service = null
-    this.state.distance = null
-    this.state.time = null
   }
 
   processService (msn) {
     service.action = msn
-    this.socket.emit('app', service)
+    consts.socket.emit('app', service)
     if (msn === consts.actionEnd) {
       this.setState({button: {
         title: consts.arrive,
@@ -306,6 +316,13 @@ export default class Taxitura extends Component {
       }})
       this.cleanService()
       this.setState({goOrder: false})
+    }
+  }
+
+  deleteService (service) {
+    let index = orders.indexOf(service)
+    if (index > -1) {
+      orders.splice(index, 1)
     }
   }
 
@@ -323,6 +340,7 @@ export default class Taxitura extends Component {
   onRegionChange (region) {
     LATITUDE_DELTA = region.latitudeDelta
     LONGITUDE_DELTA = region.longitudeDelta
+    consts.position = region
   }
 
   _drawMap () {
@@ -357,7 +375,7 @@ export default class Taxitura extends Component {
           uri={service ? service.user.url_pic : null}
           distance={(this.state.distance) ? this.state.distance : 0}
           accept={() => { this.acceptOrder() }}
-          cancel={() => { this.cancelOrder() }} />
+          cancel={() => { this.cancelOrder(true) }} />
       )
     } else {
       return (

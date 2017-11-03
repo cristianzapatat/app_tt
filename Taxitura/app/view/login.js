@@ -23,6 +23,7 @@ const LoginForm = t.struct({
 export default class Login extends Component {
   constructor (props) {
     super(props)
+    consts.view = 'login'
     this.state = {
       value: {
         id: 7806756688,
