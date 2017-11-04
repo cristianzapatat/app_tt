@@ -34,6 +34,7 @@ module.exports = {
   user: null,
   message: null,
   position: null,
+  waitCanceled: false,
   socket: null,
   view: 'login'
 }
