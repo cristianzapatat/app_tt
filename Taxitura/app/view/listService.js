@@ -1,7 +1,7 @@
+/* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import {View, Text, FlatList, Dimensions, BackHandler, AppState, Platform} from 'react-native'
-import GPSState from 'react-native-gps-state'
+import {View, Text, FlatList} from 'react-native'
 import * as Progress from 'react-native-progress'
 
 import styles from '../style/listService.style'
@@ -9,14 +9,8 @@ import Container from '../component/container'
 import Item from '../component/item'
 import PhotoModal from '../component/photoModal'
 import MiniMap from '../component/miniMap'
-import NoGps from '../component/noGps'
 import consts from '../constant/constant'
 import fs from '../util/fs'
-
-const {width, height} = Dimensions.get('window')
-const ASPECT_RATIO = width / height
-let LATITUDE_DELTA = 0.015
-let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class ListService extends Component {
   constructor (props) {
@@ -29,97 +23,29 @@ export default class ListService extends Component {
       nameUser: '',
       uri: null,
       loading: true,
-      render: true,
-      noGpsText: consts.offGPS,
-      noGps: true,
       latitudeOrder: 0,
       longitudeOrder: 0,
       data: []
     }
-    consts.socket.emit('getServicesCanceled', consts.user.cedula)
-    consts.socket.on('catchServicesCanceled', list => {
-      this.setState({ data: list })
-    })
-    this.getStatus()
-  }
-
-  componentWillMount () {
-    AppState.addEventListener('change', (nextAppState) => {
-      if (nextAppState === 'background') {
-        this.componentWillUnmount()
-      } else if (nextAppState === 'active') {
-        this.getStatus()
-      }
-    })
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener('hardwareBackPress', () => {
-        const { navigation } = this.props
-        if (navigation.state.routeName === 'listService') {
-          this.componentWillUnmount()
-          this.props.navigation.navigate('app')
-        }
-        return true
+    fetch(`${consts.serverSock}/get_services_canceled/${consts.user.cedula}`)
+      .then(response => {
+        return response.json()
       })
-    }
-  }
-
-  componentWillUnmount () {
-    navigator.geolocation.clearWatch(this.watchID)
-    AppState.removeEventListener('change')
-    if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress')
-    }
-  }
-
-  getStatus () {
-    if (!this.state.loading) {
-      this.setState({ loading: true })
-    }
-    GPSState.getStatus().then(status => {
-      if (status === GPSState.RESTRICTED && consts.position === null) {
-        this.setState({render: false, loading: false})
-      } else if (status === GPSState.DENIED && consts.position === null) {
-        this.setState({render: false, noGpsText: consts.deniedGPS, noGps: false, loading: false})
-      } else {
-        this.analityc()
-      }
-    })
-  }
-
-  analityc () {
-    if (consts.position !== null) {
-      this.setState({
-        render: true,
-        loading: false
+      .then(json => {
+        this.setState({
+          data: json,
+          loading: false
+        })
       })
-    }
-    this.watchID = navigator.geolocation.watchPosition(position => {
-      let lastRegion = {
-        latitude: parseFloat(position.coords.latitude),
-        longitude: parseFloat(position.coords.longitude)
-      }
-      consts.position = lastRegion
-      consts.position['latitudeDelta'] = LATITUDE_DELTA
-      consts.position['longitudeDelta'] = LONGITUDE_DELTA
-      this.setState({
-        render: true,
-        loading: false
-      })
-    },
-    err => {
-      consts.position = null
-      this.getStatus()
-    },
-    {enableHighAccuracy: true, timeout: 20000, maximumAge: 5000, distanceFilter: 10})
   }
 
   goMap () {
-    this.componentWillUnmount()
-    this.props.navigation.navigate('app')
+    const { goBack } = this.props.navigation
+    goBack()
   }
 
   logout () {
-    this.componentWillUnmount()
+    this.props.navigation.state.params.destroy()
     this.props.navigation.navigate('login')
     fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
   }
@@ -152,34 +78,27 @@ export default class ListService extends Component {
     })
   }
 
-  _keyExtractor (item, index) {
-    return item.service.id
+  _acceptService (service) {
+    consts.view = 'app'
+    consts.waitCanceled = true
+    service['cabman'] = {
+      id: consts.user.cedula,
+      name: consts.user.nombre,
+      photo: 'https://thumbs.dreamstime.com/b/taxista-14436793.jpg'
+    }
+    service['position_cabman'] = {
+      distance: null,
+      time: null,
+      latitude: consts.position.latitude,
+      longitude: consts.position.longitude
+    }
+    const { goBack } = this.props.navigation
+    consts.socket.emit('acceptCancel', service)
+    goBack()
   }
 
-  _drawLis () {
-    if (this.state.render) {
-      return (
-        <FlatList
-          style={styles.list}
-          data={this.state.data}
-          keyExtractor={this._keyExtractor}
-          renderItem={({item, index}) =>
-            <Item
-              item={item}
-              index={index}
-              showPhoto={() => { this._showPhoto(item) }}
-              hidePhoto={() => { this._hidePhoto() }}
-              viewMap={() => { this._viewMap(item) }} />
-        } />
-      )
-    } else {
-      return (
-        <NoGps
-          onPress={() => { this.getStatus() }}
-          visible={this.state.noGps}
-          text={this.state.noGpsText} />
-      )
-    }
+  _keyExtractor (item, index) {
+    return item.service.id
   }
 
   _drawModals () {
@@ -223,7 +142,19 @@ export default class ListService extends Component {
               strokeCap={'round'}
               animating={this.state.loading} />
           </View>
-          { this._drawLis() }
+          <FlatList
+            style={styles.list}
+            data={this.state.data}
+            keyExtractor={this._keyExtractor}
+            renderItem={({item, index}) =>
+              <Item
+                item={item}
+                index={index}
+                showPhoto={() => { this._showPhoto(item) }}
+                hidePhoto={() => { this._hidePhoto() }}
+                viewMap={() => { this._viewMap(item) }}
+                acceptService={() => { this._acceptService(item) }} />
+          } />
           <View style={[{display: this.state.loading ? 'flex' : 'none'}, styles.over]} />
         </View>
         { this._drawModals() }

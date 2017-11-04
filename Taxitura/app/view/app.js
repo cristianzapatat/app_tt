@@ -1,8 +1,7 @@
-'use strict'
 /* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, Dimensions, BackHandler, AppState, Platform } from 'react-native'
+import { Text, View, TouchableOpacity, Dimensions, AppState } from 'react-native'
 import Geocoder from 'react-native-geocoding'
 import GPSState from 'react-native-gps-state'
 import Polyline from '@mapbox/polyline'
@@ -26,14 +25,12 @@ let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 let service = null
 let orders = []
 let waitId = null
-let user
 let coords = []
 
 export default class Taxitura extends Component {
   constructor (props) {
     super(props)
     if (consts.user) {
-      user = consts.user
       consts.view = 'app'
     } else {
       this.logout()
@@ -45,14 +42,8 @@ export default class Taxitura extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       },
-      markerPosition: {
-        latitude: 3.8863253,
-        longitude: -77.0498246
-      },
-      markerPositionOrder: {
-        latitude: 0,
-        longitude: 0
-      },
+      markerPosition: { latitude: 3.8863253, longitude: -77.0498246 },
+      markerPositionOrder: { latitude: 0, longitude: 0 },
       address: '',
       addressMarker: '',
       distance: null,
@@ -70,13 +61,26 @@ export default class Taxitura extends Component {
       }
     }
     consts.socket.on('app', order => {
-      if (consts.view === 'app' && order.action === consts.order && service === null && waitId === null) {
+      if (consts.view === 'app' && !consts.waitCanceled &&
+          order.action === consts.order && service === null && waitId === null) {
         service = order
-        this.getDistance(this.state.markerPosition,
+        this.getDistance(true, this.state.markerPosition,
           {latitude: service.position_user.latitude, longitude: service.position_user.longitude})
         this.setState({ processOrder: true })
       } else if (order.action === consts.order) {
         orders.push(order)
+      }
+    })
+    consts.socket.on('orderCanceled', order => {
+      if (order) {
+        if (consts.view === 'app' && consts.waitCanceled &&
+            order.action === consts.order && service === null && waitId === null) {
+          service = order
+          this.getInfoOrder(this.state.markerPosition, service.position_user)
+        }
+      } else {
+        consts.waitCanceled = false
+        this.cleanService()
       }
     })
     consts.socket.on('accept', order => {
@@ -128,34 +132,20 @@ export default class Taxitura extends Component {
   componentWillMount () {
     AppState.addEventListener('change', (nextAppState) => {
       if (nextAppState === 'background') {
-        this.componentWillUnmount()
+        this._componentWillUnmount()
       } else if (nextAppState === 'active') {
         this.getStatus()
       }
     })
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener('hardwareBackPress', () => {
-        const { navigation } = this.props
-        if (navigation.state.routeName === 'app') {
-          BackHandler.exitApp()
-        }
-        return false
-      })
-    }
   }
 
-  componentWillUnmount () {
+  _componentWillUnmount () {
+    console.log('_componentWillUnmount')
     navigator.geolocation.clearWatch(this.watchID)
     AppState.removeEventListener('change')
-    if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress')
-    }
   }
 
   getStatus () {
-    if (!this.state.loading) {
-      this.setState({ loading: true })
-    }
     GPSState.getStatus().then(status => {
       if (status === GPSState.RESTRICTED) {
         this.setState({renderGPS: false, loading: false})
@@ -168,33 +158,54 @@ export default class Taxitura extends Component {
   }
 
   analitycPosition () {
-    this.watchID = navigator.geolocation.watchPosition(position => {
-      let lastRegion = {
+    if (consts.position !== null) {
+      this.__drawPosition(consts.position)
+    }
+    navigator.geolocation.getCurrentPosition(position => {
+      consts.position = {
         latitude: parseFloat(position.coords.latitude),
-        longitude: parseFloat(position.coords.longitude)
+        longitude: parseFloat(position.coords.longitude),
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
       }
-      consts.position = lastRegion
-      consts.position['latitudeDelta'] = LATITUDE_DELTA
-      consts.position['longitudeDelta'] = LONGITUDE_DELTA
-      this.uploadPosition(lastRegion)
-      this.setState({
-        initialPosition: {
-          latitude: lastRegion.latitude,
-          longitude: lastRegion.longitude,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
-        },
-        markerPosition: lastRegion,
-        renderGPS: true,
-        loading: false
-      })
-      this.getAddress(lastRegion, true)
+      this.__drawPosition(consts.position)
     },
     err => {
+      console.log(err)
+      consts.position = null
+    },
+    {enableHighAccuracy: false, timeout: 85000, maximumAge: 1000})
+    this.watchID = navigator.geolocation.watchPosition(position => {
+      consts.position = {
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude),
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+      }
+      this.__drawPosition(consts.position)
+    },
+    err => {
+      console.log(err)
       consts.position = null
       this.getStatus()
     },
-    {enableHighAccuracy: true, timeout: 20000, maximumAge: 5000, distanceFilter: 10})
+    {enableHighAccuracy: true, timeout: 5000, maximumAge: 1000, distanceFilter: 5})
+  }
+
+  __drawPosition (position) {
+    this.uploadPosition(position)
+    this.setState({
+      initialPosition: {
+        latitude: position.latitude,
+        longitude: position.longitude,
+        latitudeDelta: position.latitudeDelta,
+        longitudeDelta: position.longitudeDelta
+      },
+      markerPosition: position,
+      renderGPS: true,
+      loading: false
+    })
+    this.getAddress(position, true)
   }
 
   uploadPosition (position) {
@@ -204,20 +215,26 @@ export default class Taxitura extends Component {
           latitude: position.latitude,
           longitude: position.longitude
         },
-        cabman: { id: user.cedula }
+        cabman: { id: consts.user.cedula }
       }
       consts.socket.emit('savePositionCab', response)
     }
   }
 
-  async getDistance (start, end) {
+  async getDistance (status, start, end) {
     try {
       let data = await fetch(consts.getDistanceMatrix(start, end))
       let json = await data.json()
-      this.setState({
-        distance: json.rows[0].elements[0].distance.value,
-        time: json.rows[0].elements[0].duration.value
-      })
+      if (status) {
+        this.setState({
+          distance: json.rows[0].elements[0].distance.value,
+          time: json.rows[0].elements[0].duration.value
+        })
+      } else {
+        this.state.distance = json.rows[0].elements[0].distance.value
+        this.state.time = json.rows[0].elements[0].duration.value
+        this.acceptOrder()
+      }
     } catch (err) {
       this.setState({distance: null, time: null})
     }
@@ -271,11 +288,11 @@ export default class Taxitura extends Component {
   cancelOrder (status) {
     if (status) {
       service['cabman'] = {
-        id: user.cedula
+        id: consts.user.cedula
       }
       consts.socket.emit('addServiceCanceled', service)
     }
-    this.setState({processOrder: false, distance: null, time: null})
+    this.setState({processOrder: false, loading: false, distance: null, time: null})
     service = null
     waitId = null
   }
@@ -287,8 +304,8 @@ export default class Taxitura extends Component {
         loading: true
       })
       service['cabman'] = {
-        id: user.cedula,
-        name: user.nombre,
+        id: consts.user.cedula,
+        name: consts.user.nombre,
         photo: 'https://thumbs.dreamstime.com/b/taxista-14436793.jpg'
       }
       service['position_cabman'] = {
@@ -333,8 +350,7 @@ export default class Taxitura extends Component {
   }
 
   goListServives () {
-    this.componentWillUnmount()
-    this.props.navigation.navigate('listService')
+    this.props.navigation.navigate('listService', {destroy: () => { this._componentWillUnmount() }})
   }
 
   onRegionChange (region) {
@@ -390,6 +406,7 @@ export default class Taxitura extends Component {
         renderMenu
         isListServives
         goListServives={() => { this.goListServives() }}
+        destroy={() => { this._componentWillUnmount() }}
         onPress={() => { this.logout() }}>
         <View style={styles.enter}>
           <View style={styles.addreess}>

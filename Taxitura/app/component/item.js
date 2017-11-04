@@ -35,7 +35,7 @@ export default class Item extends Component {
           </Text>
         </View>
         <View style={[styles.buttons]}>
-          <TouchableOpacity onPress={() => { console.log('asasas') }}>
+          <TouchableOpacity onPress={this.props.acceptService}>
             <View style={[styles.btn, styles.btnAccept]}>
               <Text style={styles.text}>Aceptar</Text>
             </View>

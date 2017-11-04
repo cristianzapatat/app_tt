@@ -108,6 +108,7 @@ export default class Login extends Component {
                   .then(status => {
                     this.setState({ loading: false })
                     consts.user = token
+                    consts.position = null
                     this.props.navigation.navigate('app')
                     if (!status) {
                       this.setMessage('Archivo error')
