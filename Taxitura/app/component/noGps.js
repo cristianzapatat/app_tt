@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, Text} from 'react-native'
-import Bounceable from '../component/bounceable'
+import {View, Image, Text, TouchableOpacity} from 'react-native'
 
 import styles from '../style/noGps.style'
 
@@ -15,13 +14,11 @@ class NoGps extends Component {
           source={require('../../img/gps_denied.png')}
           style={{display: this.props.visible ? 'none' : 'flex'}} />
         <Text style={styles.textGps}>{this.props.text}</Text>
-        <Bounceable
-          onPress={this.props.onPress}
-          level={1.1}>
-          <View>
-            <Image source={require('../../img/gps_reload.png')} style={styles.imgReload} />
+        <TouchableOpacity onPressOut={this.props.onPress}>
+          <View style={styles.btnBack}>
+            <Text style={[styles.back]}>Actualizar</Text>
           </View>
-        </Bounceable>
+        </TouchableOpacity>
       </View>
     )
   }

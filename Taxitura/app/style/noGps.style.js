@@ -12,7 +12,16 @@ export default StyleSheet.create({
     fontSize: 20,
     textAlign: 'center'
   },
-  imgReload: {
-    marginTop: 10
+  btnBack: {
+    width: 280,
+    height: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15
+  },
+  back: {
+    fontSize: 21,
+    fontWeight: 'bold',
+    color: '#ffaf18'
   }
 })

@@ -77,12 +77,12 @@ class OrdenModal extends Component {
               Usuario Recurrente
             </Text>
           </View>
-          <TouchableOpacity onPress={() => { this._accept() }}>
+          <TouchableOpacity onPressOut={() => { this._accept() }}>
             <View style={styles.buttonAccept}>
               <Text style={styles.textAccept}>Aceptar servicio</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { this._cancel() }}>
+          <TouchableOpacity onPressOut={() => { this._cancel() }}>
             <View style={styles.buttonCancel}>
               <Text style={styles.textCancel}>Cancelar</Text>
             </View>

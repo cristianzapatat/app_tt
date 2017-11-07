@@ -109,6 +109,7 @@ export default class Login extends Component {
                     this.setState({ loading: false })
                     consts.user = token
                     consts.position = null
+                    consts.view = 'app'
                     this.props.navigation.navigate('app')
                     if (!status) {
                       this.setMessage('Archivo error')
@@ -128,7 +129,7 @@ export default class Login extends Component {
           }
         } catch (error) {
           this.setState({loading: false})
-          this.setMessage('Se presento un error en la autenticación\nIntento de nuevo')
+          this.setMessage('Verifique su conexión de Internet\nIntento de nuevo')
         }
       } else {
         this.setMessage('Por favor ingrese sus credenciales para ingresar')
@@ -160,7 +161,7 @@ export default class Login extends Component {
               options={this.state.options}
               value={this.state.value}
               onChange={this.onChange.bind(this)} />
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity onPressOut={() => {
               Keyboard.dismiss()
               this.login()
             }}>
