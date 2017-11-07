@@ -1,12 +1,15 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  item: {
-    height: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
+  enter: {
+    flexDirection: 'column',
     borderBottomWidth: 1.5,
     borderBottomColor: '#95a5a6'
+  },
+  item: {
+    height: 75,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   photo: {
     height: 70,
@@ -20,6 +23,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     width: 200,
     marginLeft: 7
+  },
+  button: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   text: {
     textAlign: 'center',
@@ -50,7 +58,7 @@ export default StyleSheet.create({
   },
   btnAccept: {
     backgroundColor: '#2980b9',
-    marginBottom: 10
+    marginBottom: 5
   },
   btnMap: {
     backgroundColor: '#27ae60'

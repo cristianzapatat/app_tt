@@ -33,7 +33,7 @@ class PhotoModal extends Component {
               Usuario Recurrente
             </Text>
           </View>
-          <TouchableOpacity onPress={this.props.hidePhoto}>
+          <TouchableOpacity onPressOut={this.props.hidePhoto}>
             <View style={styles.btnCancel}>
               <Text style={[styles.text, styles.close]}>Cerrar</Text>
             </View>

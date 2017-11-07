@@ -27,7 +27,7 @@ class MiniMap extends Component {
                   image={require('../../img/user.png')} />
               </MapView>
             </View>
-            <TouchableOpacity onPress={this.props.hideMap}>
+            <TouchableOpacity onPressOut={this.props.hideMap}>
               <View style={styles.btnCancel}>
                 <Text style={[styles.text, styles.close]}>Cerrar</Text>
               </View>

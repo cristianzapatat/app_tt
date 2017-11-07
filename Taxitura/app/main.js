@@ -1,7 +1,7 @@
 'use strict'
 
 import React, { Component } from 'react'
-import { View, Image, Platform, BackHandler } from 'react-native'
+import { View, Image } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import * as Progress from 'react-native-progress'
 import io from 'socket.io-client'
@@ -30,6 +30,8 @@ const RouteNavigationLogin = StackNavigator(roots, config)
 config['initialRouteName'] = 'app'
 const RouteNavigationApp = StackNavigator(roots, config)
 
+let idSet
+
 export default class Main extends Component {
   constructor () {
     super()
@@ -39,21 +41,6 @@ export default class Main extends Component {
     }
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
     consts.socket = this.socket
-    consts.position = null
-  }
-
-  componentWillMount () {
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener('hardwareBackPress', () => {
-        if (consts.view === 'listService') {
-          consts.view = 'app'
-        }
-        if (consts.view === 'app' || consts.view === 'login') {
-          BackHandler.exitApp()
-        }
-        return false
-      })
-    }
   }
 
   componentDidMount () {
@@ -68,17 +55,15 @@ export default class Main extends Component {
             consts.message = 'Usuario inactivo\nComuníquese con soporte'
           }
         }
-        this.setState({ loading: false })
+        idSet = setInterval(() => {
+          this.setState({ loading: false })
+          clearInterval(idSet)
+        }, 1500)
       })
   }
 
-  componentWillUnmount () {
-    if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress')
-    }
-  }
-
   isRendering () {
+    consts.position = null
     if (this.state.rendering) {
       return (
         <RouteNavigationApp />

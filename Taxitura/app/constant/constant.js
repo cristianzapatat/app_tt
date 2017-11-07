@@ -27,6 +27,7 @@ module.exports = {
   offGPS: 'Favor encender su GPS',
   deniedGPS: 'Taxitura no cuenta con permisos de GPS',
   deniedAccess: 'acceso_denegado',
+  getPositionText: 'Obteniendo posición',
 
   persistenceFile: '/persistence',
   fileLogin: '/login.txt',
@@ -35,6 +36,5 @@ module.exports = {
   message: null,
   position: null,
   waitCanceled: false,
-  socket: null,
-  view: 'login'
+  socket: null
 }

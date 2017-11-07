@@ -35,5 +35,27 @@ export default StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.19)'
+  },
+  empty: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textEmpty: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
+  btnBack: {
+    width: 280,
+    height: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 18
+  },
+  back: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffaf18'
   }
 })

@@ -14,35 +14,39 @@ export default class Item extends Component {
   render () {
     let index = this.props.index
     return (
-      <View style={[{backgroundColor: (index === 0 || index % 2 === 0 ? '#ecf0f1' : '#bdc3c7')}, styles.item]}>
-        <TouchableOpacity onPress={this.props.showPhoto}>
-          <Image
-            style={styles.photo}
-            source={{uri: this.props.item.user.url_pic || this.state.uri}} />
-        </TouchableOpacity>
-        <View style={styles.content}>
-          <Text
-            style={[styles.text, styles.headerText]}
-            numberOfLines={1}
-            ellipsizeMode={'tail'}>
-            {this.props.item.user.name || ''}
-          </Text>
-          <Text
-            style={[styles.text, styles.footerText]}
-            numberOfLines={1}
-            ellipsizeMode={'tail'}>
-            Usuario Recurrente
-          </Text>
+      <View style={[{backgroundColor: (index === 0 || index % 2 === 0 ? '#ecf0f1' : '#bdc3c7')}, styles.enter]}>
+        <View style={[styles.item]}>
+          <TouchableOpacity onPressOut={this.props.showPhoto}>
+            <Image
+              style={styles.photo}
+              source={{uri: this.props.item.user.url_pic || this.state.uri}} />
+          </TouchableOpacity>
+          <View style={styles.content}>
+            <Text
+              style={[styles.text, styles.headerText]}
+              numberOfLines={1}
+              ellipsizeMode={'tail'}>
+              {this.props.item.user.name || ''}
+            </Text>
+            <Text
+              style={[styles.text, styles.footerText]}
+              numberOfLines={1}
+              ellipsizeMode={'tail'}>
+              Usuario Recurrente
+            </Text>
+          </View>
+          <View style={[styles.buttons]}>
+            <TouchableOpacity onPressOut={this.props.viewMap}>
+              <View style={[styles.btn, styles.btnMap]}>
+                <Text style={styles.text}>Mapa</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={[styles.buttons]}>
-          <TouchableOpacity onPress={this.props.acceptService}>
+        <View style={styles.button}>
+          <TouchableOpacity onPressOut={this.props.acceptService}>
             <View style={[styles.btn, styles.btnAccept]}>
               <Text style={styles.text}>Aceptar</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.props.viewMap}>
-            <View style={[styles.btn, styles.btnMap]}>
-              <Text style={styles.text}>Mapa</Text>
             </View>
           </TouchableOpacity>
         </View>

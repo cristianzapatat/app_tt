@@ -76,14 +76,14 @@ export default class Menu extends Component {
     return (
       <View style={[this.props.style, styles.all]}>
         <View style={[{display: this.state.close ? 'flex' : 'none'}, styles.iconSide]}>
-          <TouchableOpacity onPress={() => { this.showOrHide() }}>
+          <TouchableOpacity onPressOut={() => { this.showOrHide() }}>
             <Image
               source={require('../../img/menu.png')}
               style={[styles.icon, styles.iconMargin]} />
           </TouchableOpacity>
         </View>
         <View style={[{display: this.state.close ? 'none' : 'flex'}, styles.iconSide]}>
-          <TouchableOpacity onPress={() => { this.showOrHide() }}>
+          <TouchableOpacity onPressOut={() => { this.showOrHide() }}>
             <Image
               source={require('../../img/menu_close.png')}
               style={[styles.icon, styles.iconMargin]} />
@@ -91,7 +91,7 @@ export default class Menu extends Component {
         </View>
         <Animated.View style={[styles.menuSide, this.state.styleMenu]}>
           <View style={[{display: this.props.isListServives ? 'flex' : 'none'}, styles.item]}>
-            <TouchableOpacity onPress={() => { this._callBack(this.props.goListServives) }} style={styles.element}>
+            <TouchableOpacity onPressOut={() => { this._callBack(this.props.goListServives) }} style={styles.element}>
               <Image
                 source={require('../../img/service.png')}
                 style={styles.icon} />
@@ -99,7 +99,7 @@ export default class Menu extends Component {
             </TouchableOpacity>
           </View>
           <View style={[{display: this.props.isMap ? 'flex' : 'none'}, styles.item]}>
-            <TouchableOpacity onPress={() => { this._callBack(this.props.goMap) }} style={styles.element}>
+            <TouchableOpacity onPressOut={() => { this._callBack(this.props.goMap) }} style={styles.element}>
               <Image
                 source={require('../../img/map.png')}
                 style={styles.icon} />
@@ -107,7 +107,7 @@ export default class Menu extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.item}>
-            <TouchableOpacity onPress={this.props.fnLogout} style={styles.element}>
+            <TouchableOpacity onPressOut={this.props.fnLogout} style={styles.element}>
               <Image
                 source={require('../../img/logout.png')}
                 style={styles.icon} />
