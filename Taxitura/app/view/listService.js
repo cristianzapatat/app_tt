@@ -1,7 +1,7 @@
 /* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import {View, Text, FlatList, TouchableOpacity} from 'react-native'
+import {View, Text, FlatList, TouchableOpacity, PermissionsAndroid} from 'react-native'
 import * as Progress from 'react-native-progress'
 
 import styles from '../style/listService.style'
@@ -9,11 +9,11 @@ import Container from '../component/container'
 import Item from '../component/item'
 import PhotoModal from '../component/photoModal'
 import MiniMap from '../component/miniMap'
-import Load from '../component/load'
 import consts from '../constant/constant'
 import fs from '../util/fs'
 
 let idSet
+let status = true
 
 export default class ListService extends Component {
   constructor (props) {
@@ -25,24 +25,38 @@ export default class ListService extends Component {
       isMap: false,
       nameUser: '',
       uri: null,
-      loading: true,
       latitudeOrder: 0,
       longitudeOrder: 0,
-      render: true,
-      inProcess: false,
+      loading: true,
+      render: false,
+      textView: consts.textProcess,
       data: []
     }
-    this.state.render = consts.position !== null
-    if (this.state.render) {
-      this.getList()
-    } else {
-      this.state.loading = false
-      this.UpdateView()
-    }
+    this.state.textView = consts.textProcess
+  }
+
+  componentWillMount () {
+    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+      .then(granted => {
+        if (granted) {
+          status = true
+          if (consts.position !== null) {
+            this.getList()
+          } else {
+            this.setState({textView: consts.getPositionText})
+            this.UpdateView()
+          }
+        } else {
+          this.setState({loading: false, textView: consts.requierePermissions})
+        }
+      })
   }
 
   componentWillUnmount () {
     clearInterval(idSet)
+    if (status) {
+      consts.socket.emit('nextService', consts.user.cedula)
+    }
   }
 
   getList () {
@@ -53,7 +67,7 @@ export default class ListService extends Component {
       .then(json => {
         this.setState({
           data: json,
-          inProcess: false,
+          render: true,
           loading: false
         })
       })
@@ -62,7 +76,7 @@ export default class ListService extends Component {
   UpdateView () {
     idSet = setInterval(() => {
       if (consts.position !== null) {
-        this.setState({loading: true, render: true, inProcess: true})
+        this.setState({textView: consts.textProcess})
         this.getList()
         clearInterval(idSet)
       }
@@ -76,6 +90,7 @@ export default class ListService extends Component {
 
   logout () {
     clearInterval(idSet)
+    status = false
     this.props.navigation.state.params.destroy()
     this.props.navigation.navigate('login')
     fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
@@ -122,6 +137,7 @@ export default class ListService extends Component {
       latitude: consts.position.latitude,
       longitude: consts.position.longitude
     }
+    status = false
     const { goBack } = this.props.navigation
     consts.socket.emit('acceptCancel', service)
     goBack()
@@ -133,7 +149,7 @@ export default class ListService extends Component {
 
   _drawList () {
     if (this.state.render) {
-      if (this.state.data.length > 0 || this.state.inProcess) {
+      if (this.state.data.length > 0) {
         return (
           <FlatList
             style={styles.list}
@@ -163,17 +179,20 @@ export default class ListService extends Component {
       }
     } else {
       return (
-        <Load
-          text='Obteniendo posición'
-          isButton
-          onPress={() => { this.goMap() }} />
+        <View style={styles.empty}>
+          <Text style={styles.textEmpty}>{this.state.textView}</Text>
+          <TouchableOpacity onPressOut={() => { this.goMap() }}>
+            <View style={styles.btnBack}>
+              <Text style={[styles.back]}>Volver</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       )
     }
   }
 
   _drawModals () {
-    let status = consts.position
-    if (status) {
+    if (this.state.render) {
       return (
         <View>
           <PhotoModal
@@ -204,7 +223,7 @@ export default class ListService extends Component {
         onPress={() => { this.logout() }} >
         <View style={styles.enter}>
           <View style={styles.title}>
-            <Text style={styles.titleText}>Lista de Servicios</Text>
+            <Text style={styles.titleText}>Lista de Servicios Cancelados</Text>
             <Progress.CircleSnail
               style={[{display: this.state.loading ? 'flex' : 'none'}, styles.loading]}
               size={30}
@@ -213,7 +232,6 @@ export default class ListService extends Component {
               animating={this.state.loading} />
           </View>
           { this._drawList() }
-          <View style={[{display: this.state.loading ? 'flex' : 'none'}, styles.over]} />
         </View>
         { this._drawModals() }
       </Container>

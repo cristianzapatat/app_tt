@@ -16,18 +16,21 @@ module.exports = {
       &key=AIzaSyCPDys-IZuq1CqhFr6cVEc-rMeT5Z33iKE&units=metric`
   },
   apiKeyGeocoding: 'AIzaSyCuixa1UeWyGrleFN_w7ceAJE9oYYmz1lU', // Google Maps Geocodign API
-  disconnect: 'Desconetado',
-  connect: 'Connectado',
   order: 'order',
-  arrive: 'Llegué!',
-  colorArrive: '#4edb1d',
-  actionArrive: 'arrive',
-  endService: 'Llegamos!',
   actionEnd: 'end',
+  actionArrive: 'arrive',
+
+  arrive: 'Llegué!',
+  endService: 'Llegamos!',
   offGPS: 'Favor encender su GPS',
   deniedGPS: 'Taxitura no cuenta con permisos de GPS',
-  deniedAccess: 'acceso_denegado',
   getPositionText: 'Obteniendo posición',
+  requierePermissions: 'Taxitura requiere permisos de ubicación.',
+  causedBlock: 'Debido a que se bloqueó la ventana de permisos el proceso debe ser manual',
+  btnGoSettings: 'Ir a proceso manual',
+  textProcess: 'Procesando',
+  btnClose: 'Cerrar',
+  btnAccept: 'Aceptar',
 
   persistenceFile: '/persistence',
   fileLogin: '/login.txt',

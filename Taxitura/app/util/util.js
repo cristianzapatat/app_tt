@@ -1,5 +1,3 @@
-'use strict'
-
 module.exports = {
   getMeters: (meters) => {
     if (meters !== null && meters !== undefined) {

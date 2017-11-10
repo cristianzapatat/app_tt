@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {View, TouchableOpacity, Image, Text} from 'react-native'
 
 import styles from '../style/item.style'
+import consts from '../constant/constant'
 
 export default class Item extends Component {
   constructor (props) {
@@ -46,7 +47,7 @@ export default class Item extends Component {
         <View style={styles.button}>
           <TouchableOpacity onPressOut={this.props.acceptService}>
             <View style={[styles.btn, styles.btnAccept]}>
-              <Text style={styles.text}>Aceptar</Text>
+              <Text style={styles.text}>{consts.btnAccept}</Text>
             </View>
           </TouchableOpacity>
         </View>
