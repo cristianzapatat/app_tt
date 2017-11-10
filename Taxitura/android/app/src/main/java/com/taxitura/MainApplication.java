@@ -3,8 +3,9 @@ package com.taxitura;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.rnfs.RNFSPackage;
+import com.opensettings.OpenSettingsPackage;
 import br.com.dopaminamob.gpsstate.GPSStatePackage;
+import com.rnfs.RNFSPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -26,8 +27,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFSPackage(),
+            new OpenSettingsPackage(),
             new GPSStatePackage(),
+            new RNFSPackage(),
             new MapsPackage()
       );
     }

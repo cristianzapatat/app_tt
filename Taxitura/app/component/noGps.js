@@ -15,8 +15,11 @@ class NoGps extends Component {
           style={{display: this.props.visible ? 'none' : 'flex'}} />
         <Text style={styles.textGps}>{this.props.text}</Text>
         <TouchableOpacity onPressOut={this.props.onPress}>
-          <View style={styles.btnBack}>
+          <View style={[{display: this.props.visible ? 'flex' : 'none'}, styles.btnBack]}>
             <Text style={[styles.back]}>Actualizar</Text>
+          </View>
+          <View style={[{display: this.props.visible ? 'none' : 'flex'}, styles.btnBack]}>
+            <Text style={[styles.back]}>Modificar Permisos</Text>
           </View>
         </TouchableOpacity>
       </View>

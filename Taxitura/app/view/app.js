@@ -1,7 +1,16 @@
 /* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, Dimensions, AppState, Platform, BackHandler } from 'react-native'
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  AppState,
+  Platform,
+  BackHandler,
+  PermissionsAndroid
+} from 'react-native'
 import Geocoder from 'react-native-geocoding'
 import GPSState from 'react-native-gps-state'
 import Polyline from '@mapbox/polyline'
@@ -12,6 +21,7 @@ import Container from '../component/container'
 import Map from '../component/map'
 import NoGps from '../component/noGps'
 import OrderModal from '../component/orderModal'
+import OpenSettingsModal from '../component/openSettingsModal'
 import consts from '../constant/constant'
 import fs from '../util/fs'
 
@@ -23,9 +33,9 @@ let LATITUDE_DELTA = 0.015
 let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 let service = null
-let orders = []
 let waitId = null
 let coords = []
+let permissionsStatus = false
 
 export default class Taxitura extends Component {
   constructor (props) {
@@ -52,9 +62,9 @@ export default class Taxitura extends Component {
       noGpsText: consts.offGPS,
       noGps: true,
       loading: true,
+      showModalSettings: false,
       button: {
         title: consts.arrive,
-        color: consts.colorArrive,
         action: consts.actionArrive
       }
     }
@@ -67,7 +77,10 @@ export default class Taxitura extends Component {
           {latitude: service.position_user.latitude, longitude: service.position_user.longitude})
         this.setState({ processOrder: true })
       } else if (order.action === consts.order) {
-        orders.push(order)
+        order['cabman'] = {
+          id: consts.user.cedula
+        }
+        consts.socket.emit('addServiceList', order)
       }
     })
     consts.socket.on('orderCanceled', order => {
@@ -108,10 +121,11 @@ export default class Taxitura extends Component {
         }})
       }
     })
-    consts.socket.on('deleteService', order => {
-      this.deleteService(order)
-      if (service === order) {
-        this.cancelOrder(false)
+    consts.socket.on('deleteService', idService => {
+      if (service) {
+        if (service.service.id === idService) {
+          this.cancelOrder(false)
+        }
       }
     })
     consts.socket.on('getPositionApp', data => {
@@ -142,8 +156,7 @@ export default class Taxitura extends Component {
       if (nextAppState === 'background') {
         this._componentWillUnmount()
       } else if (nextAppState === 'active') {
-        navigator.geolocation.clearWatch(this.watchID)
-        this.setState({ address: consts.getPositionText })
+        this.setState({ renderGPS: true, address: consts.getPositionText, loading: true })
         this.getStatus()
       }
     })
@@ -166,11 +179,28 @@ export default class Taxitura extends Component {
       if (status === GPSState.RESTRICTED) {
         this.setState({renderGPS: false, loading: false, address: ''})
       } else if (status === GPSState.DENIED) {
-        this.setState({renderGPS: false, noGpsText: consts.deniedGPS, noGps: false, loading: false, address: ''})
+        this.getPermissions()
       } else {
         this.analitycPosition()
       }
     })
+  }
+
+  getPermissions () {
+    if (!permissionsStatus) {
+      permissionsStatus = true
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            this.analitycPosition()
+          } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
+            this.setState({renderGPS: false, noGpsText: consts.deniedGPS, noGps: false, loading: false, address: ''})
+          } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+            this.setState({renderGPS: false, noGpsText: consts.deniedGPS, noGps: false, loading: false, address: ''})
+            this.setState({showModalSettings: true})
+          }
+        })
+    }
   }
 
   analitycPosition () {
@@ -306,15 +336,16 @@ export default class Taxitura extends Component {
   }
 
   cancelOrder (status) {
+    this.setState({processOrder: false, loading: false, distance: null, time: null})
     if (status) {
       service['cabman'] = {
         id: consts.user.cedula
       }
       consts.socket.emit('addServiceCanceled', service)
     }
-    this.setState({processOrder: false, loading: false, distance: null, time: null})
     service = null
     waitId = null
+    consts.socket.emit('nextService', consts.user.cedula)
   }
 
   acceptOrder () {
@@ -348,18 +379,11 @@ export default class Taxitura extends Component {
     if (msn === consts.actionEnd) {
       this.setState({button: {
         title: consts.arrive,
-        color: consts.colorArrive,
         action: consts.actionArrive
       }})
       this.cleanService()
       this.setState({goOrder: false})
-    }
-  }
-
-  deleteService (service) {
-    let index = orders.indexOf(service)
-    if (index > -1) {
-      orders.splice(index, 1)
+      consts.socket.emit('nextService', consts.user.cedula)
     }
   }
 
@@ -371,6 +395,10 @@ export default class Taxitura extends Component {
 
   goListServives () {
     this.props.navigation.navigate('listService', {destroy: () => { this._componentWillUnmount() }})
+  }
+
+  __onCloseModalSettings () {
+    this.setState({showModalSettings: false})
   }
 
   onRegionChange (region) {
@@ -395,7 +423,11 @@ export default class Taxitura extends Component {
       return (
         <NoGps
           onPress={() => {
-            this.setState({address: consts.getPositionText, loading: true})
+            if (!permissionsStatus) {
+              this.setState({renderGPS: true, address: consts.getPositionText, loading: true})
+            } else {
+              permissionsStatus = false
+            }
             this.getStatus()
           }}
           visible={this.state.noGps}
@@ -415,6 +447,20 @@ export default class Taxitura extends Component {
           distance={(this.state.distance) ? this.state.distance : 0}
           accept={() => { this.acceptOrder() }}
           cancel={() => { this.cancelOrder(true) }} />
+      )
+    } else {
+      return (
+        <View />
+      )
+    }
+  }
+
+  _drawModalSettings () {
+    if (this.state.showModalSettings) {
+      return (
+        <OpenSettingsModal
+          isVisible
+          onClose={() => { this.__onCloseModalSettings() }} />
       )
     } else {
       return (
@@ -453,6 +499,7 @@ export default class Taxitura extends Component {
           </View>
         </View>
         { this._drawModal() }
+        { this._drawModalSettings() }
       </Container>
     )
   }

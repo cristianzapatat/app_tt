@@ -26,8 +26,8 @@ export default class Login extends Component {
     consts.view = 'login'
     this.state = {
       value: {
-        id: 7806756688,
-        password: '123456'
+        id: 8041727526,
+        password: '8041727526'
       },
       options: {
         stylesheet: styleForm,
