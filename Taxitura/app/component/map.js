@@ -1,16 +1,15 @@
-'use strict'
 import React, { Component } from 'react'
-
 import '../../UserAgent'
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+
 import styles from '../style/map.style'
-import MapView from 'react-native-maps'
 
 export default class Map extends Component {
   render () {
     if (this.props.goOrder) {
       return (
         <MapView style={styles.map}
-          loadingEnabled
+          provider={PROVIDER_GOOGLE}
           region={this.props.initial}
           rotateEnabled={this.props.goOrder}
           onRegionChange={this.props.onRegionChange}>
@@ -32,7 +31,7 @@ export default class Map extends Component {
     } else {
       return (
         <MapView style={styles.map}
-          loadingEnabled
+          provider={PROVIDER_GOOGLE}
           region={this.props.initial}
           rotateEnabled={this.props.goOrder}
           onRegionChange={this.props.onRegionChange}>

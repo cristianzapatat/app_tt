@@ -112,9 +112,9 @@ export default class ListService extends Component {
 
   _viewMap (item) {
     this.setState({
-      isVisibleMap: true,
       latitudeOrder: item.position_user.latitude,
-      longitudeOrder: item.position_user.longitude
+      longitudeOrder: item.position_user.longitude,
+      isVisibleMap: true
     })
   }
 
@@ -192,16 +192,18 @@ export default class ListService extends Component {
   }
 
   _drawModals () {
-    if (this.state.render) {
+    if (consts.position !== null) {
       return (
         <View>
           <PhotoModal
             isVisible={this.state.isVisiblePhoto}
+            onBack
             nameUser={this.state.nameUser}
             uri={this.state.uri}
             hidePhoto={() => { this._hidePhoto() }} />
           <MiniMap
             isVisible={this.state.isVisibleMap}
+            onBack
             hideMap={() => { this._hideMap() }}
             latitudeOrder={this.state.latitudeOrder}
             longitudeOrder={this.state.longitudeOrder} />

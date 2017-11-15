@@ -50,7 +50,10 @@ class OrdenModal extends Component {
 
   render () {
     return (
-      <Modal isVisible={this.props.isVisible}>
+      <Modal
+        isVisible={this.props.isVisible}
+        onBack={this.props.onBack}
+        callBack={() => { this._cancel() }}>
         <View style={styles.modalContent}>
           <Image
             style={styles.imageOrder}

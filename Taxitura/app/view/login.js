@@ -1,4 +1,3 @@
-'use strict'
 /* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
@@ -16,24 +15,20 @@ import fs from '../util/fs'
 
 const Form = t.form.Form
 const LoginForm = t.struct({
-  id: t.Number,
+  id: t.String,
   password: t.String
 })
 
 export default class Login extends Component {
   constructor (props) {
     super(props)
-    consts.view = 'login'
     this.state = {
-      value: {
-        id: 8041727526,
-        password: '8041727526'
-      },
+      value: {},
       options: {
         stylesheet: styleForm,
         fields: {
           id: {
-            label: 'Cédula',
+            label: 'Cédula o Correo',
             editable: true,
             autoCapitalize: 'none',
             autoCorrect: false,
@@ -101,15 +96,12 @@ export default class Login extends Component {
           let token = await response.json()
           if (token) {
             if (token.token) {
-              if (!token.activo) { // TODO cambiar condición
-                token['id'] = form.id
-                token['password'] = form.password
+              if (token.activo) {
                 fs.createFile(consts.persistenceFile, consts.fileLogin, token)
                   .then(status => {
                     this.setState({ loading: false })
                     consts.user = token
                     consts.position = null
-                    consts.view = 'app'
                     this.props.navigation.navigate('app')
                     if (!status) {
                       this.setMessage('Archivo error')

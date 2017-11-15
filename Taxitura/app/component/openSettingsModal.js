@@ -9,11 +9,14 @@ import consts from '../constant/constant'
 class OpenSettingsModal extends Component {
   render () {
     return (
-      <Modal isVisible={this.props.isVisible}>
+      <Modal
+        isVisible={this.props.isVisible}
+        onBack={this.props.onBack}
+        callBack={this.props.callBack}>
         <View style={styles.modalContent}>
           <Image
             style={styles.img}
-            source={require('../../img/settings.png')} />
+            source={require('../../img/settings64.png')} />
           <Text style={[styles.text, styles.large]}>
             { consts.requierePermissions }
           </Text>

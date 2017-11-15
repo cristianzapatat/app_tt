@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import {View, Image, Text, TouchableOpacity} from 'react-native'
+import Modal from 'react-native-modal'
 
 import styles from '../style/photoModal.style'
-import Modal from 'react-native-modal'
 
 class PhotoModal extends Component {
   constructor (props) {
@@ -14,7 +14,10 @@ class PhotoModal extends Component {
 
   render () {
     return (
-      <Modal isVisible={this.props.isVisible}>
+      <Modal
+        isVisible={this.props.isVisible}
+        onBack={this.props.onBack}
+        callBack={this.props.callBack}>
         <View style={styles.content}>
           <Image
             style={styles.image}

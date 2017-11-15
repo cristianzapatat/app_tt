@@ -1,20 +1,23 @@
 import React, { Component } from 'react'
 import {View, TouchableOpacity, Text} from 'react-native'
-
-import '../../UserAgent'
-import styles from '../style/miniMap.style'
 import Modal from 'react-native-modal'
-import MapView from 'react-native-maps'
+import '../../UserAgent'
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+
+import styles from '../style/miniMap.style'
 import consts from '../constant/constant'
 
 class MiniMap extends Component {
   render () {
     return (
-      <Modal isVisible={this.props.isVisible}>
+      <Modal
+        isVisible={this.props.isVisible}
+        onBack>
         <View style={styles.content}>
           <View style={styles.enter}>
             <View style={styles.enterMap}>
               <MapView style={styles.map}
+                provider={PROVIDER_GOOGLE}
                 loadingEnabled
                 region={consts.position}>
                 <MapView.Marker

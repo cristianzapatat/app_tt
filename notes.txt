@@ -10,3 +10,17 @@ assets
 3: luego de generar un apk y validar su correcto funcionamiento se deberá subir
 el código con el que se genera dicho apk a la rama apks del repositorio con el 
 fin de que cada commit corresponda a una versión de un apk funcional.
+
+4:En la siguiente ruta node_modules\react-native-modal\src\index.js se deberá
+reemplazar en la linea 145 el código por el siguiente:
+	 
+  onRequestClose={this.props.onBack ? this._closeOnBack : this.props.callBack }
+
+Esto para manipular el evento de ir atras de android.
+
+5.En la siguiente ruta node_modules\react-native\Libraries\Core\Timers\JSTimers.js
+reemplazar en la linea 69 el código por e siguiente
+	
+  const MAX_TIMER_DURATION_MS = 85 * 1000;
+
+Esto para aumentar el tiempo de espera de los sockets.

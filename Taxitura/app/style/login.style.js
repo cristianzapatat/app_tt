@@ -13,7 +13,7 @@ export default StyleSheet.create({
   response: {
     position: 'absolute',
     bottom: 0,
-    marginBottom: 20,
+    marginBottom: 40,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -34,14 +34,12 @@ export default StyleSheet.create({
   loading: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10
+    justifyContent: 'center'
   },
   message: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10
+    justifyContent: 'center'
   },
   error: {
     textAlign: 'center',

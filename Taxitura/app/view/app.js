@@ -25,7 +25,7 @@ import OpenSettingsModal from '../component/openSettingsModal'
 import consts from '../constant/constant'
 import fs from '../util/fs'
 
-Geocoder.setApiKey(consts.apiKeyGeocoding)
+Geocoder.setApiKey(consts.keyGeocoding)
 
 const {width, height} = Dimensions.get('window')
 const ASPECT_RATIO = width / height
@@ -36,6 +36,7 @@ let service = null
 let waitId = null
 let coords = []
 let permissionsStatus = false
+let isServiceInMemory = false
 
 export default class Taxitura extends Component {
   constructor (props) {
@@ -68,9 +69,16 @@ export default class Taxitura extends Component {
         action: consts.actionArrive
       }
     }
+    consts.socket.emit('serviceInMemory', consts.user.cedula)
+    consts.socket.on('isServiceInMemory', order => {
+      if (order) {
+        service = order
+        isServiceInMemory = true
+      }
+    })
     consts.socket.on('app', order => {
       const { navigation } = this.props
-      if (navigation.state.routeName === 'app' && !consts.waitCanceled &&
+      if (navigation.state.routeName === 'app' && !consts.waitCanceled && consts.position !== null &
           order.action === consts.order && service === null && waitId === null) {
         service = order
         this.getDistance(true, this.state.markerPosition,
@@ -128,17 +136,6 @@ export default class Taxitura extends Component {
         }
       }
     })
-    consts.socket.on('getPositionApp', data => {
-      if (service) {
-        if (data.user.id === service.user.id && data.service.id === service.service.id) {
-          let response = {
-            position: this.state.markerPosition,
-            user: service.user
-          }
-          consts.socket.emit('returnPositionApp', response)
-        }
-      }
-    })
     this.getStatus()
   }
 
@@ -156,7 +153,11 @@ export default class Taxitura extends Component {
       if (nextAppState === 'background') {
         this._componentWillUnmount()
       } else if (nextAppState === 'active') {
-        this.setState({ renderGPS: true, address: consts.getPositionText, loading: true })
+        if (service) {
+          this.setState({ renderGPS: true })
+        } else {
+          this.setState({ renderGPS: true, address: consts.getPositionText, loading: true })
+        }
         this.getStatus()
       }
     })
@@ -221,7 +222,7 @@ export default class Taxitura extends Component {
         consts.position = null
       }
     },
-    {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000})
+    {enableHighAccuracy: false, timeout: 8000, maximumAge: 1000})
     this.watchID = navigator.geolocation.watchPosition(position => {
       consts.position = {
         latitude: parseFloat(position.coords.latitude),
@@ -241,7 +242,7 @@ export default class Taxitura extends Component {
   }
 
   __drawPosition (position) {
-    this.uploadPosition(position)
+    this.sendPosition(position)
     this.setState({
       address: '',
       initialPosition: {
@@ -255,10 +256,20 @@ export default class Taxitura extends Component {
       loading: false
     })
     this.getAddress(position, true)
+    if (isServiceInMemory) {
+      isServiceInMemory = false
+      if (service.action === consts.actionArrive) {
+        this.setState({button: {
+          title: consts.endService,
+          action: consts.actionEnd
+        }})
+      }
+      this.getInfoOrder(service.position_cabman, service.position_user)
+    }
   }
 
-  uploadPosition (position) {
-    if (service && position) {
+  sendPosition (position) {
+    if (position) {
       let response = {
         position_cabman: {
           latitude: position.latitude,
@@ -357,7 +368,7 @@ export default class Taxitura extends Component {
       service['cabman'] = {
         id: consts.user.cedula,
         name: consts.user.nombre,
-        photo: 'https://thumbs.dreamstime.com/b/taxista-14436793.jpg'
+        photo: consts.getUrlPhoto(consts.user.foto.url)
       }
       service['position_cabman'] = {
         distance: this.state.distance,
@@ -395,6 +406,10 @@ export default class Taxitura extends Component {
 
   goListServives () {
     this.props.navigation.navigate('listService', {destroy: () => { this._componentWillUnmount() }})
+  }
+
+  goSettings () {
+    this.props.navigation.navigate('settings')
   }
 
   __onCloseModalSettings () {
@@ -460,6 +475,7 @@ export default class Taxitura extends Component {
       return (
         <OpenSettingsModal
           isVisible
+          onBack
           onClose={() => { this.__onCloseModalSettings() }} />
       )
     } else {
@@ -473,6 +489,7 @@ export default class Taxitura extends Component {
     return (
       <Container
         renderMenu
+        goSettings={() => { this.goSettings() }}
         isListServives
         goListServives={() => { this.goListServives() }}
         onPress={() => { this.logout() }}>

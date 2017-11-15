@@ -1,5 +1,4 @@
-'use strict'
-
+/* global fetch,Headers:true */
 import React, { Component } from 'react'
 import { View, Image } from 'react-native'
 import { StackNavigator } from 'react-navigation'
@@ -12,11 +11,13 @@ import styles from './style/main.style'
 import Login from './view/login'
 import App from './view/app'
 import ListService from './view/listService'
+import Settings from './view/settings'
 
 const roots = {
   login: {screen: Login},
   app: {screen: App},
-  listService: {screen: ListService}
+  listService: {screen: ListService},
+  settings: {screen: Settings}
 }
 
 const config = {
@@ -36,7 +37,7 @@ export default class Main extends Component {
   constructor () {
     super()
     this.state = {
-      loading: true,
+      loading: false,
       rendering: false
     }
     this.socket = io(consts.serverSock, { transports: ['websocket'] })
@@ -45,21 +46,45 @@ export default class Main extends Component {
 
   componentDidMount () {
     fs.readFile(`${consts.persistenceFile}${consts.fileLogin}`)
-      .then(response => {
-        if (response) {
-          consts.user = response
-          if (!consts.user.activo) {
-            this.state.rendering = true
-          } else {
-            consts.user = null
-            consts.message = 'Usuario inactivo\nComuníquese con soporte'
+      .then(result => {
+        if (result) {
+          let myHeaders = new Headers()
+          myHeaders.append('user_token', result.token)
+          let init = {
+            method: 'GET',
+            headers: myHeaders
           }
+          fetch(consts.meService, init)
+            .then(response => {
+              return response.json()
+            })
+            .then(json => {
+              if (json) {
+                if (json.activo) {
+                  consts.user = json
+                  this.state.rendering = true
+                } else {
+                  consts.user = null
+                  consts.message = 'Usuario inactivo\nComuníquese con soporte'
+                }
+              } else {
+                consts.user = null
+                consts.message = 'La sesión ha finalizado\nIngrese sus credenciales'
+                fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
+              }
+              this.__renderView()
+            })
+        } else {
+          this.__renderView()
         }
-        idSet = setInterval(() => {
-          this.setState({ loading: false })
-          clearInterval(idSet)
-        }, 1500)
       })
+  }
+
+  __renderView () {
+    idSet = setInterval(() => {
+      this.setState({ loading: true })
+      clearInterval(idSet)
+    }, 1000)
   }
 
   isRendering () {
@@ -76,7 +101,7 @@ export default class Main extends Component {
   }
 
   render () {
-    if (!this.state.loading) {
+    if (this.state.loading) {
       return (
         <View style={styles.container}>
           { this.isRendering() }
@@ -93,7 +118,7 @@ export default class Main extends Component {
             style={styles.loading}
             size={50}
             color={['#2980b9']}
-            animating={this.state.loading}
+            animating={!this.state.loading}
             thickness={5}
           />
         </View>

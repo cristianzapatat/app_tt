@@ -14,6 +14,7 @@ class Container extends Component {
         <Menu
           style={{display: this.props.renderMenu ? 'flex' : 'none'}}
           visible={this.props.renderMenu}
+          goSettings={this.props.goSettings}
           isMap={this.props.isMap}
           goMap={this.props.goMap}
           isListServives={this.props.isListServives}

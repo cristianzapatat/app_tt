@@ -106,6 +106,14 @@ export default class Menu extends Component {
               <Text style={[styles.text]}>Mapa</Text>
             </TouchableOpacity>
           </View>
+          <View style={[{display: this.props.isListServives ? 'flex' : 'none'}, styles.item]}>
+            <TouchableOpacity onPressOut={() => { this._callBack(this.props.goSettings) }} style={styles.element}>
+              <Image
+                source={require('../../img/settings48.png')}
+                style={styles.icon} />
+              <Text style={[styles.text]}>Ajustes</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.item}>
             <TouchableOpacity onPressOut={this.props.fnLogout} style={styles.element}>
               <Image
