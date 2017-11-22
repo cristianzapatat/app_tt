@@ -1,27 +1,36 @@
-'use strict'
-import React, {Component} from 'react'
-import {View} from 'react-native'
+import React, { Component } from 'react'
+import { View, TouchableOpacity, Image } from 'react-native'
 
-import styles from '../style/container.style'
-import Header from './header'
-import Menu from './menu'
+import style from '../style/container.style'
+
+import Map from './map'
 
 class Container extends Component {
+  getMap (value) {
+    switch (value) {
+      case 0:
+        return <Map.MapClassic style={style.map} />
+      default:
+        return <Map.MapClassic style={style.map} />
+    }
+  }
   render () {
     return (
-      <View style={styles.all}>
-        <Header />
-        <Menu
-          style={{display: this.props.renderMenu ? 'flex' : 'none'}}
-          visible={this.props.renderMenu}
-          goSettings={this.props.goSettings}
-          isMap={this.props.isMap}
-          goMap={this.props.goMap}
-          isListServives={this.props.isListServives}
-          goListServives={this.props.goListServives}
-          fnLogout={this.props.onPress} />
-        <View style={styles.container}>
+      <View style={style.container}>
+        { this.getMap(this.props.idMap) }
+        <View style={style.children}>
           {this.props.children}
+        </View>
+        <View style={[
+          {display: this.props.isFocus ? 'none' : 'flex'},
+          style.help
+        ]}>
+          <TouchableOpacity style={style.ButtonHelp}>
+            <Image
+              style={style.iconHelp}
+              source={require('../../img/menu.png')}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     )

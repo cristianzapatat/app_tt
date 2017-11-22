@@ -1,4 +1,3 @@
-'use strict'
 /* eslint handle-callback-err: ["error", "error"] */
 import fs from 'react-native-fs'
 

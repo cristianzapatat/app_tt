@@ -10,14 +10,14 @@ import fs from './util/fs'
 import styles from './style/main.style'
 import Login from './view/login'
 import App from './view/app'
-import ListService from './view/listService'
-import Settings from './view/settings'
+import waitingServices from './view/waitingServices'
+import changePassword from './view/changePassword'
 
 const roots = {
   login: {screen: Login},
   app: {screen: App},
-  listService: {screen: ListService},
-  settings: {screen: Settings}
+  waitingServices: {screen: waitingServices},
+  changePassword: {screen: changePassword}
 }
 
 const config = {

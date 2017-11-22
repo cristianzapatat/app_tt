@@ -1,17 +1,33 @@
-import { StyleSheet, Dimensions } from 'react-native'
-
-const {width, height} = Dimensions.get('window')
+import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  all: {
-    height: height,
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center' // cambiar para el resto de vistas
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject
+  },
+  children: {
     backgroundColor: 'transparent'
   },
-  container: {
-    position: 'absolute',
-    left: 0,
-    top: 50,
-    height: (height - 50),
-    width: width
+  help: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 90
+  },
+  ButtonHelp: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  iconHelp: {
+    width: 30,
+    height: 30
   }
 })
