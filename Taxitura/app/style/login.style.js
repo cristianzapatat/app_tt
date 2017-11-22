@@ -5,14 +5,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  logoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  logo: {
-    width: 70,
-    height: 70
-  },
   formContainer: {
     marginTop: 50
   },
@@ -22,7 +14,7 @@ export default StyleSheet.create({
     height: 45,
     paddingHorizontal: 20,
     backgroundColor: '#FFF',
-    color: '#A8A8A8',
+    color: '#2b2a2a',
     marginBottom: 10,
     borderRadius: 30,
     textDecorationColor: 'transparent',

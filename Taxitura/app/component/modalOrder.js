@@ -3,12 +3,12 @@ import {View, Image, Text, TouchableOpacity} from 'react-native'
 import Modal from 'react-native-modal'
 import * as Progress from 'react-native-progress'
 
-import styles from '../style/ordenModal.style'
+import styles from '../style/modalOrder.style'
 import util from '../util/util'
 
 let idSet
 
-class OrdenModal extends Component {
+class ModalOrder extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -102,4 +102,4 @@ class OrdenModal extends Component {
   }
 }
 
-module.exports = OrdenModal
+module.exports = ModalOrder

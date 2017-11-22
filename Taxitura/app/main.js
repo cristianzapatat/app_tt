@@ -1,34 +1,37 @@
 /* global fetch,Headers:true */
 import React, { Component } from 'react'
-import { View, Image } from 'react-native'
+import {
+  View,
+  Image,
+  AsyncStorage
+} from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import * as Progress from 'react-native-progress'
 import io from 'socket.io-client'
 
-import consts from './constant/constant'
-import fs from './util/fs'
 import styles from './style/main.style'
+
+import global from './util/global'
+import urls from './util/urls'
+import kts from './util/kts'
+
 import Login from './view/login'
 import App from './view/app'
-import waitingServices from './view/waitingServices'
-import changePassword from './view/changePassword'
 
 const roots = {
   login: {screen: Login},
-  app: {screen: App},
-  waitingServices: {screen: waitingServices},
-  changePassword: {screen: changePassword}
+  app: {screen: App}
 }
 
 const config = {
-  mode: 'card',
-  headerMode: 'none'
+  mode: kts.navigation.card,
+  headerMode: kts.navigation.none
 }
 
-config['initialRouteName'] = 'login'
+config[kts.navigation.initialRouteName] = kts.login.id
 const RouteNavigationLogin = StackNavigator(roots, config)
 
-config['initialRouteName'] = 'app'
+config[kts.navigation.initialRouteName] = kts.app.id
 const RouteNavigationApp = StackNavigator(roots, config)
 
 let idSet
@@ -40,44 +43,47 @@ export default class Main extends Component {
       loading: false,
       rendering: false
     }
-    this.socket = io(consts.serverSock, { transports: ['websocket'] })
-    consts.socket = this.socket
+    this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
+    global.socket = this.socket
   }
 
   componentDidMount () {
-    fs.readFile(`${consts.persistenceFile}${consts.fileLogin}`)
-      .then(result => {
+    AsyncStorage.getItem(kts.key.user, (err, result) => {
+      if (err) {
+        this.__renderView()
+      } else {
         if (result) {
+          let user = JSON.parse(result)
           let myHeaders = new Headers()
-          myHeaders.append('user_token', result.token)
+          myHeaders.append(kts.key.userToken, user.token)
           let init = {
-            method: 'GET',
+            method: kts.method.get,
             headers: myHeaders
           }
-          fetch(consts.meService, init)
+          fetch(urls.meService, init)
             .then(response => {
               return response.json()
             })
             .then(json => {
               if (json) {
                 if (json.activo) {
-                  consts.user = json
-                  this.state.rendering = true
+                  AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+                    this.state.rendering = true
+                    global.user = json
+                    this.__renderView()
+                  })
                 } else {
-                  consts.user = null
-                  consts.message = 'Usuario inactivo\nComuníquese con soporte'
+                  this.__renderView()
                 }
               } else {
-                consts.user = null
-                consts.message = 'La sesión ha finalizado\nIngrese sus credenciales'
-                fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
+                this.__renderView()
               }
-              this.__renderView()
             })
         } else {
           this.__renderView()
         }
-      })
+      }
+    })
   }
 
   __renderView () {
@@ -88,7 +94,6 @@ export default class Main extends Component {
   }
 
   isRendering () {
-    consts.position = null
     if (this.state.rendering) {
       return (
         <RouteNavigationApp />

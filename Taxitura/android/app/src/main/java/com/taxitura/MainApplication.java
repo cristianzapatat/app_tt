@@ -5,7 +5,6 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.opensettings.OpenSettingsPackage;
 import br.com.dopaminamob.gpsstate.GPSStatePackage;
-import com.rnfs.RNFSPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -29,7 +28,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new OpenSettingsPackage(),
             new GPSStatePackage(),
-            new RNFSPackage(),
             new MapsPackage()
       );
     }

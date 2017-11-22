@@ -10,7 +10,6 @@
     "@mapbox/polyline": "^0.2.0",
     "react": "16.0.0-alpha.12",
     "react-native": "0.46.1",
-    "react-native-fs": "^2.8.1",
     "react-native-geocoding": "^0.2.0",
     "react-native-gps-state": "0.0.1",
     "react-native-maps": "^0.15.3",

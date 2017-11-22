@@ -3,18 +3,19 @@
 import React, { Component } from 'react'
 import {
   View,
-  Image,
   TextInput,
   TouchableOpacity,
   Text,
   KeyboardAvoidingView,
   Keyboard,
+  AsyncStorage,
   BackHandler,
   Platform
 } from 'react-native'
 
 import style from '../style/login.style'
 
+import global from '../util/global'
 import kts from '../util/kts'
 import urls from '../util/urls'
 import text from '../util/text'
@@ -58,64 +59,52 @@ export default class Login extends Component {
   }
 
   async login () {
-    let form = this.refs.form.getValue()
-    if (form) {
-      if (form.id && form.password) {
-        try {
-          this.setState({loading: true})
-          let response = await fetch(urls.loginService(form.id, form.password))
-          let token = await response.json()
-          if (token) {
-            if (token.token) {
-              if (token.activo) {
-                //
-                // fs.createFile(consts.persistenceFile, consts.fileLogin, token)
-                //   .then(status => {
-                //     this.setState({ loading: false })
-                //     consts.user = token
-                //     consts.position = null
-                //     this.props.navigation.navigate('app')
-                //     if (!status) {
-                //       this.setMessage('Archivo error')
-                //     }
-                //   })
+    Keyboard.dismiss()
+    let idCard = this.state.idCard
+    let password = this.state.password
+    if (idCard.length > 0 && password.length > 0) {
+      fetch(urls.loginService(idCard, password))
+        .then(response => {
+          return response.json()
+        })
+        .then(json => {
+          if (json) {
+            if (json.token) {
+              if (json.activo) {
+                AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+                  global.user = json
+                  this.props.navigation.navigate(kts.app.id)
+                })
               } else {
-                this.setState({value: {id: form.id, password: ''}, loading: false})
-                this.setMessage('Usuario inactivo\nComuníquese con soporte')
+                // TODO generar mensaje de usuario inactivo
+                console.log('generar mensaje de usuario inactivo')
               }
             } else {
-              this.setState({value: {id: form.id, password: ''}, loading: false})
-              this.setMessage('Acceso denegado\nVerifique sus credenciales')
+              // TODO generar mensaje de verificar credenciales
+              console.log('generar mensaje de verificar credenciales')
             }
           } else {
-            this.setState({value: {id: form.id, password: ''}, loading: false})
-            this.setMessage('Acceso denegado\nVerifique sus credenciales')
+            // TODO generar mensaje de verificar credenciales
+            console.log('generar mensaje de verificar credenciales')
           }
-        } catch (error) {
-          this.setState({loading: false})
-          this.setMessage('Verifique su conexión de Internet\nIntento de nuevo')
-        }
-      } else {
-        this.setMessage('Por favor ingrese sus credenciales para ingresar')
-      }
+        })
+        .catch(err => {
+          // TODO generar mensaje indicado error en conexión
+          console.log('generar mensaje indicado error en conexión')
+        })
     } else {
-      this.setMessage('Por favor ingrese sus credenciales para ingresar')
+      // TODO generar mensajes de ingresar credenciales
+      console.log('generar mensajes de ingresar credenciales')
     }
   }
 
   render () {
     return (
-      <Container isFocus={this.state.isFocus}>
+      <Container.ContainerLogin isFocus={this.state.isFocus}>
         <KeyboardAvoidingView
           behavior={'padding'}
           style={style.container}
         >
-          <View style={style.logoContainer}>
-            <Image
-              style={style.logo}
-              source={require('../../img/taxitura.png')}
-            />
-          </View>
           <View style={style.formContainer}>
             <TextInput
               style={style.input}
@@ -141,14 +130,16 @@ export default class Login extends Component {
               onFocus={() => { this.setState({isFocus: true}) }}
               ref={(input) => { this.password = input }}
             />
-            <TouchableOpacity style={style.button}>
+            <TouchableOpacity
+              style={style.button}
+              onPressOut={this.login.bind(this)}>
               <Text style={style.text}>
                 {text.login.enter}
               </Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
-      </Container>
+      </Container.ContainerLogin>
     )
   }
 }
