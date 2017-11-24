@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  modalContent: {
+  content: {
     backgroundColor: 'white',
     padding: 22,
     justifyContent: 'center',
@@ -10,68 +10,62 @@ export default StyleSheet.create({
     borderRadius: 6,
     borderColor: 'rgba(0, 0, 0, 0.1)'
   },
-  imageOrder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60
+  image: {
+    width: 110,
+    height: 110,
+    borderRadius: 55
   },
-  nameUser: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 30,
-    flexDirection: 'column',
-    marginTop: 10
-  },
-  textLarge: {
-    fontSize: 22,
-    color: '#4d4d4d',
-    textAlign: 'center',
-    marginBottom: 0
-  },
-  textSmall: {
-    fontSize: 16,
-    color: '#4d4d4d',
-    textAlign: 'center',
-    marginTop: -5
-  },
-  stateUser: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 20,
-    flexDirection: 'column',
-    marginTop: 30
-  },
-  textState: {
-    fontSize: 18,
-    color: '#918c8c',
+  text: {
     textAlign: 'center'
   },
-  buttonAccept: {
-    backgroundColor: '#ffaf18',
-    width: 280,
-    height: 45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30
+  name: {
+    fontSize: 23,
+    color: '#000'
   },
-  textAccept: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'rgb(255, 255, 255)'
+  distance: {
+    fontSize: 15,
+    color: '#7c7979'
   },
-  buttonCancel: {
-    backgroundColor: 'rgb(255, 255, 255)',
-    width: 280,
-    height: 45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 18
-  },
-  textCancel: {
-    fontSize: 22,
-    color: '#ffaf18'
+  address: {
+    fontSize: 19,
+    color: '#110f0f',
+    marginTop: 16
   },
   progress: {
-    marginTop: 15
+    marginTop: 22
+  },
+  time: {
+    fontSize: 18,
+    color: '#AFAFAF'
+  },
+  buttons: {
+    width: 270,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 25
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 120,
+    height: 40,
+    borderRadius: 30
+  },
+  accept: {
+    backgroundColor: '#ffaf18'
+  },
+  cancel: {
+    backgroundColor: '#F2F2F2'
+  },
+  tText: {
+    fontSize: 22,
+    textAlign: 'center'
+  },
+  tCancel: {
+    color: '#000'
+  },
+  tAccept: {
+    color: '#FFF'
   }
 })

@@ -16,8 +16,10 @@ class ModalPermission extends Component {
   render () {
     return (
       <Modal
+        animationInTiming={100}
+        animationOutTiming={100}
         isVisible={this.props.isVisible}
-        onBack={this.props.onBack} >
+        callBack={this.props.onClose} >
         <View style={style.modalContent}>
           <Image
             style={style.img}
@@ -29,7 +31,7 @@ class ModalPermission extends Component {
             { text.permission.cause }
           </Text>
           <TouchableOpacity onPressOut={() => {
-            this.props.onClose()
+            this.props.onPreview()
             OpenSettings.openSettings()
           }}>
             <View style={[style.btn]}>

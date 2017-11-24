@@ -1,4 +1,8 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
+
+import kts from '../util/kts'
+
+const {width, height} = Dimensions.get(kts.hardware.window)
 
 var styleSheet = Object.freeze({
   app: {
@@ -46,6 +50,42 @@ var styleSheet = Object.freeze({
     icon: {
       width: 25,
       height: 25
+    },
+    warning: {
+      position: 'absolute',
+      top: (height / 5) * 2,
+      backgroundColor: 'rgba(113, 112, 109, 0.68)',
+      width: 200,
+      borderRadius: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 5
+    },
+    iconWarning: {
+      width: 40,
+      height: 40
+    },
+    textWarning: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: '#FFF',
+      textAlign: 'center',
+      marginBottom: 8
+    },
+    buttonWarning: {
+      backgroundColor: '#ffaf18',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 30,
+      width: 100,
+      borderRadius: 30,
+      marginBottom: 5
+    },
+    textButtonWarning: {
+      fontSize: 16,
+      fontWeight: '500',
+      textAlign: 'center',
+      color: '#FFF'
     },
     footer: {
       position: 'absolute',

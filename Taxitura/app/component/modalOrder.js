@@ -3,8 +3,11 @@ import {View, Image, Text, TouchableOpacity} from 'react-native'
 import Modal from 'react-native-modal'
 import * as Progress from 'react-native-progress'
 
-import styles from '../style/modalOrder.style'
+import style from '../style/modalOrder.style'
+
 import util from '../util/util'
+import text from '../util/text'
+import kts from '../util/kts'
 
 let idSet
 
@@ -12,90 +15,80 @@ class ModalOrder extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      duration: 1,
-      nameUser: '',
-      uri: 'https://scontent.feoh3-1.fna.fbcdn.net/v/t1.0-1/p50x50/17903408_1044586812340472_7176591297268243543_n.png?oh=20bc54a7ec0faffce536dfa16eff5388&oe=5AA9803D'
+      uri: kts.help.image
     }
-    this.state.nameUser = this.props.nameUser || ''
-    this.state.duration = this.props.duration || 1
   }
 
-  reductionduration () {
-    idSet = setInterval(() => {
-      let duration = this.state.duration
-      if (duration <= 0.0) {
-        this.setState({ duration: 1 })
-        clearInterval(idSet)
-        this.props.cancel()
-      } else {
-        duration = duration - 0.025
-        this.setState({duration})
-      }
-    }, 250)
-  }
-
-  _cancel () {
+  cancelOrder () {
     clearInterval(idSet)
-    this.props.cancel()
+    this.props.onCancel()
   }
 
-  _accept () {
+  acceptOrder () {
     clearInterval(idSet)
-    this.props.accept()
-  }
-
-  componentDidMount () {
-    this.reductionduration()
+    this.props.onAccept()
   }
 
   render () {
     return (
       <Modal
+        animationInTiming={100}
+        animationOutTiming={100}
         isVisible={this.props.isVisible}
-        onBack={this.props.onBack}
-        callBack={() => { this._cancel() }}>
-        <View style={styles.modalContent}>
+        callBack={() => { this.cancelOrder() }}>
+        <View style={style.content}>
           <Image
-            style={styles.imageOrder}
+            style={style.image}
             source={{uri: this.props.uri || this.state.uri}} />
-          <View style={styles.nameUser}>
-            <Text
-              style={styles.textLarge}
-              numberOfLines={1}
-              ellipsizeMode={'tail'}>
-              { this.state.nameUser }
-            </Text>
-            <Text
-              style={styles.textSmall}
-              numberOfLines={1}
-              ellipsizeMode={'tail'}>
-              A {util.getMeters(this.props.distance || 0)}
-            </Text>
-          </View>
-          <View style={styles.stateUser}>
-            <Text
-              style={styles.textState}
-              numberOfLines={1}
-              ellipsizeMode={'tail'}>
-              Usuario Recurrente
-            </Text>
-          </View>
-          <TouchableOpacity onPressOut={() => { this._accept() }}>
-            <View style={styles.buttonAccept}>
-              <Text style={styles.textAccept}>Aceptar servicio</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPressOut={() => { this._cancel() }}>
-            <View style={styles.buttonCancel}>
-              <Text style={styles.textCancel}>Cancelar</Text>
-            </View>
-          </TouchableOpacity>
+          <Text
+            style={[style.text, style.name]}
+            numberOfLines={1}
+            ellipsizeMode={kts.hardware.tail}>
+            { this.props.name }
+          </Text>
+          <Text
+            style={[style.text, style.distance]}
+            numberOfLines={1}
+            ellipsizeMode={kts.hardware.tail}>
+            {`${text.app.label.a} ${util.getMeters(this.props.distance || 0)}`}
+          </Text>
+          <Text
+            style={[style.text, style.address]}
+            numberOfLines={1}
+            ellipsizeMode={kts.hardware.tail}>
+            { this.props.address }
+          </Text>
           <Progress.Bar
-            progress={this.state.duration}
-            width={280}
-            color={'rgb(163, 153, 167)'}
-            borderColor={'rgb(163, 153, 167)'}
-            style={styles.progress} />
+            progress={this.props.duration}
+            width={270}
+            height={20}
+            color={'#AFAFAF'}
+            unfilledColor={'#DCDCDC'}
+            borderColor={'#DCDCDC'}
+            borderRadius={0}
+            style={style.progress} />
+          <Text
+            style={[style.text, style.time]}
+            numberOfLines={1}
+            ellipsizeMode={kts.hardware.tail}>
+            {`${parseInt(this.props.duration * 10)} ${text.app.label.second}`}
+          </Text>
+          <View style={style.buttons}>
+            <TouchableOpacity
+              style={[style.button, style.cancel]}
+              onPressOut={() => { this.cancelOrder() }}>
+              <Text style={[style.tText, style.tCancel]}>
+                {text.app.label.cancel}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[style.button, style.accept]}
+              onPressOut={() => { this.acceptOrder() }}>
+              <Text style={[style.tText, style.tAccept]}>
+                {text.app.label.accept}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     )

@@ -63,7 +63,7 @@ class ContainerApp extends Component {
       return (
         <TouchableOpacity style={this.state.styleApp.button}>
           <Text style={this.state.styleApp.text}>
-            {this.props.textButton} Llegué!
+            {this.props.textButton}
           </Text>
         </TouchableOpacity>
       )
@@ -96,12 +96,33 @@ class ContainerApp extends Component {
       )
     }
   }
+  __drawMap () {
+    if (this.props.isService) {
+      return (
+        <Map.MapService
+          style={this.state.styleApp.map}
+          latitude={this.props.latitude}
+          longitude={this.props.longitude}
+          latitudeService={this.props.latitudeService}
+          longitudeService={this.props.longitudeService}
+          address={this.props.address}
+          coords={this.props.coords}
+        />
+      )
+    } else {
+      return (
+        <Map.MapCabman
+          style={this.state.styleApp.map}
+          latitude={this.props.latitude}
+          longitude={this.props.longitude}
+        />
+      )
+    }
+  }
   render () {
     return (
       <View style={this.state.styleApp.container}>
-        <Map.MapCabman
-          style={this.state.styleApp.map}
-        />
+        { this.__drawMap() }
         <View style={[this.state.styleApp.content, this.state.styleApp.headerLogo]}>
           <TouchableOpacity
             style={this.state.styleApp.menu} >
@@ -122,6 +143,25 @@ class ContainerApp extends Component {
             ellipsizeMode={'tail'}>
             {this.props.title}
           </Text>
+        </View>
+        <View style={[
+          {display: this.props.isNoGps ? 'flex' : 'none'},
+          this.state.styleApp.warning
+        ]}>
+          <Image
+            style={this.state.styleApp.iconWarning}
+            source={require('../../img/no_gps.png')}
+          />
+          <Text style={this.state.styleApp.textWarning}>
+            {this.props.textNoGps}
+          </Text>
+          <TouchableOpacity
+            style={this.state.styleApp.buttonWarning}
+            onPressOut={this.props.getStatus}>
+            <Text style={this.state.styleApp.textButtonWarning}>
+              {text.app.gps.update}
+            </Text>
+          </TouchableOpacity>
         </View>
         <View style={[this.state.styleApp.content, this.state.styleApp.footer]}>
           { this.__drawFooter() }

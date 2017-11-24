@@ -29,6 +29,10 @@ module.exports = {
       imperial&origins=${startLoc}&destinations=${endLoc}
       &key=${keyDistanceMatrix}&units=metric`
   },
+  getGeocoding: (pos) => { // Google Api obtener dirección
+    return `https://maps.google.com/maps/api/geocode/json?
+      key=${keyGeocoding}&latlng=${encodeURI(`${pos.latitude},${pos.longitude}`)}`
+  },
   getUrlPhoto: (url) => { // url de la foto de los taxistas
     return `${urlServer}${url}`
   }

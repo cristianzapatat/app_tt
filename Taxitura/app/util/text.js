@@ -15,7 +15,16 @@ module.exports = {
     },
     label: {
       available: 'Servicios\ndisponibles',
-      borroweb: 'Servicios hoy\nprestados'
+      borroweb: 'Servicios hoy\nprestados',
+      cancel: 'Cancelar',
+      accept: 'Aceptar',
+      a: 'A',
+      second: 'seg'
+    },
+    gps: {
+      update: 'Actualizar',
+      offGps: 'Favor enceder GPS',
+      withoutPermission: 'Sin permisos de GPS'
     }
   },
   permission: {
