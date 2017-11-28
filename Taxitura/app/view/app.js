@@ -19,8 +19,6 @@ import Container from '../component/container'
 import ModalOrder from '../component/modalOrder'
 import ModalPermission from '../component/modalPermission'
 
-let service = null
-let waitId = null
 let coords = []
 let permissionsStatus = false
 let isServiceInMemory = false
@@ -36,7 +34,7 @@ export default class Taxitura extends Component {
     global.socket.emit(kts.socket.serviceInMemory, global.user.id)
     global.socket.on(kts.socket.isServiceInMemory, order => {
       if (order) {
-        service = order
+        global.service = order
         isServiceInMemory = true
       }
     })
@@ -44,9 +42,9 @@ export default class Taxitura extends Component {
       const { navigation } = this.props
       if (navigation.state.routeName === kts.app.id && global.position !== null &&
        !global.waitCanceled && order.action === kts.action.order &&
-       service === null && waitId === null) {
-        service = order
-        this.openModalOrder(global.position, service.position_user)
+       global.service === null && global.waitId === null) {
+        global.service = order
+        this.openModalOrder(global.position, global.service.position_user)
       } else if (order.action === kts.action.order) {
         order[kts.json.cabman] = { id: global.user.id }
         global.socket.emit(kts.socket.addServiceList, order)
@@ -57,25 +55,25 @@ export default class Taxitura extends Component {
         const { navigation } = this.props
         if (navigation.state.routeName === kts.app.id && global.position !== null &&
           global.waitCanceled && order.action === kts.action.order &&
-          service === null && waitId === null) {
-          service = order
+          global.service === null && global.waitId === null) {
+          global.service = order
           this.getInfoOrder()
         }
       } else { this.cleanService() }
     })
     global.socket.on(kts.socket.accept, order => {
       if (order !== null) {
-        if (order.service.id === waitId) {
-          if (service === null) {
-            service = order
+        if (order.service.id === global.waitId) {
+          if (global.service === null) {
+            global.service = order
             this.getInfoOrder()
           } else { this.cleanService() }
         } else { this.cleanService() }
       } else { this.cleanService() }
     })
     global.socket.on(kts.socket.deleteService, idService => {
-      if (service) {
-        if (service.service.id === idService) {
+      if (global.service) {
+        if (global.service.service.id === idService) {
           this.cancelOrder(false)
         }
       }
@@ -97,18 +95,13 @@ export default class Taxitura extends Component {
       if (nextAppState === kts.hardware.background) {
         this.componentWillUnmount()
       } else if (nextAppState === kts.hardware.active) {
-        if (service) {
-          // this.setState({ renderGPS: true })
-        } else {
-          // this.setState({ renderGPS: true, title: text.app.get.position, loading: true })
-        }
+        this.getAddress(global.position)
         this.getStatus()
       }
     })
   }
 
   componentWillUnmount () {
-    navigator.geolocation.clearWatch(this.watchID)
     AppState.removeEventListener(kts.hardware.change)
     if (Platform.OS === kts.platform.android) {
       BackHandler.removeEventListener(kts.hardware.backPress)
@@ -227,9 +220,9 @@ export default class Taxitura extends Component {
         this.setState({
           distance: json.rows[0].elements[0].distance.value,
           time: json.rows[0].elements[0].duration.value,
-          uri: service.user.url_pic,
-          name: service.user.name,
-          address: service.position_user.address,
+          uri: global.service.user.url_pic,
+          name: global.service.user.name,
+          address: global.service.position_user.address,
           duration: 1,
           isModalOrder: true
         })
@@ -257,39 +250,39 @@ export default class Taxitura extends Component {
     clearInterval(idSet)
     this.setState({ isModalOrder: false })
     if (status) {
-      service[kts.json.cabman] = { id: global.user.id }
-      global.socket.emit(kts.socket.addServiceCanceled, service)
+      global.service[kts.json.cabman] = { id: global.user.id }
+      global.socket.emit(kts.socket.addServiceCanceled, global.service)
     }
-    service = null
-    waitId = null
+    global.service = null
+    global.waitId = null
     global.socket.emit(kts.socket.nextService, global.user.id)
   }
 
   acceptOrder () {
     clearInterval(idSet)
     this.setState({ isModalOrder: false })
-    if (service) {
-      service[kts.json.cabman] = {
+    if (global.service) {
+      global.service[kts.json.cabman] = {
         id: global.user.id,
         name: global.user.nombre,
         photo: urls.getUrlPhoto(global.user.foto.url)
       }
-      service[kts.json.position_cabman] = {
+      global.service[kts.json.position_cabman] = {
         distance: this.state.distance,
         time: this.state.time,
         latitude: this.state.latitude,
         longitude: this.state.longitude
       }
-      service.action = kts.action.accept
-      global.socket.emit(kts.socket.app, service)
-      waitId = service.service.id
-      service = null
+      global.service.action = kts.action.accept
+      global.socket.emit(kts.socket.app, global.service)
+      global.waitId = global.service.service.id
+      global.service = null
     }
   }
 
   cleanService () {
-    service = null
-    waitId = null
+    global.service = null
+    global.waitId = null
     coords = []
     global.waitCanceled = false
     this.setState({ isButton: false, isService: false })
@@ -297,7 +290,7 @@ export default class Taxitura extends Component {
 
   async getInfoOrder () {
     try {
-      let resp = await fetch(urls.getDirections(global.position, service.position_user))
+      let resp = await fetch(urls.getDirections(global.position, global.service.position_user))
       let respJson = await resp.json()
       let points = util.decode(respJson.routes[0].overview_polyline.points, 5)
       coords = points.map((point, index) => {
@@ -309,23 +302,23 @@ export default class Taxitura extends Component {
     } catch (err) {
       coords = [
         {latitude: global.position.latitude, longitude: global.position.longitude},
-        {latitude: service.position_user.latitude, longitude: service.position_user.longitude}
+        {latitude: global.service.position_user.latitude, longitude: global.service.position_user.longitude}
       ]
     }
     this.setState({
-      latitudeService: service.position_user.latitude,
-      longitudeService: service.position_user.longitude,
-      address: service.position_user.andress,
-      textButton: service.action === kts.action.accept ? text.app.label.iArrived : text.app.label.weArrived,
-      isService: service.action === kts.action.accept,
+      latitudeService: global.service.position_user.latitude,
+      longitudeService: global.service.position_user.longitude,
+      address: global.service.position_user.andress,
+      textButton: global.service.action === kts.action.accept ? text.app.label.iArrived : text.app.label.weArrived,
+      isService: global.service.action === kts.action.accept,
       isButton: true
     })
   }
 
   processService () {
-    service.action = (service.action === kts.action.accept) ? kts.action.arrive : kts.action.end
-    global.socket.emit(kts.socket.app, service)
-    if (service.action === kts.action.arrive) {
+    global.service.action = (global.service.action === kts.action.accept) ? kts.action.arrive : kts.action.end
+    global.socket.emit(kts.socket.app, global.service)
+    if (global.service.action === kts.action.arrive) {
       coords = []
       this.setState({ textButton: text.app.label.weArrived, isService: false })
     } else {

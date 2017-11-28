@@ -87,12 +87,6 @@ var styleSheet = Object.freeze({
       textAlign: 'center',
       color: '#FFF'
     },
-    footer: {
-      position: 'absolute',
-      bottom: 20,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
     button: {
       backgroundColor: '#ffaf18',
       justifyContent: 'center',
@@ -105,6 +99,44 @@ var styleSheet = Object.freeze({
       fontSize: 22,
       textAlign: 'center',
       color: '#FFF'
+    },
+    msn: {
+      position: 'absolute',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      bottom: 100,
+      backgroundColor: 'rgba(113, 112, 110, 0.79)',
+      width: 260,
+      height: 45,
+      borderRadius: 10
+    },
+    mText: {
+      fontSize: 17,
+      color: '#FFF',
+      width: 190,
+      textAlign: 'center'
+    },
+    mButton: {
+      marginRight: 5,
+      marginTop: 3,
+      height: '100%',
+      justifyContent: 'flex-start'
+    },
+    mClose: {
+      width: 20,
+      height: 20
+    },
+    mIcon: {
+      marginLeft: 5,
+      width: 25,
+      height: 25
+    },
+    footer: {
+      position: 'absolute',
+      bottom: 20,
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     contentFooter: {
       width: 335,

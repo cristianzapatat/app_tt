@@ -44,6 +44,22 @@ module.exports = {
       accept: 'Aceptar'
     }
   },
+  changePassword: {
+    label: {
+      title: 'Modificando contraseña',
+      current: 'Contraseña actual',
+      new: 'Contraseña nueva',
+      repeat: 'Repetir contraseña',
+      save: 'Guardar'
+    },
+    msn: {
+      changeSuccess: 'Contraseña modificada exitosamente.',
+      empty: 'Debe diligenciar todos los campos.',
+      noEquals: 'Las nuevas contraseñas no coinciden.',
+      verifyInternet: 'Verifique su coneción de Internet.',
+      verifyCredential: 'Verifique sus credenciales'
+    }
+  },
   permission: {
     require: 'Taxitura requiere permisos de ubicación.',
     cause: 'Debido a que se bloqueó la ventana de permisos el proceso debe ser manual',

@@ -28,6 +28,7 @@ export default class Login extends Component {
     this.state = {
       idCard: '',
       password: '',
+      editable: true,
       isFocus: false
     }
   }
@@ -63,6 +64,7 @@ export default class Login extends Component {
     let idCard = this.state.idCard
     let password = this.state.password
     if (idCard.length > 0 && password.length > 0) {
+      this.setState({editable: false})
       fetch(urls.loginService(idCard, password))
         .then(response => {
           return response.json()
@@ -77,19 +79,23 @@ export default class Login extends Component {
                 })
               } else {
                 // TODO generar mensaje de usuario inactivo
+                this.setState({password: '', editable: true})
                 console.log('generar mensaje de usuario inactivo')
               }
             } else {
               // TODO generar mensaje de verificar credenciales
+              this.setState({idCard: '', password: '', editable: true})
               console.log('generar mensaje de verificar credenciales')
             }
           } else {
             // TODO generar mensaje de verificar credenciales
+            this.setState({idCard: '', password: '', editable: true})
             console.log('generar mensaje de verificar credenciales')
           }
         })
         .catch(err => {
           // TODO generar mensaje indicado error en conexión
+          this.setState({idCard: '', editable: true})
           console.log('generar mensaje indicado error en conexión')
         })
     } else {
@@ -108,6 +114,7 @@ export default class Login extends Component {
           <View style={style.formContainer}>
             <TextInput
               style={style.input}
+              editable={this.state.editable}
               placeholder={text.login.idCard}
               placeholderTextColor={'#A8A8A8'}
               autoCorrect={false}
@@ -119,6 +126,7 @@ export default class Login extends Component {
             />
             <TextInput
               style={style.input}
+              editable={this.state.editable}
               placeholder={text.login.password}
               placeholderTextColor={'#A8A8A8'}
               secureTextEntry

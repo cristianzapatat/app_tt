@@ -9,6 +9,7 @@ import {
 import style from '../style/container.style'
 
 import text from '../util/text'
+import kts from '../util/kts'
 
 import Map from './map'
 
@@ -77,7 +78,7 @@ class ContainerApp extends Component {
             <Text
               style={this.state.styleApp.tText}
               numberOfLines={2}
-              ellipsizeMode={'tail'}>
+              ellipsizeMode={kts.hardware.tail}>
               {text.app.label.available}
             </Text>
           </View>
@@ -142,7 +143,7 @@ class ContainerApp extends Component {
           <Text
             style={this.state.styleApp.title}
             numberOfLines={1}
-            ellipsizeMode={'tail'}>
+            ellipsizeMode={kts.hardware.tail}>
             {this.props.title}
           </Text>
         </View>
@@ -178,7 +179,15 @@ class ContainerGeneral extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      styleGeneral: style.general
+      styleGeneral: style.general,
+      isMns: false
+    }
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.isMns && !this.state.isMns) {
+      this.setState({ isMns: true })
+    } else if (!nextProps.isMns && this.state.isMns) {
+      this.setState({ isMns: false })
     }
   }
   render () {
@@ -204,7 +213,7 @@ class ContainerGeneral extends Component {
           <Text
             style={this.state.styleGeneral.title}
             numberOfLines={1}
-            ellipsizeMode={'tail'}>
+            ellipsizeMode={kts.hardware.tail}>
             {this.props.title}
           </Text>
         </View>
@@ -227,7 +236,44 @@ class ContainerGeneral extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={[this.state.styleGeneral.content, this.state.styleGeneral.footer]}>
+        <View style={[
+          {display: this.state.isMns ? 'flex' : 'none'},
+          this.state.styleGeneral.msn
+        ]}>
+          <Image
+            style={[
+              {display: this.props.typeMessage === kts.enum.ERROR ? 'flex' : 'none'},
+              this.state.styleGeneral.mIcon
+            ]}
+            source={require('../../img/warning.png')}
+          />
+          <Image
+            style={[
+              {display: this.props.typeMessage === kts.enum.OK || !this.props.typeMessage ? 'flex' : 'none'},
+              this.state.styleGeneral.mIcon
+            ]}
+            source={require('../../img/ok.png')}
+          />
+          <Text
+            style={this.state.styleGeneral.mText}
+            numberOfLines={2}
+            ellipsizeMode={kts.hardware.tail}>
+            {this.props.message}
+          </Text>
+          <TouchableOpacity
+            style={this.state.styleGeneral.mButton}
+            onPress={() => { this.setState({isMns: false}) }}>
+            <Image
+              style={this.state.styleGeneral.mClose}
+              source={require('../../img/close.png')}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={[
+          {display: this.props.isFocus ? 'none' : 'flex'},
+          this.state.styleGeneral.content,
+          this.state.styleGeneral.footer
+        ]}>
           <View style={this.state.styleGeneral.contentFooter}>
             <View style={this.state.styleGeneral.itemFooter}>
               <Text style={this.state.styleGeneral.tNumber}>15</Text>

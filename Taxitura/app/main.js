@@ -1,4 +1,5 @@
 /* global fetch,Headers:true */
+/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
   View,
@@ -18,11 +19,13 @@ import kts from './util/kts'
 import Login from './view/login'
 import App from './view/app'
 import WaitingServices from './view/waitingServices'
+import ChangePassword from './view/changePassword'
 
 const roots = {
   login: {screen: Login},
   app: {screen: App},
-  waitingServices: {screen: WaitingServices}
+  waitingServices: {screen: WaitingServices},
+  changePassword: {screen: ChangePassword}
 }
 
 const config = {
@@ -80,6 +83,10 @@ export default class Main extends Component {
               } else {
                 this.__renderView()
               }
+            })
+            .catch(err => {
+              // TODO advertencia sobre la red - internet
+              this.__renderView()
             })
         } else {
           this.__renderView()

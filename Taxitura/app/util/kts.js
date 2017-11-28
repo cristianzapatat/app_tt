@@ -3,12 +3,25 @@ module.exports = {
     user: 'user_login',
     userToken: 'user_token'
   },
+  enum: {
+    ERROR: 'error',
+    OK: 'ok'
+  },
   board: {
     coma: ','
   },
   method: {
     get: 'GET',
     put: 'PUT'
+  },
+  header: {
+    contentType: 'Content-Type',
+    multiparFormData: 'multipart/form-data'
+  },
+  body: {
+    currentPassword: 'contrasenia_antigua',
+    newPassword: 'contrasenia_nueva',
+    repeatPassword: 'confirmacion_contrasenia_nueva'
   },
   platform: {
     android: 'android',
@@ -53,6 +66,9 @@ module.exports = {
   },
   waitingServices: {
     id: 'waitingServices'
+  },
+  changePassword: {
+    id: 'changePassword'
   },
   action: {
     order: 'order',
