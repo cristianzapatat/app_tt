@@ -44,7 +44,7 @@ export default class Login extends Component {
       })
     }
     Keyboard.addListener(kts.hardware.keyboardDidShow, () => {
-      this.setState({isFocus: true})
+      this.setState({isFocus: true, isMns: false})
     })
     Keyboard.addListener(kts.hardware.keyboardDidHide, () => {
       this.setState({isFocus: false})
@@ -78,35 +78,53 @@ export default class Login extends Component {
                   this.props.navigation.navigate(kts.app.id)
                 })
               } else {
-                // TODO generar mensaje de usuario inactivo
-                this.setState({password: '', editable: true})
-                console.log('generar mensaje de usuario inactivo')
+                this.setState({
+                  password: '',
+                  editable: true,
+                  message: text.login.msn.userInactive,
+                  typeMessage: kts.enum.ERROR,
+                  isMns: true
+                })
               }
             } else {
-              // TODO generar mensaje de verificar credenciales
-              this.setState({idCard: '', password: '', editable: true})
-              console.log('generar mensaje de verificar credenciales')
+              this.setState({
+                idCard: '',
+                password: '',
+                editable: true,
+                message: text.login.msn.verifyCredential,
+                typeMessage: kts.enum.ERROR,
+                isMns: true
+              })
             }
           } else {
-            // TODO generar mensaje de verificar credenciales
             this.setState({idCard: '', password: '', editable: true})
-            console.log('generar mensaje de verificar credenciales')
           }
         })
         .catch(err => {
-          // TODO generar mensaje indicado error en conexión
-          this.setState({idCard: '', editable: true})
-          console.log('generar mensaje indicado error en conexión')
+          this.setState({
+            idCard: '',
+            editable: true,
+            message: text.login.msn.verifyInternet,
+            typeMessage: kts.enum.ERROR,
+            isMns: true
+          })
         })
     } else {
-      // TODO generar mensajes de ingresar credenciales
-      console.log('generar mensajes de ingresar credenciales')
+      this.setState({
+        message: text.login.msn.empty,
+        typeMessage: kts.enum.ERROR,
+        isMns: true
+      })
     }
   }
 
   render () {
     return (
-      <Container.ContainerLogin isFocus={this.state.isFocus}>
+      <Container.ContainerLogin
+        isFocus={this.state.isFocus}
+        isMns={this.state.isMns}
+        typeMessage={this.state.typeMessage}
+        message={this.state.message}>
         <KeyboardAvoidingView
           behavior={'padding'}
           style={style.container}
@@ -115,19 +133,19 @@ export default class Login extends Component {
             <TextInput
               style={style.input}
               editable={this.state.editable}
-              placeholder={text.login.idCard}
+              placeholder={text.login.label.idCard}
               placeholderTextColor={'#A8A8A8'}
               autoCorrect={false}
               autoCapitalize={'none'}
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => { this.setState({idCard: text}) }}
               value={this.state.idCard}
-              onFocus={() => { this.setState({isFocus: true}) }}
+              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
             />
             <TextInput
               style={style.input}
               editable={this.state.editable}
-              placeholder={text.login.password}
+              placeholder={text.login.label.password}
               placeholderTextColor={'#A8A8A8'}
               secureTextEntry
               autoCorrect={false}
@@ -135,14 +153,13 @@ export default class Login extends Component {
               underlineColorAndroid={'transparent'}
               onChangeText={(text) => { this.setState({password: text}) }}
               value={this.state.password}
-              onFocus={() => { this.setState({isFocus: true}) }}
-              ref={(input) => { this.password = input }}
+              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
             />
             <TouchableOpacity
               style={style.button}
               onPressOut={this.login.bind(this)}>
               <Text style={style.text}>
-                {text.login.enter}
+                {text.login.label.enter}
               </Text>
             </TouchableOpacity>
           </View>

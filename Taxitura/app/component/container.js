@@ -17,7 +17,15 @@ class ContainerLogin extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      styleLogin: style.login
+      styleLogin: style.login,
+      isMns: false
+    }
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.isMns && !this.state.isMns) {
+      this.setState({ isMns: true })
+    } else if (!nextProps.isMns && this.state.isMns) {
+      this.setState({ isMns: false })
     }
   }
   render () {
@@ -34,6 +42,39 @@ class ContainerLogin extends Component {
         </View>
         <View style={this.state.styleLogin.children}>
           {this.props.children}
+        </View>
+        <View style={[
+          {display: this.state.isMns ? 'flex' : 'none'},
+          this.state.styleLogin.msn
+        ]}>
+          <Image
+            style={[
+              {display: this.props.typeMessage === kts.enum.ERROR ? 'flex' : 'none'},
+              this.state.styleLogin.mIcon
+            ]}
+            source={require('../../img/warning.png')}
+          />
+          <Image
+            style={[
+              {display: this.props.typeMessage === kts.enum.OK || !this.props.typeMessage ? 'flex' : 'none'},
+              this.state.styleLogin.mIcon
+            ]}
+            source={require('../../img/ok.png')}
+          />
+          <Text
+            style={this.state.styleLogin.mText}
+            numberOfLines={2}
+            ellipsizeMode={kts.hardware.tail}>
+            {this.props.message}
+          </Text>
+          <TouchableOpacity
+            style={this.state.styleLogin.mButton}
+            onPress={() => { this.setState({isMns: false}) }}>
+            <Image
+              style={this.state.styleLogin.mClose}
+              source={require('../../img/close.png')}
+            />
+          </TouchableOpacity>
         </View>
         <View style={[
           {display: this.props.isFocus ? 'none' : 'flex'},

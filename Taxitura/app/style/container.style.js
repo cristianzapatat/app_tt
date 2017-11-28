@@ -325,6 +325,38 @@ var styleSheet = Object.freeze({
     children: {
       backgroundColor: 'transparent'
     },
+    msn: {
+      position: 'absolute',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      bottom: 130,
+      backgroundColor: 'rgba(113, 112, 110, 0.79)',
+      width: 260,
+      height: 45,
+      borderRadius: 10
+    },
+    mText: {
+      fontSize: 17,
+      color: '#FFF',
+      width: 190,
+      textAlign: 'center'
+    },
+    mButton: {
+      marginRight: 5,
+      marginTop: 3,
+      height: '100%',
+      justifyContent: 'flex-start'
+    },
+    mClose: {
+      width: 20,
+      height: 20
+    },
+    mIcon: {
+      marginLeft: 5,
+      width: 25,
+      height: 25
+    },
     logoContainer: {
       alignItems: 'center',
       justifyContent: 'center'
@@ -337,7 +369,7 @@ var styleSheet = Object.freeze({
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 90
+      marginTop: 130
     },
     ButtonHelp: {
       width: 50,

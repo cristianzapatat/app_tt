@@ -1,9 +1,17 @@
 /** Archivo que contiene los textos del aplicativo. **/
 module.exports = {
   login: {
-    idCard: 'Cédula',
-    password: 'Contraseña',
-    enter: 'Entrar'
+    label: {
+      idCard: 'Cédula',
+      password: 'Contraseña',
+      enter: 'Entrar'
+    },
+    msn: {
+      empty: 'Debe diligenciar sus credenciales.',
+      verifyInternet: 'Verifique su coneción de Internet.',
+      verifyCredential: 'Verifique sus credenciales',
+      userInactive: 'Usuario inactivo, Comuniquese a soporte'
+    }
   },
   app: {
     get: {
