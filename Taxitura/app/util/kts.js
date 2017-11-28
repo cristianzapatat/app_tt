@@ -19,7 +19,13 @@ module.exports = {
     serviceInMemory: 'serviceInMemory',
     isServiceInMemory: 'isServiceInMemory',
     app: 'app',
-    addServiceList: 'addServiceList'
+    addServiceList: 'addServiceList',
+    addServiceCanceled: 'addServiceCanceled',
+    nextService: 'nextService',
+    accept: 'accept',
+    deleteService: 'deleteService',
+    orderCanceled: 'orderCanceled',
+    acceptCancel: 'acceptCancel'
   },
   hardware: {
     backPress: 'hardwareBackPress',
@@ -45,13 +51,19 @@ module.exports = {
   app: {
     id: 'app'
   },
+  waitingServices: {
+    id: 'waitingServices'
+  },
   action: {
     order: 'order',
-    end: 'end',
-    arrive: 'arrive'
+    accept: 'accept',
+    arrive: 'arrive',
+    end: 'end'
   },
   json: {
-    cabman: 'cabman'
+    cabman: 'cabman',
+    position_cabman: 'position_cabman',
+    ok: 'OK'
   },
   help: {
     image: 'https://scontent.feoh3-1.fna.fbcdn.net/v/t1.0-1/p50x50/17903408_1044586812340472_7176591297268243543_n.png?oh=20bc54a7ec0faffce536dfa16eff5388&oe=5AA9803D'

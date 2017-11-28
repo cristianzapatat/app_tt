@@ -46,7 +46,7 @@ module.exports = {
         shift += 5
       } while (byte >= 0x20)
 
-      latitudeChange = ((result & 1) ? ~(result >> 1) : (result >> 1))
+      longitudeChange = ((result & 1) ? ~(result >> 1) : (result >> 1))
 
       lat += latitudeChange
       lng += longitudeChange

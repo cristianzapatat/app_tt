@@ -35,5 +35,8 @@ module.exports = {
   },
   getUrlPhoto: (url) => { // url de la foto de los taxistas
     return `${urlServer}${url}`
+  },
+  getListWaitingServices: (id) => {
+    return `${urlInterface}/get_services_canceled/${id}`
   }
 }

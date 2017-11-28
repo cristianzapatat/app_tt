@@ -9,8 +9,6 @@ import util from '../util/util'
 import text from '../util/text'
 import kts from '../util/kts'
 
-let idSet
-
 class ModalOrder extends Component {
   constructor (props) {
     super(props)
@@ -19,21 +17,11 @@ class ModalOrder extends Component {
     }
   }
 
-  cancelOrder () {
-    clearInterval(idSet)
-    this.props.onCancel()
-  }
-
-  acceptOrder () {
-    clearInterval(idSet)
-    this.props.onAccept()
-  }
-
   render () {
     return (
       <Modal
         animationInTiming={100}
-        animationOutTiming={100}
+        animationOutTiming={300}
         isVisible={this.props.isVisible}
         callBack={() => { this.cancelOrder() }}>
         <View style={style.content}>
@@ -76,14 +64,14 @@ class ModalOrder extends Component {
           <View style={style.buttons}>
             <TouchableOpacity
               style={[style.button, style.cancel]}
-              onPressOut={() => { this.cancelOrder() }}>
+              onPressOut={this.props.onCancel}>
               <Text style={[style.tText, style.tCancel]}>
                 {text.app.label.cancel}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[style.button, style.accept]}
-              onPressOut={() => { this.acceptOrder() }}>
+              onPressOut={this.props.onAccept}>
               <Text style={[style.tText, style.tAccept]}>
                 {text.app.label.accept}
               </Text>

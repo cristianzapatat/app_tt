@@ -19,12 +19,29 @@ module.exports = {
       cancel: 'Cancelar',
       accept: 'Aceptar',
       a: 'A',
-      second: 'seg'
+      second: 'seg',
+      iArrived: 'Llegué!',
+      weArrived: 'Llegamos!'
     },
     gps: {
       update: 'Actualizar',
       offGps: 'Favor enceder GPS',
       withoutPermission: 'Sin permisos de GPS'
+    }
+  },
+  waitingServices: {
+    label: {
+      title: 'Servicios en espera',
+      return: 'Volver',
+      position: 'Obteniendo posición\nEspere unos segundos'
+    },
+    gps: {
+      withoutPermission: 'Sin permisos de GPS'
+    }
+  },
+  item: {
+    label: {
+      accept: 'Aceptar'
     }
   },
   permission: {

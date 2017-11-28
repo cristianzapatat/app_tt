@@ -17,10 +17,12 @@ import kts from './util/kts'
 
 import Login from './view/login'
 import App from './view/app'
+import WaitingServices from './view/waitingServices'
 
 const roots = {
   login: {screen: Login},
-  app: {screen: App}
+  app: {screen: App},
+  waitingServices: {screen: WaitingServices}
 }
 
 const config = {

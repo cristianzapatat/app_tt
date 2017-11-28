@@ -1,53 +1,41 @@
 /* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import {View, Text, FlatList, TouchableOpacity, PermissionsAndroid} from 'react-native'
-import * as Progress from 'react-native-progress'
+import {View, FlatList, PermissionsAndroid} from 'react-native'
 
-import styles from '../style/listService.style'
+import style from '../style/waitingServices.style'
+
+import global from '../util/global'
+import kts from '../util/kts'
+import urls from '../util/urls'
+import text from '../util/text'
+
 import Container from '../component/container'
 import Item from '../component/item'
-import PhotoModal from '../component/photoModal'
-import MiniMap from '../component/miniMap'
-import consts from '../constant/constant'
-import fs from '../util/fs'
 
 let idSet
 let status = true
 
-export default class ListService extends Component {
+export default class WaitingServices extends Component {
   constructor (props) {
     super(props)
-    clearInterval(idSet)
     this.state = {
-      isVisiblePhoto: false,
-      isVisibleMap: false,
-      isMap: false,
-      nameUser: '',
-      uri: null,
-      latitudeOrder: 0,
-      longitudeOrder: 0,
-      loading: true,
-      render: false,
-      textView: consts.textProcess,
       data: []
     }
-    this.state.textView = consts.textProcess
   }
 
   componentWillMount () {
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
       .then(granted => {
         if (granted) {
-          status = true
-          if (consts.position !== null) {
+          if (global.position !== null) {
             this.getList()
           } else {
-            this.setState({textView: consts.getPositionText})
+            this.setState({isNoGps: true, textNoGps: text.waitingServices.label.position})
             this.UpdateView()
           }
         } else {
-          this.setState({loading: false, textView: consts.requierePermissions})
+          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission})
         }
       })
   }
@@ -55,91 +43,53 @@ export default class ListService extends Component {
   componentWillUnmount () {
     clearInterval(idSet)
     if (status) {
-      consts.socket.emit('nextService', consts.user.cedula)
+      global.socket.emit(kts.socket.nextService, global.user.id)
     }
   }
 
   getList () {
-    fetch(`${consts.serverSock}/get_services_canceled/${consts.user.cedula}`)
+    fetch(urls.getListWaitingServices(global.user.id))
       .then(response => {
         return response.json()
       })
       .then(json => {
         this.setState({
-          data: json,
-          render: true,
-          loading: false
+          data: json
         })
       })
   }
 
   UpdateView () {
     idSet = setInterval(() => {
-      if (consts.position !== null) {
-        this.setState({textView: consts.textProcess})
+      if (global.position !== null) {
+        this.setState({isNoGps: false})
         this.getList()
         clearInterval(idSet)
       }
     }, 3000)
   }
 
-  goMap () {
+  goBack () {
     const { goBack } = this.props.navigation
     goBack()
   }
 
-  logout () {
-    clearInterval(idSet)
-    status = false
-    this.props.navigation.state.params.destroy()
-    this.props.navigation.navigate('login')
-    fs.deleteFile(`${consts.persistenceFile}${consts.fileLogin}`)
-  }
-
-  _showPhoto (item) {
-    this.setState({
-      nameUser: item.user.name,
-      uri: item.user.url_pic,
-      isVisiblePhoto: true
-    })
-  }
-
-  _hidePhoto () {
-    this.setState({
-      isVisiblePhoto: false
-    })
-  }
-
-  _viewMap (item) {
-    this.setState({
-      latitudeOrder: item.position_user.latitude,
-      longitudeOrder: item.position_user.longitude,
-      isVisibleMap: true
-    })
-  }
-
-  _hideMap () {
-    this.setState({
-      isVisibleMap: false
-    })
-  }
-
-  _acceptService (service) {
-    consts.waitCanceled = true
-    service['cabman'] = {
-      id: consts.user.cedula,
-      name: consts.user.nombre,
-      photo: 'https://thumbs.dreamstime.com/b/taxista-14436793.jpg'
+  acceptService (service) {
+    global.waitCanceled = true
+    service[kts.json.cabman] = {
+      id: global.user.id,
+      name: global.user.nombre,
+      photo: urls.getUrlPhoto(global.user.foto.url)
     }
-    service['position_cabman'] = {
+    service[kts.json.position_cabman] = {
       distance: null,
       time: null,
-      latitude: consts.position.latitude,
-      longitude: consts.position.longitude
+      latitude: global.position.latitude,
+      longitude: global.position.longitude
     }
     status = false
     const { goBack } = this.props.navigation
-    consts.socket.emit('acceptCancel', service)
+    global.socket.emit(kts.socket.acceptCancel, service)
     goBack()
   }
 
@@ -147,96 +97,27 @@ export default class ListService extends Component {
     return item.service.id
   }
 
-  _drawList () {
-    if (this.state.render) {
-      if (this.state.data.length > 0) {
-        return (
+  render () {
+    return (
+      <Container.ContainerGeneral
+        title={text.waitingServices.label.title}
+        isNoGps={this.state.isNoGps}
+        textNoGps={this.state.textNoGps}
+        onClick={() => { this.goBack() }}>
+        <View style={style.content}>
           <FlatList
-            style={styles.list}
+            style={style.list}
             data={this.state.data}
             keyExtractor={this._keyExtractor}
             renderItem={({item, index}) =>
               <Item
                 item={item}
                 index={index}
-                showPhoto={() => { this._showPhoto(item) }}
-                hidePhoto={() => { this._hidePhoto() }}
-                viewMap={() => { this._viewMap(item) }}
-                acceptService={() => { this._acceptService(item) }} />
+                acceptService={() => { this.acceptService(item) }}
+              />
           } />
-        )
-      } else {
-        return (
-          <View style={styles.empty}>
-            <Text style={styles.textEmpty}>No hay servicios pendientes</Text>
-            <TouchableOpacity onPressOut={() => { this.goMap() }}>
-              <View style={styles.btnBack}>
-                <Text style={[styles.back]}>Volver</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )
-      }
-    } else {
-      return (
-        <View style={styles.empty}>
-          <Text style={styles.textEmpty}>{this.state.textView}</Text>
-          <TouchableOpacity onPressOut={() => { this.goMap() }}>
-            <View style={styles.btnBack}>
-              <Text style={[styles.back]}>Volver</Text>
-            </View>
-          </TouchableOpacity>
         </View>
-      )
-    }
-  }
-
-  _drawModals () {
-    if (consts.position !== null) {
-      return (
-        <View>
-          <PhotoModal
-            isVisible={this.state.isVisiblePhoto}
-            onBack
-            nameUser={this.state.nameUser}
-            uri={this.state.uri}
-            hidePhoto={() => { this._hidePhoto() }} />
-          <MiniMap
-            isVisible={this.state.isVisibleMap}
-            onBack
-            hideMap={() => { this._hideMap() }}
-            latitudeOrder={this.state.latitudeOrder}
-            longitudeOrder={this.state.longitudeOrder} />
-        </View>
-      )
-    } else {
-      return (
-        <View />
-      )
-    }
-  }
-
-  render () {
-    return (
-      <Container
-        renderMenu
-        isMap
-        goMap={() => { this.goMap() }}
-        onPress={() => { this.logout() }} >
-        <View style={styles.enter}>
-          <View style={styles.title}>
-            <Text style={styles.titleText}>Lista de Servicios Cancelados</Text>
-            <Progress.CircleSnail
-              style={[{display: this.state.loading ? 'flex' : 'none'}, styles.loading]}
-              size={30}
-              color={['#2980b9']}
-              strokeCap={'round'}
-              animating={this.state.loading} />
-          </View>
-          { this._drawList() }
-        </View>
-        { this._drawModals() }
-      </Container>
+      </Container.ContainerGeneral>
     )
   }
 }
