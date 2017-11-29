@@ -68,6 +68,13 @@ module.exports = {
       verifyCredential: 'Verifique sus credenciales'
     }
   },
+  menu: {
+    label: {
+      waitingServices: 'Servicios en espera',
+      changePassword: 'Modificar contraseña',
+      closeSession: 'Cerrar sesión'
+    }
+  },
   permission: {
     require: 'Taxitura requiere permisos de ubicación.',
     cause: 'Debido a que se bloqueó la ventana de permisos el proceso debe ser manual',

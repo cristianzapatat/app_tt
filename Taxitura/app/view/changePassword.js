@@ -45,6 +45,11 @@ export default class Settings extends Component {
     Keyboard.removeAllListeners(kts.hardware.keyboardDidHide)
   }
 
+  goBack () {
+    const { goBack } = this.props.navigation
+    goBack()
+  }
+
   async changePassword () {
     Keyboard.dismiss()
     let tCurrent = this.state.tCurrent
@@ -142,7 +147,8 @@ export default class Settings extends Component {
         isFocus={this.state.isFocus}
         isMns={this.state.isMns}
         typeMessage={this.state.typeMessage}
-        message={this.state.message}>
+        message={this.state.message}
+        onBack={() => { this.goBack() }}>
         <KeyboardAvoidingView
           behavior={'padding'}
           style={style.container}>

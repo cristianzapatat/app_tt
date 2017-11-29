@@ -103,7 +103,7 @@ export default class WaitingServices extends Component {
         title={text.waitingServices.label.title}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}
-        onClick={() => { this.goBack() }}>
+        onBack={() => { this.goBack() }}>
         <View style={style.content}>
           <FlatList
             style={style.list}

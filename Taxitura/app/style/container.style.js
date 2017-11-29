@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native'
 
 import kts from '../util/kts'
 
-const {height} = Dimensions.get(kts.hardware.window)
+const { height } = Dimensions.get(kts.hardware.window)
 
 var styleSheet = Object.freeze({
   general: {
@@ -171,8 +171,8 @@ var styleSheet = Object.freeze({
       alignItems: 'center'
     },
     iconGraphic: {
-      width: 30,
-      height: 30
+      width: 22,
+      height: 22
     }
   },
   app: {
@@ -204,7 +204,7 @@ var styleSheet = Object.freeze({
     },
     menu: {
       position: 'absolute',
-      left: 15,
+      left: 20,
       justifyContent: 'center',
       alignItems: 'center'
     },
@@ -218,8 +218,8 @@ var styleSheet = Object.freeze({
       textAlign: 'center'
     },
     icon: {
-      width: 25,
-      height: 25
+      width: 24,
+      height: 19
     },
     warning: {
       position: 'absolute',
@@ -309,8 +309,8 @@ var styleSheet = Object.freeze({
       alignItems: 'center'
     },
     iconGraphic: {
-      width: 30,
-      height: 30
+      width: 22,
+      height: 22
     }
   },
   login: {
@@ -380,8 +380,8 @@ var styleSheet = Object.freeze({
       alignItems: 'center'
     },
     iconHelp: {
-      width: 30,
-      height: 30
+      width: 16,
+      height: 24
     }
   }
 })

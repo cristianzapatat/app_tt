@@ -69,7 +69,7 @@ class ContainerLogin extends Component {
           </Text>
           <TouchableOpacity
             style={this.state.styleLogin.mButton}
-            onPress={() => { this.setState({isMns: false}) }}>
+            onPressOut={() => { this.setState({isMns: false}) }}>
             <Image
               style={this.state.styleLogin.mClose}
               source={require('../../img/close.png')}
@@ -84,7 +84,7 @@ class ContainerLogin extends Component {
             style={this.state.styleLogin.ButtonHelp}>
             <Image
               style={this.state.styleLogin.iconHelp}
-              source={require('../../img/menu.png')}
+              source={require('../../img/question.png')}
             />
           </TouchableOpacity>
         </View>
@@ -134,7 +134,7 @@ class ContainerApp extends Component {
             style={this.state.styleApp.ButtonGraphic}>
             <Image
               style={this.state.styleApp.iconGraphic}
-              source={require('../../img/menu.png')} />
+              source={require('../../img/charts.png')} />
           </TouchableOpacity>
         </View>
       )
@@ -169,6 +169,7 @@ class ContainerApp extends Component {
         { this.__drawMap() }
         <View style={[this.state.styleApp.content, this.state.styleApp.headerLogo]}>
           <TouchableOpacity
+            onPressOut={this.props.onPressMenu}
             style={this.state.styleApp.menu} >
             <Image
               style={this.state.styleApp.icon}
@@ -239,10 +240,11 @@ class ContainerGeneral extends Component {
         />
         <View style={[this.state.styleGeneral.content, this.state.styleGeneral.headerLogo]}>
           <TouchableOpacity
+            onPressOut={this.props.onBack}
             style={this.state.styleGeneral.menu} >
             <Image
               style={this.state.styleGeneral.icon}
-              source={require('../../img/menu.png')}
+              source={require('../../img/back.png')}
             />
           </TouchableOpacity>
           <Image
@@ -271,7 +273,7 @@ class ContainerGeneral extends Component {
           </Text>
           <TouchableOpacity
             style={this.state.styleGeneral.buttonWarning}
-            onPressOut={this.props.onClick}>
+            onPressOut={this.props.onBack}>
             <Text style={this.state.styleGeneral.textButtonWarning}>
               {text.waitingServices.label.return}
             </Text>
@@ -303,7 +305,7 @@ class ContainerGeneral extends Component {
           </Text>
           <TouchableOpacity
             style={this.state.styleGeneral.mButton}
-            onPress={() => { this.setState({isMns: false}) }}>
+            onPressOut={() => { this.setState({isMns: false}) }}>
             <Image
               style={this.state.styleGeneral.mClose}
               source={require('../../img/close.png')}
@@ -336,7 +338,7 @@ class ContainerGeneral extends Component {
               style={this.state.styleGeneral.ButtonGraphic}>
               <Image
                 style={this.state.styleGeneral.iconGraphic}
-                source={require('../../img/menu.png')} />
+                source={require('../../img/charts.png')} />
             </TouchableOpacity>
           </View>
         </View>

@@ -16,6 +16,7 @@ import text from '../util/text'
 import util from '../util/util'
 
 import Container from '../component/container'
+import Menu from '../component/menu'
 import ModalOrder from '../component/modalOrder'
 import ModalPermission from '../component/modalPermission'
 
@@ -29,7 +30,8 @@ export default class Taxitura extends Component {
     super(props)
     this.state = {
       isModalPermission: false,
-      isModalOrder: false
+      isModalOrder: false,
+      isMenu: false
     }
     global.socket.emit(kts.socket.serviceInMemory, global.user.id)
     global.socket.on(kts.socket.isServiceInMemory, order => {
@@ -331,6 +333,7 @@ export default class Taxitura extends Component {
     return (
       <Container.ContainerApp
         title={this.state.title}
+        onPressMenu={() => { this.setState({isMenu: true}) }}
         isService={this.state.isService}
         isButton={this.state.isButton}
         latitude={this.state.latitude}
@@ -352,6 +355,9 @@ export default class Taxitura extends Component {
           }
           this.getStatus()
         }}>
+        <Menu
+          isVisible={this.state.isMenu}
+          navigation={this.props.navigation} />
         <ModalOrder
           isVisible={this.state.isModalOrder}
           uri={this.state.uri}
