@@ -1,51 +1,111 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
+
+import kts from '../util/kts'
+
+const { height } = Dimensions.get(kts.hardware.window)
 
 export default StyleSheet.create({
-  all: {
-    position: 'absolute',
-    right: 0,
-    flexDirection: 'column',
-    zIndex: 2
+  modal: {
+    margin: 0
   },
-  iconSide: {
-    width: 50,
-    height: 50,
-    position: 'absolute',
-    right: 0,
-    flexDirection: 'row',
+  container: {
+    width: 210,
+    height: height,
+    backgroundColor: '#FFF',
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
+  },
+  header: {
+    height: 210,
+    maxWidth: 210,
+    width: '100%',
+    backgroundColor: '#FFAF18',
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e89b0a'
+    borderBottomWidth: 1,
+    borderBottomColor: '#AFAFAF'
   },
-  menuSide: {
-    backgroundColor: '#e89b0a',
+  out: {
+    position: 'absolute',
+    right: 20,
+    top: 20
+  },
+  outIcon: {
+    width: 15,
+    height: 18
+  },
+  headerPhoto: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#FF9400',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  photo: {
+    width: 90,
+    height: 90,
+    borderRadius: 45
+  },
+  headerName: {
+    backgroundColor: '#FF9400',
+    width: 166,
+    height: 30,
+    maxHeight: 30,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    paddingHorizontal: 6
+  },
+  name: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center'
+  },
+  content: {
     flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginTop: 50,
-    borderTopLeftRadius: 3,
-    borderBottomLeftRadius: 3
+    justifyContent: 'flex-start',
+    width: '100%'
   },
   item: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-    marginLeft: 10,
-    height: 32,
-    width: 110
-  },
-  element: {
-    flexDirection: 'row',
+    width: '100%',
+    height: 55,
+    paddingLeft: 13,
+    borderBottomWidth: 1,
+    borderBottomColor: '#DCDCDC',
     alignItems: 'center'
   },
-  icon: {
-    width: 30,
-    height: 30
+  iconItem: {
+    width: 28,
+    height: 35,
+    marginRight: 10
   },
-  iconMargin: {
-    marginLeft: 10
+  textItem: {
+    textAlign: 'left',
+    fontSize: 16
   },
-  text: {
-    fontSize: 18,
-    color: '#000000',
-    marginLeft: 5
+  close: {
+    position: 'absolute',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    width: '100%',
+    bottom: 15
+  },
+  ItemClose: {
+    flexDirection: 'row',
+    width: '100%',
+    height: 55,
+    paddingLeft: 13,
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#DCDCDC'
+  },
+  iconClose: {
+    width: 29,
+    height: 30,
+    marginRight: 10
   }
 })

@@ -1,129 +1,117 @@
 import React, { Component } from 'react'
-import { Animated, TouchableOpacity, View, Image, Text } from 'react-native'
+import {
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  AsyncStorage
+} from 'react-native'
+import Modal from 'react-native-modal'
 
-import styles from '../style/menu.style'
+import style from '../style/menu.style'
 
-let status = true
+import global from '../util/global'
+import urls from '../util/urls'
+import text from '../util/text'
+import kts from '../util/kts'
 
 export default class Menu extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      close: true,
-      animated: new Animated.Value(0),
-      styleMenu: {}
-    }
-    status = this.props.visible || true
-    this.state.close = this.props.visible || true
-    this.state.styleMenu = {
-      transform: [{
-        translateX: this.state.animated.interpolate({
-          inputRange: [0, 1],
-          outputRange: [120, 0]
-        })
-      }]
+      isVisible: false
     }
   }
-
-  _callBack (call) {
-    this.showOrHide()
-    call()
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.isVisible && !this.state.isVisible) {
+      this.setState({ isVisible: true })
+    } else if (!nextProps.isVisible && this.state.isVisible) {
+      this.setState({ isVisible: false })
+    }
   }
-
-  showOrHide () {
-    this.state.animated.setValue(0)
-    if (!status) {
-      this.setState({
-        styleMenu: {
-          transform: [{
-            translateX: this.state.animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 120]
-            })
-          }]
-        }
+  navigate (id) {
+    this.setState({isVisible: false})
+    setTimeout(() => {
+      this.props.navigation.navigate(id)
+    }, 400)
+  }
+  closeSession () {
+    this.setState({isVisible: false})
+    setTimeout(() => {
+      AsyncStorage.removeItem(kts.key.user, () => {
+        this.props.navigation.navigate(kts.login.id)
       })
-    } else {
-      this.setState({
-        styleMenu: {
-          transform: [{
-            translateX: this.state.animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: [100, 0]
-            })
-          }]
-        }
-      })
-    }
-    this.ejecution()
-    status = !status
+    }, 400)
   }
-
-  ejecution () {
-    Animated.timing(
-      this.state.animated,
-      {
-        toValue: 1,
-        duration: 500
-      }
-    ).start()
-    this.setState({
-      close: !this.state.close
-    })
-  }
-
   render () {
     return (
-      <View style={[this.props.style, styles.all]}>
-        <View style={[{display: this.state.close ? 'flex' : 'none'}, styles.iconSide]}>
-          <TouchableOpacity onPressOut={() => { this.showOrHide() }}>
-            <Image
-              source={require('../../img/menu.png')}
-              style={[styles.icon, styles.iconMargin]} />
-          </TouchableOpacity>
+      <Modal
+        style={style.modal}
+        isVisible={this.state.isVisible}
+        onBack
+        animationIn={'slideInLeft'}
+        animationInTiming={400}
+        animationOut={'slideOutLeft'}
+        animationOutTiming={400}>
+        <View style={style.container}>
+          <View style={style.header}>
+            <TouchableOpacity
+              style={style.out}
+              onPressOut={() => { this.setState({isVisible: false}) }} >
+              <Image
+                style={style.outIcon}
+                source={require('../../img/out.png')} />
+            </TouchableOpacity>
+            <View style={style.headerPhoto}>
+              <Image
+                style={style.photo}
+                source={{uri: urls.getUrlPhoto(global.user.foto.url)}} />
+            </View>
+            <View style={style.headerName}>
+              <Text
+                style={[style.name]}
+                numberOfLines={1}
+                ellipsizeMode={kts.hardware.tail}>
+                {global.user.nombre}
+              </Text>
+            </View>
+          </View>
+          <View style={style.content}>
+            <TouchableOpacity
+              style={style.item}
+              onPressOut={() => { this.navigate(kts.waitingServices.id) }}>
+              <Image
+                style={style.iconItem}
+                source={require('../../img/services.png')} />
+              <Text style={style.textItem}>
+                {text.menu.label.waitingServices}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={style.item}
+              onPressOut={() => { this.navigate(kts.changePassword.id) }}>
+              <Image
+                style={style.iconItem}
+                source={require('../../img/password.png')} />
+              <Text style={style.textItem}>
+                {text.menu.label.changePassword}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={style.close}>
+            <TouchableOpacity
+              style={style.ItemClose}
+              onPressOut={() => { this.closeSession() }}>
+              <Image
+                style={style.iconClose}
+                source={require('../../img/close_session.png')} />
+              <Text style={style.textItem}>
+                {text.menu.label.closeSession}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={[{display: this.state.close ? 'none' : 'flex'}, styles.iconSide]}>
-          <TouchableOpacity onPressOut={() => { this.showOrHide() }}>
-            <Image
-              source={require('../../img/menu_close.png')}
-              style={[styles.icon, styles.iconMargin]} />
-          </TouchableOpacity>
-        </View>
-        <Animated.View style={[styles.menuSide, this.state.styleMenu]}>
-          <View style={[{display: this.props.isListServives ? 'flex' : 'none'}, styles.item]}>
-            <TouchableOpacity onPressOut={() => { this._callBack(this.props.goListServives) }} style={styles.element}>
-              <Image
-                source={require('../../img/service.png')}
-                style={styles.icon} />
-              <Text style={[styles.text]}>Servicios</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[{display: this.props.isMap ? 'flex' : 'none'}, styles.item]}>
-            <TouchableOpacity onPressOut={() => { this._callBack(this.props.goMap) }} style={styles.element}>
-              <Image
-                source={require('../../img/map.png')}
-                style={styles.icon} />
-              <Text style={[styles.text]}>Mapa</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={[{display: this.props.isListServives ? 'flex' : 'none'}, styles.item]}>
-            <TouchableOpacity onPressOut={() => { this._callBack(this.props.goSettings) }} style={styles.element}>
-              <Image
-                source={require('../../img/settings48.png')}
-                style={styles.icon} />
-              <Text style={[styles.text]}>Ajustes</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.item}>
-            <TouchableOpacity onPressOut={this.props.fnLogout} style={styles.element}>
-              <Image
-                source={require('../../img/logout.png')}
-                style={styles.icon} />
-              <Text style={[styles.text]}>Salir</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      </View>
+      </Modal>
     )
   }
 }

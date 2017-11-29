@@ -6,7 +6,7 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   formContainer: {
-    marginTop: 50
+    paddingTop: 50
   },
   input: {
     fontSize: 20,
@@ -26,30 +26,12 @@ export default StyleSheet.create({
     alignItems: 'center',
     height: 45,
     width: 290,
-    marginTop: 30,
+    marginTop: 40,
     borderRadius: 30
   },
   text: {
     fontSize: 22,
     textAlign: 'center',
     color: '#FFF'
-  },
-  help: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 90
-  },
-  ButtonHelp: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#FFF',
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  iconHelp: {
-    width: 30,
-    height: 30
   }
 })
