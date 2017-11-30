@@ -16,8 +16,8 @@ class ModalPermission extends Component {
   render () {
     return (
       <Modal
-        animationInTiming={100}
-        animationOutTiming={100}
+        animationInTiming={200}
+        animationOutTiming={200}
         isVisible={this.props.isVisible}
         callBack={this.props.onClose} >
         <View style={style.modalContent}>

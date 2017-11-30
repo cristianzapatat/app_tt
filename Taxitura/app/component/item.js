@@ -3,10 +3,12 @@ import {View, TouchableOpacity, Image, Text} from 'react-native'
 
 import style from '../style/item.style'
 
+import global from '../util/global'
 import text from '../util/text'
 
 export default class Item extends Component {
   render () {
+    let disabled = !(!global.waitCanceled && global.service === null && global.waitId === null)
     return (
       <View style={[style.item]}>
         <Image
@@ -28,7 +30,8 @@ export default class Item extends Component {
           </Text>
         </View>
         <TouchableOpacity
-          style={style.button}
+          style={[{backgroundColor: disabled ? '#DCDCDC' : '#ffaf18'}, style.button]}
+          disabled={disabled}
           onPressOut={this.props.acceptService}>
           <Text style={[style.textButton]}>
             {text.item.label.accept}

@@ -87,6 +87,7 @@ export default class WaitingServices extends Component {
       latitude: global.position.latitude,
       longitude: global.position.longitude
     }
+    service.action = kts.action.accept
     status = false
     const { goBack } = this.props.navigation
     global.socket.emit(kts.socket.acceptCancel, service)

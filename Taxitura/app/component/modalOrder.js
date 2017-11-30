@@ -20,8 +20,8 @@ class ModalOrder extends Component {
   render () {
     return (
       <Modal
-        animationInTiming={100}
-        animationOutTiming={300}
+        animationInTiming={200}
+        animationOutTiming={200}
         isVisible={this.props.isVisible}
         callBack={() => { this.cancelOrder() }}>
         <View style={style.content}>

@@ -5,7 +5,8 @@ import {
   AppState,
   Platform,
   BackHandler,
-  PermissionsAndroid
+  PermissionsAndroid,
+  AsyncStorage
 } from 'react-native'
 import GPSState from 'react-native-gps-state'
 
@@ -55,7 +56,7 @@ export default class Taxitura extends Component {
       if (order) {
         const { navigation } = this.props
         if (navigation.state.routeName === kts.app.id && global.position !== null &&
-          global.waitCanceled && order.action === kts.action.order &&
+          global.waitCanceled && order.action === kts.action.accept &&
           global.service === null && global.waitId === null) {
           global.service = order
           this.getInfoOrder()
@@ -219,7 +220,6 @@ export default class Taxitura extends Component {
         return result.json()
       })
       .then(json => {
-        console.log(json)
         this.setState({
           distance: json.rows[0].elements[0].distance.value,
           time: json.rows[0].elements[0].duration.value,
@@ -227,6 +227,7 @@ export default class Taxitura extends Component {
           name: global.service.user.name,
           address: global.service.position_user.address,
           duration: 1,
+          isMenu: false,
           isModalOrder: true
         })
         this.reductionduration()
@@ -331,6 +332,22 @@ export default class Taxitura extends Component {
     }
   }
 
+  navigate (id) {
+    this.setState({isMenu: false})
+    setTimeout(() => {
+      this.props.navigation.navigate(id)
+    }, 400)
+  }
+  closeSession () {
+    this.setState({isMenu: false})
+    navigator.geolocation.clearWatch(this.watchID)
+    setTimeout(() => {
+      AsyncStorage.removeItem(kts.key.user, () => {
+        this.props.navigation.navigate(kts.login.id)
+      })
+    }, 400)
+  }
+
   render () {
     return (
       <Container.ContainerApp
@@ -359,8 +376,10 @@ export default class Taxitura extends Component {
         }}>
         <Menu
           isVisible={this.state.isMenu}
-          navigation={this.props.navigation}
-          watchID={this.watchID} />
+          onClose={() => { this.setState({isMenu: false}) }}
+          goWaitingServices={() => { this.navigate(kts.waitingServices.id) }}
+          goChangePassword={() => { this.navigate(kts.changePassword.id) }}
+          closeSession={() => { this.closeSession() }} />
         <ModalOrder
           isVisible={this.state.isModalOrder}
           uri={this.state.uri}

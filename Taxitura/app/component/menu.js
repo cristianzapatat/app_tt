@@ -3,8 +3,7 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity,
-  AsyncStorage
+  TouchableOpacity
 } from 'react-native'
 import Modal from 'react-native-modal'
 
@@ -16,49 +15,21 @@ import text from '../util/text'
 import kts from '../util/kts'
 
 export default class Menu extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      isVisible: false
-    }
-  }
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.isVisible && !this.state.isVisible) {
-      this.setState({ isVisible: true })
-    } else if (!nextProps.isVisible && this.state.isVisible) {
-      this.setState({ isVisible: false })
-    }
-  }
-  navigate (id) {
-    this.setState({isVisible: false})
-    setTimeout(() => {
-      this.props.navigation.navigate(id)
-    }, 400)
-  }
-  closeSession () {
-    this.setState({isVisible: false})
-    navigator.geolocation.clearWatch(this.props.watchID)
-    setTimeout(() => {
-      AsyncStorage.removeItem(kts.key.user, () => {
-        this.props.navigation.navigate(kts.login.id)
-      })
-    }, 400)
-  }
   render () {
     return (
       <Modal
         style={style.modal}
-        isVisible={this.state.isVisible}
-        onBack
+        isVisible={this.props.isVisible}
+        callBack={this.props.onClose}
         animationIn={'slideInLeft'}
-        animationInTiming={400}
+        animationInTiming={200}
         animationOut={'slideOutLeft'}
-        animationOutTiming={400}>
+        animationOutTiming={200}>
         <View style={style.container}>
           <View style={style.header}>
             <TouchableOpacity
               style={style.out}
-              onPressOut={() => { this.setState({isVisible: false}) }} >
+              onPressOut={this.props.onClose} >
               <Image
                 style={style.outIcon}
                 source={require('../../img/out.png')} />
@@ -80,7 +51,7 @@ export default class Menu extends Component {
           <View style={style.content}>
             <TouchableOpacity
               style={style.item}
-              onPressOut={() => { this.navigate(kts.waitingServices.id) }}>
+              onPressOut={this.props.goWaitingServices} >
               <Image
                 style={style.iconItem}
                 source={require('../../img/services.png')} />
@@ -90,7 +61,7 @@ export default class Menu extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={style.item}
-              onPressOut={() => { this.navigate(kts.changePassword.id) }}>
+              onPressOut={this.props.goChangePassword}>
               <Image
                 style={style.iconItem}
                 source={require('../../img/password.png')} />
@@ -102,7 +73,7 @@ export default class Menu extends Component {
           <View style={style.close}>
             <TouchableOpacity
               style={style.ItemClose}
-              onPressOut={() => { this.closeSession() }}>
+              onPressOut={this.props.closeSession}>
               <Image
                 style={style.iconClose}
                 source={require('../../img/close_session.png')} />
