@@ -1,8 +1,8 @@
 let urlServer = 'http://www.taxitura.com' // Url del servidor
 let urlInterface = 'https://taxituraserver.herokuapp.com' // Url de la intefaz o mediador
-let keyDirections = 'AIzaSyCdfv97tfARuqVhwIN1p-J-M0CDykFTOw0' // Google Maps Direcctions API
-let keyDistanceMatrix = 'AIzaSyCPDys-IZuq1CqhFr6cVEc-rMeT5Z33iKE' // Google Maps Distance Matrix API
-let keyGeocoding = 'AIzaSyCuixa1UeWyGrleFN_w7ceAJE9oYYmz1lU' // Google Maps Geocodign API
+let keyDirections = 'AIzaSyCopllJ-78HCuKxGQZA64EtHrFC8rKGRGs' // Google Maps Direcctions API
+let keyDistanceMatrix = 'AIzaSyCANmSq518IoL2OU_Itx-U6qgy1sPN2Q1c' // Google Maps Distance Matrix API
+let keyGeocoding = 'AIzaSyA0A5cReZ2OlGwd5llnyVpaoER-p6KYpZQ' // Google Maps Geocodign API
 
 module.exports = {
   urlServer,

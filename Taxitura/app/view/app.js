@@ -143,6 +143,19 @@ export default class Taxitura extends Component {
     if (global.position !== null) {
       this.drawPosition(global.position)
     }
+    navigator.geolocation.getCurrentPosition(position => {
+      global.position = {
+        latitude: parseFloat(position.coords.latitude),
+        longitude: parseFloat(position.coords.longitude)
+      }
+      this.drawPosition(global.position)
+    },
+    err => {
+      if (global.position === null) {
+        global.position = null
+      }
+    },
+    {enableHighAccuracy: false, timeout: 8000, maximumAge: 1000})
     this.watchID = navigator.geolocation.watchPosition(position => {
       global.position = {
         latitude: parseFloat(position.coords.latitude),
@@ -156,7 +169,7 @@ export default class Taxitura extends Component {
       }
       this.getStatus()
     },
-    {enableHighAccuracy: true, timeout: 1000, maximumAge: 5000, distanceFilter: 5})
+    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000, distanceFilter: 0.5})
   }
 
   drawPosition (position) {
@@ -206,6 +219,7 @@ export default class Taxitura extends Component {
         return result.json()
       })
       .then(json => {
+        console.log(json)
         this.setState({
           distance: json.rows[0].elements[0].distance.value,
           time: json.rows[0].elements[0].duration.value,
