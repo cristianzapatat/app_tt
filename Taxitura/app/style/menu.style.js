@@ -29,7 +29,9 @@ export default StyleSheet.create({
   out: {
     position: 'absolute',
     right: 20,
-    top: 20
+    top: 20,
+    width: 15,
+    height: 18
   },
   outIcon: {
     width: 15,

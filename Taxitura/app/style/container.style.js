@@ -36,7 +36,9 @@ var styleSheet = Object.freeze({
       position: 'absolute',
       left: 15,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      width: 30,
+      height: 30
     },
     logo: {
       width: 80,
@@ -206,7 +208,9 @@ var styleSheet = Object.freeze({
       position: 'absolute',
       left: 20,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      width: 30,
+      height: 30
     },
     logo: {
       width: 80,

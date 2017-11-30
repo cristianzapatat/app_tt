@@ -23,7 +23,6 @@ import ModalPermission from '../component/modalPermission'
 let coords = []
 let permissionsStatus = false
 let isServiceInMemory = false
-let idSet
 
 export default class Taxitura extends Component {
   constructor (props) {
@@ -104,6 +103,7 @@ export default class Taxitura extends Component {
   }
 
   componentWillUnmount () {
+    clearInterval(this.idSet)
     AppState.removeEventListener(kts.hardware.change)
     if (Platform.OS === kts.platform.android) {
       BackHandler.removeEventListener(kts.hardware.backPress)
@@ -143,19 +143,6 @@ export default class Taxitura extends Component {
     if (global.position !== null) {
       this.drawPosition(global.position)
     }
-    navigator.geolocation.getCurrentPosition(position => {
-      global.position = {
-        latitude: parseFloat(position.coords.latitude),
-        longitude: parseFloat(position.coords.longitude)
-      }
-      this.drawPosition(global.position)
-    },
-    err => {
-      if (global.position === null) {
-        global.position = null
-      }
-    },
-    {enableHighAccuracy: false, timeout: 8000, maximumAge: 1000})
     this.watchID = navigator.geolocation.watchPosition(position => {
       global.position = {
         latitude: parseFloat(position.coords.latitude),
@@ -234,11 +221,11 @@ export default class Taxitura extends Component {
 
   reductionduration () {
     setTimeout(() => {
-      idSet = setInterval(() => {
+      this.idSet = setInterval(() => {
         let duration = this.state.duration
         if (duration <= 0.0) {
           this.setState({duration})
-          clearInterval(idSet)
+          clearInterval(this.idSet)
           this.cancelOrder(true)
         } else {
           duration = duration - 0.1
@@ -249,7 +236,7 @@ export default class Taxitura extends Component {
   }
 
   cancelOrder (status) {
-    clearInterval(idSet)
+    clearInterval(this.idSet)
     this.setState({ isModalOrder: false })
     if (status) {
       global.service[kts.json.cabman] = { id: global.user.id }
@@ -261,7 +248,7 @@ export default class Taxitura extends Component {
   }
 
   acceptOrder () {
-    clearInterval(idSet)
+    clearInterval(this.idSet)
     this.setState({ isModalOrder: false })
     if (global.service) {
       global.service[kts.json.cabman] = {
@@ -283,6 +270,7 @@ export default class Taxitura extends Component {
   }
 
   cleanService () {
+    clearInterval(this.idSet)
     global.service = null
     global.waitId = null
     coords = []
@@ -357,7 +345,8 @@ export default class Taxitura extends Component {
         }}>
         <Menu
           isVisible={this.state.isMenu}
-          navigation={this.props.navigation} />
+          navigation={this.props.navigation}
+          watchID={this.watchID} />
         <ModalOrder
           isVisible={this.state.isModalOrder}
           uri={this.state.uri}

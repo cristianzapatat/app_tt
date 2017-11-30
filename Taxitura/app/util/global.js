@@ -4,5 +4,7 @@ module.exports = {
   position: null,
   service: null,
   waitId: null,
-  waitCanceled: false
+  waitCanceled: false,
+  watchID: null,
+  idInterval: null
 }
