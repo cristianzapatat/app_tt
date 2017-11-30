@@ -37,6 +37,7 @@ export default class Menu extends Component {
   }
   closeSession () {
     this.setState({isVisible: false})
+    navigator.geolocation.clearWatch(this.props.watchID)
     setTimeout(() => {
       AsyncStorage.removeItem(kts.key.user, () => {
         this.props.navigation.navigate(kts.login.id)

@@ -95,6 +95,10 @@ export default class Main extends Component {
     })
   }
 
+  componentWillUnmount () {
+    clearTimeout(global.idInterval)
+  }
+
   __renderView () {
     idSet = setInterval(() => {
       this.setState({ loading: true })

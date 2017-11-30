@@ -1,4 +1,16 @@
+import kts from './kts'
+
 module.exports = {
+  getIsMap: () => {
+    let date = new Date()
+    if ((((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) >= kts.time.START_NIGHT &&
+    ((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) <= kts.time.MIDDLE_NIGHT) ||
+    (date.getHours() >= kts.time.ZERO &&
+    ((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) <= kts.time.END_NIGHT)) {
+      return false
+    }
+    return true
+  },
   getMeters: (meters) => {
     if (meters !== null && meters !== undefined) {
       if (meters < 1000) {

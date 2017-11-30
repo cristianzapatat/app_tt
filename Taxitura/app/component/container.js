@@ -10,6 +10,7 @@ import style from '../style/container.style'
 
 import text from '../util/text'
 import kts from '../util/kts'
+import util from '../util/util'
 
 import Map from './map'
 
@@ -18,8 +19,11 @@ class ContainerLogin extends Component {
     super(props)
     this.state = {
       styleLogin: style.login,
-      isMns: false
+      isMns: false,
+      isMap: true
     }
+    clearTimeout(global.idInterval)
+    this.state.isMap = util.getIsMap()
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isMns && !this.state.isMns) {
@@ -28,12 +32,24 @@ class ContainerLogin extends Component {
       this.setState({ isMns: false })
     }
   }
+  componentDidMount () {
+    global.idInterval = setInterval(() => {
+      if (this.state.isMap !== util.getIsMap()) {
+        this.setState({isMap: !this.state.isMap})
+      }
+    }, kts.time.MINUTE)
+  }
+  __drawMap () {
+    if (this.state.isMap) {
+      return (<Map.Classic.MapDay style={this.state.styleLogin.map} />)
+    } else {
+      return (<Map.Classic.MapNight style={this.state.styleLogin.map} />)
+    }
+  }
   render () {
     return (
       <View style={this.state.styleLogin.container}>
-        <Map.MapClassic
-          style={this.state.styleLogin.map}
-        />
+        { this.__drawMap() }
         <View style={this.state.styleLogin.logoContainer}>
           <Image
             style={this.state.styleLogin.logo}
@@ -97,8 +113,18 @@ class ContainerApp extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      styleApp: style.app
+      styleApp: style.app,
+      isMap: true
     }
+    clearTimeout(global.idInterval)
+    this.state.isMap = util.getIsMap()
+  }
+  componentDidMount () {
+    global.idInterval = setInterval(() => {
+      if (this.state.isMap !== util.getIsMap()) {
+        this.setState({isMap: !this.state.isMap})
+      }
+    }, kts.time.MINUTE)
   }
   __drawFooter () {
     if (this.props.isButton) {
@@ -140,10 +166,10 @@ class ContainerApp extends Component {
       )
     }
   }
-  __drawMap () {
-    if (this.props.isService) {
+  getMapService () {
+    if (this.state.isMap) {
       return (
-        <Map.MapService
+        <Map.Service.MapDay
           style={this.state.styleApp.map}
           latitude={this.props.latitude}
           longitude={this.props.longitude}
@@ -155,12 +181,42 @@ class ContainerApp extends Component {
       )
     } else {
       return (
-        <Map.MapCabman
+        <Map.Service.MapNight
+          style={this.state.styleApp.map}
+          latitude={this.props.latitude}
+          longitude={this.props.longitude}
+          latitudeService={this.props.latitudeService}
+          longitudeService={this.props.longitudeService}
+          address={this.props.address}
+          coords={this.props.coords}
+        />
+      )
+    }
+  }
+  getMapCabman () {
+    if (this.state.isMap) {
+      return (
+        <Map.Cabman.MapDay
           style={this.state.styleApp.map}
           latitude={this.props.latitude}
           longitude={this.props.longitude}
         />
       )
+    } else {
+      return (
+        <Map.Cabman.MapNight
+          style={this.state.styleApp.map}
+          latitude={this.props.latitude}
+          longitude={this.props.longitude}
+        />
+      )
+    }
+  }
+  __drawMap () {
+    if (this.props.isService) {
+      return this.getMapService()
+    } else {
+      return this.getMapCabman()
     }
   }
   render () {
@@ -222,8 +278,11 @@ class ContainerGeneral extends Component {
     super(props)
     this.state = {
       styleGeneral: style.general,
-      isMns: false
+      isMns: false,
+      isMap: true
     }
+    clearTimeout(global.idInterval)
+    this.state.isMap = util.getIsMap()
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isMns && !this.state.isMns) {
@@ -232,12 +291,24 @@ class ContainerGeneral extends Component {
       this.setState({ isMns: false })
     }
   }
+  componentDidMount () {
+    global.idInterval = setInterval(() => {
+      if (this.state.isMap !== util.getIsMap()) {
+        this.setState({isMap: !this.state.isMap})
+      }
+    }, kts.time.MINUTE)
+  }
+  __drawMap () {
+    if (this.state.isMap) {
+      return (<Map.Classic.MapDay style={this.state.styleGeneral.map} />)
+    } else {
+      return (<Map.Classic.MapNight style={this.state.styleGeneral.map} />)
+    }
+  }
   render () {
     return (
       <View style={this.state.styleGeneral.container}>
-        <Map.MapClassic
-          style={this.state.styleGeneral.map}
-        />
+        { this.__drawMap() }
         <View style={[this.state.styleGeneral.content, this.state.styleGeneral.headerLogo]}>
           <TouchableOpacity
             onPressOut={this.props.onBack}
