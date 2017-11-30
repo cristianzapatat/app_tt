@@ -1,33 +1,42 @@
-'use strict'
-
+/* global fetch,Headers:true */
+/* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
-import { View, Image } from 'react-native'
+import {
+  View,
+  Image,
+  AsyncStorage
+} from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import * as Progress from 'react-native-progress'
 import io from 'socket.io-client'
 
-import consts from './constant/constant'
-import fs from './util/fs'
 import styles from './style/main.style'
+
+import global from './util/global'
+import urls from './util/urls'
+import kts from './util/kts'
+
 import Login from './view/login'
 import App from './view/app'
-import ListService from './view/listService'
+import WaitingServices from './view/waitingServices'
+import ChangePassword from './view/changePassword'
 
 const roots = {
   login: {screen: Login},
   app: {screen: App},
-  listService: {screen: ListService}
+  waitingServices: {screen: WaitingServices},
+  changePassword: {screen: ChangePassword}
 }
 
 const config = {
-  mode: 'card',
-  headerMode: 'none'
+  mode: kts.navigation.card,
+  headerMode: kts.navigation.none
 }
 
-config['initialRouteName'] = 'login'
+config[kts.navigation.initialRouteName] = kts.login.id
 const RouteNavigationLogin = StackNavigator(roots, config)
 
-config['initialRouteName'] = 'app'
+config[kts.navigation.initialRouteName] = kts.app.id
 const RouteNavigationApp = StackNavigator(roots, config)
 
 let idSet
@@ -36,34 +45,68 @@ export default class Main extends Component {
   constructor () {
     super()
     this.state = {
-      loading: true,
+      loading: false,
       rendering: false
     }
-    this.socket = io(consts.serverSock, { transports: ['websocket'] })
-    consts.socket = this.socket
+    this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
+    global.socket = this.socket
   }
 
   componentDidMount () {
-    fs.readFile(`${consts.persistenceFile}${consts.fileLogin}`)
-      .then(response => {
-        if (response) {
-          consts.user = response
-          if (!consts.user.activo) {
-            this.state.rendering = true
-          } else {
-            consts.user = null
-            consts.message = 'Usuario inactivo\nComuníquese con soporte'
+    AsyncStorage.getItem(kts.key.user, (err, result) => {
+      if (err) {
+        this.__renderView()
+      } else {
+        if (result) {
+          let user = JSON.parse(result)
+          let myHeaders = new Headers()
+          myHeaders.append(kts.key.userToken, user.token)
+          let init = {
+            method: kts.method.get,
+            headers: myHeaders
           }
+          fetch(urls.meService, init)
+            .then(response => {
+              return response.json()
+            })
+            .then(json => {
+              if (json) {
+                if (json.activo) {
+                  AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+                    this.state.rendering = true
+                    global.user = json
+                    this.__renderView()
+                  })
+                } else {
+                  this.__renderView()
+                }
+              } else {
+                this.__renderView()
+              }
+            })
+            .catch(err => {
+              // TODO advertencia sobre la red - internet
+              this.__renderView()
+            })
+        } else {
+          this.__renderView()
         }
-        idSet = setInterval(() => {
-          this.setState({ loading: false })
-          clearInterval(idSet)
-        }, 1500)
-      })
+      }
+    })
+  }
+
+  componentWillUnmount () {
+    clearTimeout(global.idInterval)
+  }
+
+  __renderView () {
+    idSet = setInterval(() => {
+      this.setState({ loading: true })
+      clearInterval(idSet)
+    }, 1000)
   }
 
   isRendering () {
-    consts.position = null
     if (this.state.rendering) {
       return (
         <RouteNavigationApp />
@@ -76,7 +119,7 @@ export default class Main extends Component {
   }
 
   render () {
-    if (!this.state.loading) {
+    if (this.state.loading) {
       return (
         <View style={styles.container}>
           { this.isRendering() }
@@ -93,7 +136,7 @@ export default class Main extends Component {
             style={styles.loading}
             size={50}
             color={['#2980b9']}
-            animating={this.state.loading}
+            animating={!this.state.loading}
             thickness={5}
           />
         </View>

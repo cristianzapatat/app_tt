@@ -1,12 +1,26 @@
-1: Antes de generar un apk se debe cerciorar de: 
-	* No tener flujos sin proceso alguno, ejemplo un if else sin ejecutar ninguna acciÛn.
-	* No tener la instrucciÛn console.log en el cÛdigo que se compilara.
+Ôªø1: Antes de generar un apk se debe cerciorar de: 
+	* No tener flujos sin proceso alguno, ejemplo un if else sin ejecutar ninguna acci√≥n.
+	* No tener la instrucci√≥n console.log en el c√≥digo que se compilara.
 	* Tener todas las dependencias del package.json descargadas.
 
-2: Durante la generaciÛn del apk validar que en el proceso de consola se estÈn 
-extrayendo las dependencias del node_modules y se estÈn compilando los procesos 
+2: Durante la generaci√≥n del apk validar que en el proceso de consola se est√©n 
+extrayendo las dependencias del node_modules y se est√©n compilando los procesos 
 assets
 
-3: luego de generar un apk y validar su correcto funcionamiento se deber· subir
-el cÛdigo con el que se genera dicho apk a la rama apks del repositorio con el 
-fin de que cada commit corresponda a una versiÛn de un apk funcional.
+3: luego de generar un apk y validar su correcto funcionamiento se deber√° subir
+el c√≥digo con el que se genera dicho apk a la rama apks del repositorio con el 
+fin de que cada commit corresponda a una versi√≥n de un apk funcional.
+
+4:En la siguiente ruta node_modules\react-native-modal\src\index.js se deber√°
+reemplazar en la linea 145 el c√≥digo por el siguiente:
+	 
+  onRequestClose={this.props.onBack ? this._closeOnBack : this.props.callBack }
+
+Esto para manipular el evento de ir atras de android.
+
+5.En la siguiente ruta node_modules\react-native\Libraries\Core\Timers\JSTimers.js
+reemplazar en la linea 69 el c√≥digo por e siguiente
+	
+  const MAX_TIMER_DURATION_MS = 85 * 1000;
+
+Esto para aumentar el tiempo de espera de los sockets.

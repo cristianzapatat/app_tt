@@ -1,56 +1,42 @@
 import React, { Component } from 'react'
 import {View, TouchableOpacity, Image, Text} from 'react-native'
 
-import styles from '../style/item.style'
-import consts from '../constant/constant'
+import style from '../style/item.style'
+
+import global from '../util/global'
+import text from '../util/text'
 
 export default class Item extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      uri: 'https://scontent.feoh3-1.fna.fbcdn.net/v/t1.0-1/p50x50/17903408_1044586812340472_7176591297268243543_n.png?oh=20bc54a7ec0faffce536dfa16eff5388&oe=5AA9803D'
-    }
-  }
-
   render () {
-    let index = this.props.index
+    let disabled = !(!global.waitCanceled && global.service === null && global.waitId === null)
     return (
-      <View style={[{backgroundColor: (index === 0 || index % 2 === 0 ? '#ecf0f1' : '#bdc3c7')}, styles.enter]}>
-        <View style={[styles.item]}>
-          <TouchableOpacity onPressOut={this.props.showPhoto}>
-            <Image
-              style={styles.photo}
-              source={{uri: this.props.item.user.url_pic || this.state.uri}} />
-          </TouchableOpacity>
-          <View style={styles.content}>
-            <Text
-              style={[styles.text, styles.headerText]}
-              numberOfLines={1}
-              ellipsizeMode={'tail'}>
-              {this.props.item.user.name || ''}
-            </Text>
-            <Text
-              style={[styles.text, styles.footerText]}
-              numberOfLines={1}
-              ellipsizeMode={'tail'}>
-              Usuario Recurrente
-            </Text>
-          </View>
-          <View style={[styles.buttons]}>
-            <TouchableOpacity onPressOut={this.props.viewMap}>
-              <View style={[styles.btn, styles.btnMap]}>
-                <Text style={styles.text}>Mapa</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+      <View style={[style.item]}>
+        <Image
+          style={style.photo}
+          source={{uri: this.props.item.user.url_pic}}
+        />
+        <View style={style.content}>
+          <Text
+            style={[style.text, style.name]}
+            numberOfLines={1}
+            ellipsizeMode={'tail'}>
+            {this.props.item.user.name}
+          </Text>
+          <Text
+            style={[style.text, style.address]}
+            numberOfLines={2}
+            ellipsizeMode={'tail'}>
+            {this.props.item.position_user.address}
+          </Text>
         </View>
-        <View style={styles.button}>
-          <TouchableOpacity onPressOut={this.props.acceptService}>
-            <View style={[styles.btn, styles.btnAccept]}>
-              <Text style={styles.text}>{consts.btnAccept}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={[{backgroundColor: disabled ? '#DCDCDC' : '#ffaf18'}, style.button]}
+          disabled={disabled}
+          onPressOut={this.props.acceptService}>
+          <Text style={[style.textButton]}>
+            {text.item.label.accept}
+          </Text>
+        </TouchableOpacity>
       </View>
     )
   }

@@ -1,66 +1,50 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-  enter: {
-    flexDirection: 'column',
-    borderBottomWidth: 1.5,
-    borderBottomColor: '#95a5a6'
-  },
   item: {
-    height: 75,
     flexDirection: 'row',
-    alignItems: 'center'
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#AFAFAF',
+    padding: 10,
+    height: 90,
+    width: '100%'
   },
   photo: {
-    height: 70,
-    width: 70,
-    borderRadius: 35,
-    marginLeft: 5
+    height: 50,
+    width: 50,
+    borderRadius: 25
   },
   content: {
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 200,
-    marginLeft: 7
-  },
-  button: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'flex-start'
   },
   text: {
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold'
+    textAlign: 'left',
+    width: 150,
+    marginLeft: 8,
+    marginRight: 8
   },
-  headerText: {
-    fontSize: 17,
-    color: '#000000'
+  name: {
+    fontSize: 18,
+    color: '#000'
   },
-  footerText: {
+  address: {
     fontSize: 14,
-    fontWeight: 'normal',
-    color: '#2e2e2e'
+    color: '#110f0f',
+    marginTop: 3
   },
-  buttons: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginLeft: 5,
-    width: 60
-  },
-  btn: {
+  button: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 60,
-    height: 30,
-    borderRadius: 10
+    width: 100,
+    height: 40,
+    borderRadius: 30
   },
-  btnAccept: {
-    backgroundColor: '#2980b9',
-    marginBottom: 5
-  },
-  btnMap: {
-    backgroundColor: '#27ae60'
+  textButton: {
+    fontSize: 20,
+    color: '#FFF'
   }
 })
