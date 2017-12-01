@@ -3,6 +3,7 @@ package com.taxitura;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.ocetnik.timer.BackgroundTimerPackage;
 import com.opensettings.OpenSettingsPackage;
 import br.com.dopaminamob.gpsstate.GPSStatePackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BackgroundTimerPackage(),
             new OpenSettingsPackage(),
             new GPSStatePackage(),
             new MapsPackage()

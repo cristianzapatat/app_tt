@@ -53,6 +53,9 @@ module.exports = {
     orderCanceled: 'orderCanceled',
     acceptCancel: 'acceptCancel'
   },
+  event: {
+    changeMap: 'changeMap'
+  },
   hardware: {
     backPress: 'hardwareBackPress',
     keyboardDidShow: 'keyboardDidShow',

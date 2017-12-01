@@ -9,12 +9,15 @@ import {
 import { StackNavigator } from 'react-navigation'
 import * as Progress from 'react-native-progress'
 import io from 'socket.io-client'
+import Background from 'react-native-background-timer'
+import { EventRegister } from 'react-native-event-listeners'
 
 import styles from './style/main.style'
 
 import global from './util/global'
 import urls from './util/urls'
 import kts from './util/kts'
+import util from './util/util'
 
 import Login from './view/login'
 import App from './view/app'
@@ -40,6 +43,7 @@ config[kts.navigation.initialRouteName] = kts.app.id
 const RouteNavigationApp = StackNavigator(roots, config)
 
 let idSet
+global.isDay = util.getIsMap()
 
 export default class Main extends Component {
   constructor () {
@@ -93,10 +97,18 @@ export default class Main extends Component {
         }
       }
     })
+    Background.runBackgroundTimer(() => {
+      let status = util.getIsMap()
+      if (global.isDay !== status) {
+        global.isDay = status
+        EventRegister.emit(kts.event.changeMap, status)
+      }
+    }, kts.time.MINUTE)
   }
 
   componentWillUnmount () {
-    clearTimeout(global.idInterval)
+    EventRegister.removeAllListeners()
+    Background.stopBackgroundTimer()
   }
 
   __renderView () {

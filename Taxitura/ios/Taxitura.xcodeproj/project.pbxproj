@@ -38,6 +38,7 @@
 		96E6BE81CA464D4DB7039864 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 964F44B046654A679FACB758 /* libAirMaps.a */; };
 		B46D40045B414F33B0DD433B /* libDPMGpsState.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B1C312E2714C349CEFF80A /* libDPMGpsState.a */; };
 		2FD44E3603E54E61942A2397 /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4231FF73DEFB4CC9B20042D2 /* libReact Native Open Settings.a */; };
+		4673F74E84644829A1A154CA /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A07BCBA54FE4460BD11224E /* libRNBackgroundTimer.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -263,6 +264,8 @@
 		F1B1C312E2714C349CEFF80A /* libDPMGpsState.a */ = {isa = PBXFileReference; name = "libDPMGpsState.a"; path = "libDPMGpsState.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		CE315AAF6DEE412E84FD942E /* React Native Open Settings.xcodeproj */ = {isa = PBXFileReference; name = "React Native Open Settings.xcodeproj"; path = "../node_modules/react-native-open-settings/React Native Open Settings.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		4231FF73DEFB4CC9B20042D2 /* libReact Native Open Settings.a */ = {isa = PBXFileReference; name = "libReact Native Open Settings.a"; path = "libReact Native Open Settings.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		808EA04BCD954EAEAD4AB572 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundTimer.xcodeproj"; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		6A07BCBA54FE4460BD11224E /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; name = "libRNBackgroundTimer.a"; path = "libRNBackgroundTimer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +295,7 @@
 				96E6BE81CA464D4DB7039864 /* libAirMaps.a in Frameworks */,
 				B46D40045B414F33B0DD433B /* libDPMGpsState.a in Frameworks */,
 				2FD44E3603E54E61942A2397 /* libReact Native Open Settings.a in Frameworks */,
+				4673F74E84644829A1A154CA /* libRNBackgroundTimer.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +465,7 @@
 				12D9B7C0CB5F4E199B8234B0 /* AirMaps.xcodeproj */,
 				A7ED9B49FDB34702A24168DB /* DPMGpsState.xcodeproj */,
 				CE315AAF6DEE412E84FD942E /* React Native Open Settings.xcodeproj */,
+				808EA04BCD954EAEAD4AB572 /* RNBackgroundTimer.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -997,12 +1002,14 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taxitura.app/Taxitura";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
+					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 				);
 			};
 			name = Debug;
@@ -1023,12 +1030,14 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taxitura.app/Taxitura";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
+					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 				);
 			};
 			name = Release;
@@ -1053,6 +1062,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
+					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 				);
 			};
 			name = Debug;
@@ -1076,6 +1086,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
+					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 				);
 			};
 			name = Release;
@@ -1105,12 +1116,14 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
+					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 				);
 			};
 			name = Debug;
@@ -1140,12 +1153,14 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
+					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 				);
 			};
 			name = Release;
@@ -1170,6 +1185,7 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -1194,6 +1210,7 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Release;
