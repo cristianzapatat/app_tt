@@ -5,12 +5,13 @@ import {
   Image,
   Text
 } from 'react-native'
+import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/container.style'
 
+import global from '../util/global'
 import text from '../util/text'
 import kts from '../util/kts'
-import util from '../util/util'
 
 import Map from './map'
 
@@ -22,8 +23,14 @@ class ContainerLogin extends Component {
       isMns: false,
       isMap: true
     }
-    clearTimeout(global.idInterval)
-    this.state.isMap = util.getIsMap()
+    this.state.isMap = global.isDay
+  }
+  componentWillMount () {
+    EventRegister.addEventListener(kts.event.changeMap, (data) => {
+      if (this.state.isMap !== data) {
+        this.setState({isMap: data})
+      }
+    })
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isMns && !this.state.isMns) {
@@ -31,13 +38,6 @@ class ContainerLogin extends Component {
     } else if (!nextProps.isMns && this.state.isMns) {
       this.setState({ isMns: false })
     }
-  }
-  componentDidMount () {
-    global.idInterval = setInterval(() => {
-      if (this.state.isMap !== util.getIsMap()) {
-        this.setState({isMap: !this.state.isMap})
-      }
-    }, kts.time.MINUTE)
   }
   __drawMap () {
     if (this.state.isMap) {
@@ -116,15 +116,14 @@ class ContainerApp extends Component {
       styleApp: style.app,
       isMap: true
     }
-    clearTimeout(global.idInterval)
-    this.state.isMap = util.getIsMap()
+    this.state.isMap = global.isDay
   }
-  componentDidMount () {
-    global.idInterval = setInterval(() => {
-      if (this.state.isMap !== util.getIsMap()) {
-        this.setState({isMap: !this.state.isMap})
+  componentWillMount () {
+    EventRegister.addEventListener(kts.event.changeMap, (data) => {
+      if (this.state.isMap !== data) {
+        this.setState({isMap: data})
       }
-    }, kts.time.MINUTE)
+    })
   }
   __drawFooter () {
     if (this.props.isButton) {
@@ -281,8 +280,14 @@ class ContainerGeneral extends Component {
       isMns: false,
       isMap: true
     }
-    clearTimeout(global.idInterval)
-    this.state.isMap = util.getIsMap()
+    this.state.isMap = global.isDay
+  }
+  componentWillMount () {
+    EventRegister.addEventListener(kts.event.changeMap, (data) => {
+      if (this.state.isMap !== data) {
+        this.setState({isMap: data})
+      }
+    })
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isMns && !this.state.isMns) {
@@ -290,13 +295,6 @@ class ContainerGeneral extends Component {
     } else if (!nextProps.isMns && this.state.isMns) {
       this.setState({ isMns: false })
     }
-  }
-  componentDidMount () {
-    global.idInterval = setInterval(() => {
-      if (this.state.isMap !== util.getIsMap()) {
-        this.setState({isMap: !this.state.isMap})
-      }
-    }, kts.time.MINUTE)
   }
   __drawMap () {
     if (this.state.isMap) {

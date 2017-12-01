@@ -6,5 +6,5 @@ module.exports = {
   waitId: null,
   waitCanceled: false,
   watchID: null,
-  idInterval: null
+  isDay: true
 }

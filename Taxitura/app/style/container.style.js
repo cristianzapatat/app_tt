@@ -50,8 +50,8 @@ var styleSheet = Object.freeze({
       textAlign: 'center'
     },
     icon: {
-      width: 25,
-      height: 25
+      width: 20,
+      height: 20
     },
     warning: {
       position: 'absolute',
@@ -222,8 +222,8 @@ var styleSheet = Object.freeze({
       textAlign: 'center'
     },
     icon: {
-      width: 24,
-      height: 19
+      width: 21,
+      height: 14
     },
     warning: {
       position: 'absolute',
