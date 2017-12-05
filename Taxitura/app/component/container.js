@@ -3,7 +3,8 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Text
+  Text,
+  Switch
 } from 'react-native'
 import { EventRegister } from 'react-native-event-listeners'
 
@@ -114,6 +115,7 @@ class ContainerApp extends Component {
     super(props)
     this.state = {
       styleApp: style.app,
+      isState: true,
       isMap: true
     }
     this.state.isMap = global.isDay
@@ -235,6 +237,22 @@ class ContainerApp extends Component {
             style={this.state.styleApp.logo}
             source={require('../../img/taxitura.png')}
           />
+          <TouchableOpacity
+            style={this.state.styleApp.state} >
+            <Image
+              style={this.state.styleApp.iconstate}
+              source={require('../../img/state.png')}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={this.state.styleApp.floatState}>
+          <Switch
+            value={this.state.isState}
+            onValueChange={(isState) => { this.setState({isState}) }}
+            tintColor={'#ffaf18'}
+            onTintColor={'#B3B3B3'}
+            thumbTintColor={'#FFFFFF'}
+            style={this.state.styleApp.switchState} />
         </View>
         <View style={[this.state.styleApp.content, this.state.styleApp.headerTitle]}>
           <Text
@@ -246,8 +264,7 @@ class ContainerApp extends Component {
         </View>
         <View style={[
           {display: this.props.isNoGps ? 'flex' : 'none'},
-          this.state.styleApp.warning
-        ]}>
+          this.state.styleApp.warning ]}>
           <Image
             style={this.state.styleApp.iconWarning}
             source={require('../../img/no_gps.png')}

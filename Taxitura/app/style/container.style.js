@@ -212,18 +212,45 @@ var styleSheet = Object.freeze({
       width: 30,
       height: 30
     },
+    icon: {
+      width: 21,
+      height: 14
+    },
     logo: {
       width: 80,
       height: 70
+    },
+    state: {
+      position: 'absolute',
+      right: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 30,
+      height: 30
+    },
+    iconstate: {
+      width: 5,
+      height: 20
+    },
+    floatState: {
+      position: 'absolute',
+      right: 5,
+      top: 50,
+      width: 140,
+      height: 60,
+      backgroundColor: '#FFF',
+      borderRadius: 2,
+      zIndex: 2,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center'
+    },
+    switchState: {
     },
     title: {
       color: 'rgb(255, 255, 255)',
       fontSize: 18,
       textAlign: 'center'
-    },
-    icon: {
-      width: 21,
-      height: 14
     },
     warning: {
       position: 'absolute',
