@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {View, TouchableOpacity, Image, Text} from 'react-native'
 
-import style from '../style/item.style'
+import style from '../style/itemService.style'
 
 import global from '../util/global'
 import text from '../util/text'

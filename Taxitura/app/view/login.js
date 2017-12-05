@@ -61,61 +61,63 @@ export default class Login extends Component {
 
   async login () {
     Keyboard.dismiss()
-    let idCard = this.state.idCard
-    let password = this.state.password
-    if (idCard.length > 0 && password.length > 0) {
-      this.setState({editable: false})
-      fetch(urls.loginService(idCard, password))
-        .then(response => {
-          return response.json()
-        })
-        .then(json => {
-          if (json) {
-            if (json.token) {
-              if (json.activo) {
-                AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
-                  global.user = json
-                  this.props.navigation.navigate(kts.app.id)
-                })
+    setTimeout(() => {
+      let idCard = this.state.idCard
+      let password = this.state.password
+      if (idCard.length > 0 && password.length > 0) {
+        this.setState({editable: false})
+        fetch(urls.loginService(idCard, password))
+          .then(response => {
+            return response.json()
+          })
+          .then(json => {
+            if (json) {
+              if (json.token) {
+                if (json.activo) {
+                  AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+                    global.user = json
+                    this.props.navigation.navigate(kts.app.id)
+                  })
+                } else {
+                  this.setState({
+                    password: '',
+                    editable: true,
+                    message: text.login.msn.userInactive,
+                    typeMessage: kts.enum.ERROR,
+                    isMns: true
+                  })
+                }
               } else {
                 this.setState({
+                  idCard: '',
                   password: '',
                   editable: true,
-                  message: text.login.msn.userInactive,
+                  message: text.login.msn.verifyCredential,
                   typeMessage: kts.enum.ERROR,
                   isMns: true
                 })
               }
             } else {
-              this.setState({
-                idCard: '',
-                password: '',
-                editable: true,
-                message: text.login.msn.verifyCredential,
-                typeMessage: kts.enum.ERROR,
-                isMns: true
-              })
+              this.setState({idCard: '', password: '', editable: true})
             }
-          } else {
-            this.setState({idCard: '', password: '', editable: true})
-          }
-        })
-        .catch(err => {
-          this.setState({
-            idCard: '',
-            editable: true,
-            message: text.login.msn.verifyInternet,
-            typeMessage: kts.enum.ERROR,
-            isMns: true
           })
+          .catch(err => {
+            this.setState({
+              idCard: '',
+              editable: true,
+              message: text.login.msn.verifyInternet,
+              typeMessage: kts.enum.ERROR,
+              isMns: true
+            })
+          })
+      } else {
+        this.setState({
+          message: text.login.msn.empty,
+          typeMessage: kts.enum.ERROR,
+          isMns: true
         })
-    } else {
-      this.setState({
-        message: text.login.msn.empty,
-        typeMessage: kts.enum.ERROR,
-        isMns: true
-      })
-    }
+      }
+    }, 200)
   }
 
   render () {
@@ -157,6 +159,7 @@ export default class Login extends Component {
             />
             <TouchableOpacity
               style={style.button}
+              disabled={!this.state.editable}
               onPressOut={this.login.bind(this)}>
               <Text style={style.text}>
                 {text.login.label.enter}
