@@ -41,7 +41,7 @@ const config = {
 config[kts.navigation.initialRouteName] = kts.login.id
 const RouteNavigationLogin = StackNavigator(roots, config)
 
-config[kts.navigation.initialRouteName] = kts.shoppingHistory.id
+config[kts.navigation.initialRouteName] = kts.app.id
 const RouteNavigationApp = StackNavigator(roots, config)
 
 let idSet
