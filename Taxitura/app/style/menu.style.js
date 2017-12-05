@@ -85,6 +85,12 @@ export default StyleSheet.create({
     height: 35,
     marginRight: 10
   },
+  iconCard: {
+    width: 36,
+    height: 27,
+    marginLeft: -3,
+    marginRight: 10
+  },
   textItem: {
     textAlign: 'left',
     fontSize: 16

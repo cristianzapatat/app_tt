@@ -73,8 +73,8 @@ export default class Menu extends Component {
               style={style.item}
               onPressOut={this.props.goShoppingHistory}>
               <Image
-                style={style.iconItem}
-                source={require('../../img/password.png')} />
+                style={style.iconCard}
+                source={require('../../img/card_recharge.png')} />
               <Text style={style.textItem}>
                 {text.menu.label.shoppingHistory}
               </Text>
