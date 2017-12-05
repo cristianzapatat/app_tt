@@ -20,7 +20,7 @@ export default StyleSheet.create({
     height: 25
   },
   place: {
-    fontSize: 22,
+    fontSize: 21,
     color: '#ABABAB',
     width: 234,
     height: '100%',

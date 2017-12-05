@@ -71,14 +71,14 @@ module.exports = {
   },
   shoppingHistory: {
     label: {
-      title: 'Historial de compras'
+      title: 'Historial recargas'
     }
   },
   menu: {
     label: {
       waitingServices: 'Servicios en espera',
       changePassword: 'Modificar contraseña',
-      shoppingHistory: 'Historial de compras',
+      shoppingHistory: 'Historial recargas',
       closeSession: 'Cerrar sesión'
     }
   },
