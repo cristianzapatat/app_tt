@@ -3,7 +3,6 @@ import {View, Text} from 'react-native'
 
 import style from '../style/itemShoppingHistory.style'
 
-import global from '../util/global'
 import text from '../util/text'
 
 export default class Item extends Component {

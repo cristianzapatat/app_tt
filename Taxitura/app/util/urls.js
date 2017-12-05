@@ -38,5 +38,8 @@ module.exports = {
   },
   getListWaitingServices: (id) => {
     return `${urlInterface}/get_services_canceled/${id}`
+  },
+  getShoppingHistory: (id) => {
+    return `${urlServer}/api/v1/recharges?user_id=${id}`
   }
 }
