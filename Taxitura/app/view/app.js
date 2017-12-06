@@ -42,9 +42,10 @@ export default class Taxitura extends Component {
     })
     global.socket.on(kts.socket.app, order => {
       const { navigation } = this.props
-      if (navigation.state.routeName === kts.app.id && global.position !== null &&
-       !global.waitCanceled && order.action === kts.action.order &&
-       global.service === null && global.waitId === null) {
+      if (global.state && navigation.state.routeName === kts.app.id &&
+        global.position !== null && !global.waitCanceled &&
+        order.action === kts.action.order && global.service === null &&
+        global.waitId === null) {
         global.service = order
         this.openModalOrder(global.position, global.service.position_user)
       } else if (order.action === kts.action.order) {
@@ -338,6 +339,7 @@ export default class Taxitura extends Component {
       this.props.navigation.navigate(id)
     }, 400)
   }
+
   closeSession () {
     this.setState({isMenu: false})
     navigator.geolocation.clearWatch(this.watchID)

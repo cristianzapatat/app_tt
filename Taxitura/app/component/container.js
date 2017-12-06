@@ -4,7 +4,8 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  Animated
+  Animated,
+  AsyncStorage
 } from 'react-native'
 import { EventRegister } from 'react-native-event-listeners'
 import Switch from 'react-native-switch-pro'
@@ -132,6 +133,16 @@ class ContainerApp extends Component {
         this.setState({isMap: data})
       }
     })
+    this.eventeChangeState = EventRegister.addEventListener(kts.event.changeState, (state) => {
+      if (this.state.state !== state) {
+        this.setState({state})
+        global.user['state_app'] = global.state
+        AsyncStorage.setItem(kts.key.user, JSON.stringify(global.user))
+      }
+    })
+  }
+  componentWillUnmount () {
+    EventRegister.removeEventListener(this.eventeChangeState)
   }
   __drawFooter () {
     if (this.props.isButton) {
@@ -233,14 +244,14 @@ class ContainerApp extends Component {
       this.state.animated,
       {
         toValue: value,
-        duration: 400
+        duration: 500
       }
     ).start()
   }
   modifyState () {
     let state = !this.state.state
     global.state = state
-    this.setState({state})
+    EventRegister.emit(kts.event.changeState, state)
     this.showState()
   }
   render () {
@@ -361,7 +372,7 @@ class ContainerGeneral extends Component {
       this.state.animated,
       {
         toValue: value,
-        duration: 400
+        duration: 500
       }
     ).start()
   }
@@ -369,6 +380,7 @@ class ContainerGeneral extends Component {
     let state = !this.state.state
     global.state = state
     this.setState({state})
+    EventRegister.emit(kts.event.changeState, state)
     this.showState()
   }
   render () {

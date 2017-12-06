@@ -78,9 +78,11 @@ export default class Main extends Component {
             .then(json => {
               if (json) {
                 if (json.activo) {
+                  json['state_app'] = user.state_app !== null ? user.state_app : true
                   AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
                     this.state.rendering = true
                     global.user = json
+                    global.state = json.state_app
                     this.__renderView()
                   })
                 } else {
