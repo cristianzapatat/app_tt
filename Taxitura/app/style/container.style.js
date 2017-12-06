@@ -40,18 +40,48 @@ var styleSheet = Object.freeze({
       width: 30,
       height: 30
     },
+    icon: {
+      width: 20,
+      height: 20
+    },
     logo: {
       width: 80,
       height: 70
+    },
+    state: {
+      position: 'absolute',
+      right: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 30,
+      height: 30
+    },
+    iconstate: {
+      width: 5,
+      height: 20
+    },
+    floatState: {
+      position: 'absolute',
+      right: 5,
+      top: 50,
+      width: 145,
+      height: 50,
+      backgroundColor: '#FFF',
+      borderRadius: 2,
+      zIndex: 2,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      paddingLeft: 10
+    },
+    tState: {
+      fontSize: 15,
+      marginLeft: 5
     },
     title: {
       color: 'rgb(255, 255, 255)',
       fontSize: 18,
       textAlign: 'center'
-    },
-    icon: {
-      width: 20,
-      height: 20
     },
     warning: {
       position: 'absolute',
@@ -236,16 +266,19 @@ var styleSheet = Object.freeze({
       position: 'absolute',
       right: 5,
       top: 50,
-      width: 140,
-      height: 60,
+      width: 145,
+      height: 50,
       backgroundColor: '#FFF',
       borderRadius: 2,
       zIndex: 2,
       flexDirection: 'row',
       justifyContent: 'flex-start',
-      alignItems: 'center'
+      alignItems: 'center',
+      paddingLeft: 10
     },
-    switchState: {
+    tState: {
+      fontSize: 15,
+      marginLeft: 5
     },
     title: {
       color: 'rgb(255, 255, 255)',

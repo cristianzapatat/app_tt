@@ -4,9 +4,10 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  Switch
+  Animated
 } from 'react-native'
 import { EventRegister } from 'react-native-event-listeners'
+import Switch from 'react-native-switch-pro'
 
 import style from '../style/container.style'
 
@@ -15,6 +16,8 @@ import text from '../util/text'
 import kts from '../util/kts'
 
 import Map from './map'
+
+let isState = false
 
 class ContainerLogin extends Component {
   constructor (props) {
@@ -115,9 +118,12 @@ class ContainerApp extends Component {
     super(props)
     this.state = {
       styleApp: style.app,
-      isState: true,
-      isMap: true
+      state: true,
+      disabled: false,
+      isMap: true,
+      animated: new Animated.Value(0)
     }
+    this.state.state = global.state
     this.state.isMap = global.isDay
   }
   componentWillMount () {
@@ -220,40 +226,65 @@ class ContainerApp extends Component {
       return this.getMapCabman()
     }
   }
+  showState () {
+    let value = !isState ? 1 : 0
+    isState = value === 1
+    Animated.timing(
+      this.state.animated,
+      {
+        toValue: value,
+        duration: 400
+      }
+    ).start()
+  }
+  modifyState () {
+    let state = !this.state.state
+    global.state = state
+    this.setState({state})
+    this.showState()
+  }
   render () {
+    let { animated } = this.state
     return (
       <View style={this.state.styleApp.container}>
         { this.__drawMap() }
         <View style={[this.state.styleApp.content, this.state.styleApp.headerLogo]}>
           <TouchableOpacity
-            onPressOut={this.props.onPressMenu}
+            onPressOut={() => {
+              if (isState) this.showState()
+              this.props.onPressMenu()
+            }}
             style={this.state.styleApp.menu} >
             <Image
               style={this.state.styleApp.icon}
-              source={require('../../img/menu.png')}
-            />
+              source={require('../../img/menu.png')} />
           </TouchableOpacity>
           <Image
             style={this.state.styleApp.logo}
-            source={require('../../img/taxitura.png')}
-          />
+            source={require('../../img/taxitura.png')} />
           <TouchableOpacity
+            onPressOut={this.showState.bind(this)}
             style={this.state.styleApp.state} >
             <Image
               style={this.state.styleApp.iconstate}
-              source={require('../../img/state.png')}
-            />
+              source={require('../../img/state.png')} />
           </TouchableOpacity>
         </View>
-        <View style={this.state.styleApp.floatState}>
+        <Animated.View style={[
+          {opacity: animated},
+          this.state.styleApp.floatState]}>
           <Switch
-            value={this.state.isState}
-            onValueChange={(isState) => { this.setState({isState}) }}
-            tintColor={'#ffaf18'}
-            onTintColor={'#B3B3B3'}
-            thumbTintColor={'#FFFFFF'}
-            style={this.state.styleApp.switchState} />
-        </View>
+            width={50}
+            height={25}
+            value={!this.state.state}
+            disabled={this.state.disabled}
+            backgroundActive={'#B3B3B3'}
+            backgroundInactive={'#ffaf18'}
+            onSyncPress={this.modifyState.bind(this)} />
+          <Text style={this.state.styleApp.tState}>
+            {this.state.state ? text.item.label.available : text.item.label.occupied}
+          </Text>
+        </Animated.View>
         <View style={[this.state.styleApp.content, this.state.styleApp.headerTitle]}>
           <Text
             style={this.state.styleApp.title}
@@ -267,8 +298,7 @@ class ContainerApp extends Component {
           this.state.styleApp.warning ]}>
           <Image
             style={this.state.styleApp.iconWarning}
-            source={require('../../img/no_gps.png')}
-          />
+            source={require('../../img/no_gps.png')} />
           <Text style={this.state.styleApp.textWarning}>
             {this.props.textNoGps}
           </Text>
@@ -295,8 +325,12 @@ class ContainerGeneral extends Component {
     this.state = {
       styleGeneral: style.general,
       isMns: false,
-      isMap: true
+      isMap: true,
+      state: true,
+      disabled: false,
+      animated: new Animated.Value(0)
     }
+    this.state.state = global.state
     this.state.isMap = global.isDay
   }
   componentWillMount () {
@@ -320,24 +354,65 @@ class ContainerGeneral extends Component {
       return (<Map.Classic.MapNight style={this.state.styleGeneral.map} />)
     }
   }
+  showState () {
+    let value = !isState ? 1 : 0
+    isState = value === 1
+    Animated.timing(
+      this.state.animated,
+      {
+        toValue: value,
+        duration: 400
+      }
+    ).start()
+  }
+  modifyState () {
+    let state = !this.state.state
+    global.state = state
+    this.setState({state})
+    this.showState()
+  }
   render () {
+    let { animated } = this.state
     return (
       <View style={this.state.styleGeneral.container}>
         { this.__drawMap() }
         <View style={[this.state.styleGeneral.content, this.state.styleGeneral.headerLogo]}>
           <TouchableOpacity
-            onPressOut={this.props.onBack}
+            onPressOut={() => {
+              if (isState) this.showState()
+              this.props.onBack()
+            }}
             style={this.state.styleGeneral.menu} >
             <Image
               style={this.state.styleGeneral.icon}
-              source={require('../../img/back.png')}
-            />
+              source={require('../../img/back.png')} />
           </TouchableOpacity>
           <Image
             style={this.state.styleGeneral.logo}
-            source={require('../../img/taxitura.png')}
-          />
+            source={require('../../img/taxitura.png')} />
+          <TouchableOpacity
+            onPressOut={this.showState.bind(this)}
+            style={this.state.styleGeneral.state} >
+            <Image
+              style={this.state.styleGeneral.iconstate}
+              source={require('../../img/state.png')} />
+          </TouchableOpacity>
         </View>
+        <Animated.View style={[
+          {opacity: animated},
+          this.state.styleGeneral.floatState]}>
+          <Switch
+            width={50}
+            height={25}
+            value={!this.state.state}
+            disabled={this.state.disabled}
+            backgroundActive={'#B3B3B3'}
+            backgroundInactive={'#ffaf18'}
+            onSyncPress={this.modifyState.bind(this)} />
+          <Text style={this.state.styleGeneral.tState}>
+            {this.state.state ? text.item.label.available : text.item.label.occupied}
+          </Text>
+        </Animated.View>
         <View style={[this.state.styleGeneral.content, this.state.styleGeneral.headerTitle]}>
           <Text
             style={this.state.styleGeneral.title}
@@ -367,22 +442,17 @@ class ContainerGeneral extends Component {
         </View>
         <View style={[
           {display: this.state.isMns ? 'flex' : 'none'},
-          this.state.styleGeneral.msn
-        ]}>
+          this.state.styleGeneral.msn ]}>
           <Image
             style={[
               {display: this.props.typeMessage === kts.enum.ERROR ? 'flex' : 'none'},
-              this.state.styleGeneral.mIcon
-            ]}
-            source={require('../../img/warning.png')}
-          />
+              this.state.styleGeneral.mIcon ]}
+            source={require('../../img/warning.png')} />
           <Image
             style={[
               {display: this.props.typeMessage === kts.enum.OK || !this.props.typeMessage ? 'flex' : 'none'},
-              this.state.styleGeneral.mIcon
-            ]}
-            source={require('../../img/ok.png')}
-          />
+              this.state.styleGeneral.mIcon ]}
+            source={require('../../img/ok.png')} />
           <Text
             style={this.state.styleGeneral.mText}
             numberOfLines={2}
