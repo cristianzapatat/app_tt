@@ -11,6 +11,10 @@ module.exports = {
     }
     return true
   },
+  getDateFormat: (value) => {
+    let date = new Date(value)
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+  },
   getMeters: (meters) => {
     if (meters !== null && meters !== undefined) {
       if (meters < 1000) {

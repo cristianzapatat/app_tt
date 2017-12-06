@@ -50,7 +50,8 @@ module.exports = {
   item: {
     label: {
       accept: 'Aceptar',
-      package: 'Paquete #'
+      package: 'Paquete #',
+      symbolPrice: '$'
     }
   },
   changePassword: {

@@ -3,10 +3,12 @@ import {View, Text} from 'react-native'
 
 import style from '../style/itemShoppingHistory.style'
 
+import util from '../util/util'
 import text from '../util/text'
 
 export default class Item extends Component {
   render () {
+    let item = this.props.item
     return (
       <View style={[style.item]}>
         <View style={style.title}>
@@ -14,11 +16,11 @@ export default class Item extends Component {
             style={[style.place]}
             numberOfLines={1}
             ellipsizeMode={'tail'}>
-            {this.props.item.lugar}
+            {item.direccion}
           </Text>
           <Text
             style={[style.date]}>
-            {this.props.item.fecha}
+            {util.getDateFormat(item.updated_at)}
           </Text>
         </View>
         <View style={style.body}>
@@ -27,7 +29,7 @@ export default class Item extends Component {
               style={[style.price]}
               numberOfLines={1}
               ellipsizeMode={'tail'}>
-              {this.props.item.valor}
+              {text.item.label.symbolPrice}{parseInt(item.valor_de_paquete)}
             </Text>
           </View>
           <View style={style.description}>
