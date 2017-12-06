@@ -11,7 +11,7 @@ import urls from '../util/urls'
 import text from '../util/text'
 
 import Container from '../component/container'
-import Item from '../component/item'
+import Item from '../component/itemService'
 
 let idSet
 let status = true

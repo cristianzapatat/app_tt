@@ -86,6 +86,9 @@ module.exports = {
   changePassword: {
     id: 'changePassword'
   },
+  shoppingHistory: {
+    id: 'shoppingHistory'
+  },
   action: {
     order: 'order',
     accept: 'accept',

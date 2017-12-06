@@ -23,12 +23,14 @@ import Login from './view/login'
 import App from './view/app'
 import WaitingServices from './view/waitingServices'
 import ChangePassword from './view/changePassword'
+import ShoppingHistory from './view/shoppingHistory'
 
 const roots = {
   login: {screen: Login},
   app: {screen: App},
   waitingServices: {screen: WaitingServices},
-  changePassword: {screen: ChangePassword}
+  changePassword: {screen: ChangePassword},
+  shoppingHistory: {screen: ShoppingHistory}
 }
 
 const config = {

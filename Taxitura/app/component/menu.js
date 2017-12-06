@@ -69,6 +69,16 @@ export default class Menu extends Component {
                 {text.menu.label.changePassword}
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={style.item}
+              onPressOut={this.props.goShoppingHistory}>
+              <Image
+                style={style.iconCard}
+                source={require('../../img/card_recharge.png')} />
+              <Text style={style.textItem}>
+                {text.menu.label.shoppingHistory}
+              </Text>
+            </TouchableOpacity>
           </View>
           <View style={style.close}>
             <TouchableOpacity

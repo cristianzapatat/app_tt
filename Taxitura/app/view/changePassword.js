@@ -52,92 +52,94 @@ export default class Settings extends Component {
 
   async changePassword () {
     Keyboard.dismiss()
-    let tCurrent = this.state.tCurrent
-    let tNew = this.state.tNew
-    let tRepeat = this.state.tRepeat
-    if (tCurrent.length > 0 && tNew.length > 0 && tRepeat.length > 0) {
-      if (tNew === tRepeat) {
-        this.setState({editable: false})
-        let myHeaders = new Headers()
-        myHeaders.append(kts.header.contentType, kts.header.multiparFormData)
-        myHeaders.append(kts.key.userToken, global.user.token)
-        var data = new FormData()
-        data.append(kts.body.currentPassword, tCurrent)
-        data.append(kts.body.newPassword, tNew)
-        data.append(kts.body.repeatPassword, tRepeat)
-        let init = {
-          method: kts.method.put,
-          headers: myHeaders,
-          body: data
-        }
-        fetch(urls.updatePasswordService(global.user.id), init)
-          .then(response => {
-            return response.json()
-          })
-          .then(json => {
-            if (json.token) {
-              AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
-                global.user = json
-                this.setState({
-                  tCurrent: '',
-                  tNew: '',
-                  tRepeat: '',
-                  editable: true,
-                  message: text.changePassword.msn.changeSuccess,
-                  typeMessage: kts.enum.OK,
-                  isMns: true
-                })
-              })
-            } else {
-              if (json.message) {
-                this.setState({
-                  tCurrent: '',
-                  tNew: '',
-                  tRepeat: '',
-                  editable: true,
-                  message: json.message,
-                  typeMessage: kts.enum.ERROR,
-                  isMns: true
+    setTimeout(() => {
+      let tCurrent = this.state.tCurrent
+      let tNew = this.state.tNew
+      let tRepeat = this.state.tRepeat
+      if (tCurrent.length > 0 && tNew.length > 0 && tRepeat.length > 0) {
+        if (tNew === tRepeat) {
+          this.setState({editable: false})
+          let myHeaders = new Headers()
+          myHeaders.append(kts.header.contentType, kts.header.multiparFormData)
+          myHeaders.append(kts.key.userToken, global.user.token)
+          var data = new FormData()
+          data.append(kts.body.currentPassword, tCurrent)
+          data.append(kts.body.newPassword, tNew)
+          data.append(kts.body.repeatPassword, tRepeat)
+          let init = {
+            method: kts.method.put,
+            headers: myHeaders,
+            body: data
+          }
+          fetch(urls.updatePasswordService(global.user.id), init)
+            .then(response => {
+              return response.json()
+            })
+            .then(json => {
+              if (json.token) {
+                AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+                  global.user = json
+                  this.setState({
+                    tCurrent: '',
+                    tNew: '',
+                    tRepeat: '',
+                    editable: true,
+                    message: text.changePassword.msn.changeSuccess,
+                    typeMessage: kts.enum.OK,
+                    isMns: true
+                  })
                 })
               } else {
-                this.setState({
-                  tCurrent: '',
-                  tNew: '',
-                  tRepeat: '',
-                  editable: true,
-                  message: text.changePassword.msn.verifyCredential,
-                  typeMessage: kts.enum.ERROR,
-                  isMns: true
-                })
+                if (json.message) {
+                  this.setState({
+                    tCurrent: '',
+                    tNew: '',
+                    tRepeat: '',
+                    editable: true,
+                    message: json.message,
+                    typeMessage: kts.enum.ERROR,
+                    isMns: true
+                  })
+                } else {
+                  this.setState({
+                    tCurrent: '',
+                    tNew: '',
+                    tRepeat: '',
+                    editable: true,
+                    message: text.changePassword.msn.verifyCredential,
+                    typeMessage: kts.enum.ERROR,
+                    isMns: true
+                  })
+                }
               }
-            }
-          })
-          .catch(err => {
-            this.setState({
-              tCurrent: '',
-              tNew: '',
-              tRepeat: '',
-              message: text.changePassword.msn.verifyInternet,
-              typeMessage: kts.enum.ERROR,
-              isMns: true
             })
+            .catch(err => {
+              this.setState({
+                tCurrent: '',
+                tNew: '',
+                tRepeat: '',
+                message: text.changePassword.msn.verifyInternet,
+                typeMessage: kts.enum.ERROR,
+                isMns: true
+              })
+            })
+        } else {
+          this.setState({
+            tNew: '',
+            tRepeat: '',
+            message: text.changePassword.msn.noEquals,
+            typeMessage: kts.enum.ERROR,
+            isMns: true
           })
+        }
       } else {
         this.setState({
-          tNew: '',
-          tRepeat: '',
-          message: text.changePassword.msn.noEquals,
+          message: text.changePassword.msn.empty,
           typeMessage: kts.enum.ERROR,
           isMns: true
         })
       }
-    } else {
-      this.setState({
-        message: text.changePassword.msn.empty,
-        typeMessage: kts.enum.ERROR,
-        isMns: true
-      })
-    }
+    }, 200)
   }
 
   render () {
@@ -195,6 +197,7 @@ export default class Settings extends Component {
           </View>
           <TouchableOpacity
             style={style.button}
+            disabled={!this.state.editable}
             onPressOut={this.changePassword.bind(this)}>
             <Text style={style.text}>
               {text.changePassword.label.save}

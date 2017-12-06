@@ -49,7 +49,12 @@ module.exports = {
   },
   item: {
     label: {
-      accept: 'Aceptar'
+      accept: 'Aceptar',
+      package: 'Paquete #',
+      symbolPrice: '$',
+      symbolMore: '+',
+      services: 'servicios',
+      commission: 'comisión'
     }
   },
   changePassword: {
@@ -68,10 +73,16 @@ module.exports = {
       verifyCredential: 'Verifique sus credenciales'
     }
   },
+  shoppingHistory: {
+    label: {
+      title: 'Historial recargas'
+    }
+  },
   menu: {
     label: {
       waitingServices: 'Servicios en espera',
       changePassword: 'Modificar contraseña',
+      shoppingHistory: 'Historial recargas',
       closeSession: 'Cerrar sesión'
     }
   },
