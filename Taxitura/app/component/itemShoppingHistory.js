@@ -29,19 +29,19 @@ export default class Item extends Component {
               style={[style.price]}
               numberOfLines={1}
               ellipsizeMode={'tail'}>
-              {text.item.label.symbolPrice}{parseInt(item.valor_de_paquete)}
+              {text.item.label.symbolPrice}{util.separatorComa(`${parseInt(item.valor_de_paquete)}`)}
             </Text>
           </View>
           <View style={style.description}>
             <Text
               style={[style.package]}>
-              {text.item.label.package}{this.props.item.paquete}
+              {text.item.label.package}{item.asistente_nombre}
             </Text>
             <Text
               style={[style.info]}
               numberOfLines={1}
               ellipsizeMode={'tail'}>
-              {this.props.item.descripcion}
+              {util.getTextServiceCommission(item)}
             </Text>
           </View>
         </View>
