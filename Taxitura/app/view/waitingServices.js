@@ -2,6 +2,7 @@
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {View, FlatList, PermissionsAndroid} from 'react-native'
+import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/waitingServices.style'
 
@@ -89,9 +90,15 @@ export default class WaitingServices extends Component {
     }
     service.action = kts.action.accept
     status = false
+    global.tempState = global.state
     const { goBack } = this.props.navigation
+    EventRegister.emit(kts.event.changeState, {state: false, case: 0})
     global.socket.emit(kts.socket.acceptCancel, service)
     goBack()
+  }
+
+  onShow () {
+    EventRegister.emit(kts.event.onShow)
   }
 
   _keyExtractor (item, index) {
@@ -114,6 +121,7 @@ export default class WaitingServices extends Component {
               <Item
                 item={item}
                 index={index}
+                onShow={() => { this.onShow() }}
                 acceptService={() => { this.acceptService(item) }}
               />
           } />

@@ -7,5 +7,6 @@ module.exports = {
   waitCanceled: false,
   watchID: null,
   isDay: true,
-  state: true
+  state: true,
+  tempState: null
 }

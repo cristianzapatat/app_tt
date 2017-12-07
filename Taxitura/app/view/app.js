@@ -9,6 +9,7 @@ import {
   AsyncStorage
 } from 'react-native'
 import GPSState from 'react-native-gps-state'
+import { EventRegister } from 'react-native-event-listeners'
 
 import global from '../util/global'
 import kts from '../util/kts'
@@ -183,6 +184,8 @@ export default class Taxitura extends Component {
     })
     if (isServiceInMemory) {
       isServiceInMemory = false
+      global.tempState = global.state
+      EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       this.getInfoOrder()
     }
   }
@@ -216,6 +219,7 @@ export default class Taxitura extends Component {
   }
 
   openModalOrder (start, end) {
+    EventRegister.emit(kts.event.onShow)
     fetch(urls.getDistanceMatrix(start, end))
       .then(result => {
         return result.json()
@@ -279,6 +283,7 @@ export default class Taxitura extends Component {
         longitude: this.state.longitude
       }
       global.service.action = kts.action.accept
+      EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       global.socket.emit(kts.socket.app, global.service)
       global.waitId = global.service.service.id
       global.service = null
@@ -291,6 +296,7 @@ export default class Taxitura extends Component {
     global.waitId = null
     coords = []
     global.waitCanceled = false
+    EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
     this.setState({ isButton: false, isService: false })
   }
 

@@ -55,7 +55,8 @@ module.exports = {
   },
   event: {
     changeMap: 'changeMap',
-    changeState: 'changeState'
+    changeState: 'changeState',
+    onShow: 'onShow'
   },
   hardware: {
     backPress: 'hardwareBackPress',
