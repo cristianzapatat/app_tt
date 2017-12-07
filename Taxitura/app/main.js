@@ -4,10 +4,10 @@ import React, { Component } from 'react'
 import {
   View,
   Image,
-  AsyncStorage
+  AsyncStorage,
+  ActivityIndicator
 } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import * as Progress from 'react-native-progress'
 import io from 'socket.io-client'
 import Background from 'react-native-background-timer'
 import { EventRegister } from 'react-native-event-listeners'
@@ -149,13 +149,11 @@ export default class Main extends Component {
             style={styles.imgLoading}
             source={require('../img/taxitura.png')}
           />
-          <Progress.CircleSnail
+          <ActivityIndicator
             style={styles.loading}
-            size={50}
-            color={['#2980b9']}
             animating={!this.state.loading}
-            thickness={5}
-          />
+            size={50}
+            color='#2980b9' />
         </View>
       )
     }

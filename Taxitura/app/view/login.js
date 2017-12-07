@@ -76,6 +76,8 @@ export default class Login extends Component {
                 if (json.activo) {
                   AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
                     global.user = json
+                    global.state = true
+                    global.tempState = null
                     this.props.navigation.navigate(kts.app.id)
                   })
                 } else {
