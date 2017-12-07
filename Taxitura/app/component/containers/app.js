@@ -52,6 +52,7 @@ class ContainerApp extends Component {
         global.state = value.state
         this.setState({state: value.state})
         global.user['state_app'] = value.state
+        global.user['state_temp'] = global.tempState
         AsyncStorage.setItem(kts.key.user, JSON.stringify(global.user))
       }
     })

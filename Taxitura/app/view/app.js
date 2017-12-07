@@ -184,7 +184,6 @@ export default class Taxitura extends Component {
     })
     if (isServiceInMemory) {
       isServiceInMemory = false
-      global.tempState = global.state
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       this.getInfoOrder()
     }
@@ -283,6 +282,7 @@ export default class Taxitura extends Component {
         longitude: this.state.longitude
       }
       global.service.action = kts.action.accept
+      global.tempState = true
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       global.socket.emit(kts.socket.app, global.service)
       global.waitId = global.service.service.id

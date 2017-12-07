@@ -83,6 +83,7 @@ export default class Main extends Component {
                     this.state.rendering = true
                     global.user = json
                     global.state = json.state_app
+                    global.tempState = user.state_temp
                     this.__renderView()
                   })
                 } else {
