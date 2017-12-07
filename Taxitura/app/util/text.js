@@ -51,8 +51,10 @@ module.exports = {
     label: {
       accept: 'Aceptar',
       package: 'Paquete #',
-      available: 'Disponible',
-      occupied: 'Ocupado'
+      symbolPrice: '$',
+      symbolMore: '+',
+      services: 'servicios',
+      commission: 'comisión'
     }
   },
   changePassword: {

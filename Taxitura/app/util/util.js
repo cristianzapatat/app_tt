@@ -1,4 +1,5 @@
 import kts from './kts'
+import text from './text'
 
 module.exports = {
   getIsMap: () => {
@@ -10,6 +11,21 @@ module.exports = {
       return false
     }
     return true
+  },
+  getDateFormat: (value) => {
+    let date = new Date(value)
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+  },
+  getTextServiceCommission: (item) => {
+    let cantSer = parseInt(item.cantidad_de_carreras)
+    let cantComm = parseInt(parseInt(item.ganancia_taxista) / parseInt(item.valor_de_carrera))
+    return `${cantSer} ${text.item.label.services} ${text.item.label.symbolMore} ${cantComm} ${text.item.label.commission}`
+  },
+  separatorComa: (value) => {
+    let num = value.replace(/\./g, '')
+    num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1,')
+    num = num.split('').reverse().join('').replace(/^[\\.]/, '')
+    return num
   },
   getMeters: (meters) => {
     if (meters !== null && meters !== undefined) {
