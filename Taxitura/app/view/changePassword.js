@@ -10,6 +10,7 @@ import {
   Keyboard,
   AsyncStorage
 } from 'react-native'
+import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/changePassword.style'
 
@@ -142,6 +143,18 @@ export default class Settings extends Component {
     }, 200)
   }
 
+  onFocus () {
+    EventRegister.emit(kts.event.onShow)
+    this.setState({isFocus: true, isMns: false})
+  }
+
+  onChangeText (name, text) {
+    if (name === 'tCurrent') this.setState({tCurrent: text})
+    else if (name === 'tNew') this.setState({tNew: text})
+    else if (name === 'tRepeat') this.setState({tRepeat: text})
+    EventRegister.emit(kts.event.onShow)
+  }
+
   render () {
     return (
       <Container.ContainerGeneral
@@ -164,9 +177,9 @@ export default class Settings extends Component {
               autoCorrect={false}
               autoCapitalize={'none'}
               underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.setState({tCurrent: text}) }}
+              onChangeText={(text) => { this.onChangeText('tCurrent', text) }}
               value={this.state.tCurrent}
-              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
+              onFocus={() => { this.onFocus() }}
             />
             <TextInput
               style={style.input}
@@ -177,9 +190,9 @@ export default class Settings extends Component {
               autoCorrect={false}
               autoCapitalize={'none'}
               underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.setState({tNew: text}) }}
+              onChangeText={(text) => { this.onChangeText('tNew', text) }}
               value={this.state.tNew}
-              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
+              onFocus={() => { this.onFocus() }}
             />
             <TextInput
               style={style.input}
@@ -190,14 +203,15 @@ export default class Settings extends Component {
               autoCorrect={false}
               autoCapitalize={'none'}
               underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.setState({tRepeat: text}) }}
+              onChangeText={(text) => { this.onChangeText('tRepeat', text) }}
               value={this.state.tRepeat}
-              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
+              onFocus={() => { this.onFocus() }}
             />
           </View>
           <TouchableOpacity
             style={style.button}
             disabled={!this.state.editable}
+            onPressIn={() => { EventRegister.emit(kts.event.onShow) }}
             onPressOut={this.changePassword.bind(this)}>
             <Text style={style.text}>
               {text.changePassword.label.save}

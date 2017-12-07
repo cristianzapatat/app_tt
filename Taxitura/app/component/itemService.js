@@ -32,6 +32,7 @@ export default class Item extends Component {
         <TouchableOpacity
           style={[{backgroundColor: disabled ? '#DCDCDC' : '#ffaf18'}, style.button]}
           disabled={disabled}
+          onPressIn={this.props.onShow}
           onPressOut={this.props.acceptService}>
           <Text style={[style.textButton]}>
             {text.item.label.accept}

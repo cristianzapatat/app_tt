@@ -54,7 +54,9 @@ module.exports = {
     acceptCancel: 'acceptCancel'
   },
   event: {
-    changeMap: 'changeMap'
+    changeMap: 'changeMap',
+    changeState: 'changeState',
+    onShow: 'onShow'
   },
   hardware: {
     backPress: 'hardwareBackPress',

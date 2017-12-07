@@ -9,6 +9,7 @@ import {
   AsyncStorage
 } from 'react-native'
 import GPSState from 'react-native-gps-state'
+import { EventRegister } from 'react-native-event-listeners'
 
 import global from '../util/global'
 import kts from '../util/kts'
@@ -42,9 +43,10 @@ export default class Taxitura extends Component {
     })
     global.socket.on(kts.socket.app, order => {
       const { navigation } = this.props
-      if (navigation.state.routeName === kts.app.id && global.position !== null &&
-       !global.waitCanceled && order.action === kts.action.order &&
-       global.service === null && global.waitId === null) {
+      if (global.state && navigation.state.routeName === kts.app.id &&
+        global.position !== null && !global.waitCanceled &&
+        order.action === kts.action.order && global.service === null &&
+        global.waitId === null) {
         global.service = order
         this.openModalOrder(global.position, global.service.position_user)
       } else if (order.action === kts.action.order) {
@@ -182,6 +184,7 @@ export default class Taxitura extends Component {
     })
     if (isServiceInMemory) {
       isServiceInMemory = false
+      EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       this.getInfoOrder()
     }
   }
@@ -215,6 +218,7 @@ export default class Taxitura extends Component {
   }
 
   openModalOrder (start, end) {
+    EventRegister.emit(kts.event.onShow)
     fetch(urls.getDistanceMatrix(start, end))
       .then(result => {
         return result.json()
@@ -278,6 +282,8 @@ export default class Taxitura extends Component {
         longitude: this.state.longitude
       }
       global.service.action = kts.action.accept
+      global.tempState = true
+      EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       global.socket.emit(kts.socket.app, global.service)
       global.waitId = global.service.service.id
       global.service = null
@@ -290,6 +296,7 @@ export default class Taxitura extends Component {
     global.waitId = null
     coords = []
     global.waitCanceled = false
+    EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
     this.setState({ isButton: false, isService: false })
   }
 
@@ -338,6 +345,7 @@ export default class Taxitura extends Component {
       this.props.navigation.navigate(id)
     }, 400)
   }
+
   closeSession () {
     this.setState({isMenu: false})
     navigator.geolocation.clearWatch(this.watchID)
