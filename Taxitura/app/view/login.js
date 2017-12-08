@@ -12,6 +12,7 @@ import {
   BackHandler,
   Platform
 } from 'react-native'
+import Shadow from '../elements/shadow'
 
 import style from '../style/login.style'
 
@@ -131,42 +132,52 @@ export default class Login extends Component {
         message={this.state.message}>
         <KeyboardAvoidingView
           behavior={'padding'}
-          style={style.container}
-        >
+          style={style.container} >
           <View style={style.formContainer}>
-            <TextInput
-              style={style.input}
-              editable={this.state.editable}
-              placeholder={text.login.label.idCard}
-              placeholderTextColor={'#A8A8A8'}
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.setState({idCard: text}) }}
-              value={this.state.idCard}
-              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
-            />
-            <TextInput
-              style={style.input}
-              editable={this.state.editable}
-              placeholder={text.login.label.password}
-              placeholderTextColor={'#A8A8A8'}
-              secureTextEntry
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.setState({password: text}) }}
-              value={this.state.password}
-              onFocus={() => { this.setState({isFocus: true, isMns: false}) }}
-            />
-            <TouchableOpacity
-              style={style.button}
-              disabled={!this.state.editable}
-              onPressOut={this.login.bind(this)}>
-              <Text style={style.text}>
-                {text.login.label.enter}
-              </Text>
-            </TouchableOpacity>
+            <Shadow
+              setting={{height: 45, width: 290, borderRadius: 30}}
+              style={{marginTop: 10}}>
+              <TextInput
+                style={style.input}
+                editable={this.state.editable}
+                placeholder={text.login.label.idCard}
+                placeholderTextColor={'#A8A8A8'}
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => { this.setState({idCard: text}) }}
+                value={this.state.idCard}
+                onFocus={() => { this.setState({isFocus: true, isMns: false}) }} />
+            </Shadow>
+            <Shadow
+              setting={{height: 45, width: 290, borderRadius: 30}}
+              style={{marginTop: 10}}>
+              <TextInput
+                style={style.input}
+                editable={this.state.editable}
+                placeholder={text.login.label.password}
+                placeholderTextColor={'#A8A8A8'}
+                secureTextEntry
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => { this.setState({password: text}) }}
+                value={this.state.password}
+                onFocus={() => { this.setState({isFocus: true, isMns: false}) }} />
+            </Shadow>
+            <Shadow
+              setting={{height: 45, width: 290, borderRadius: 30}}
+              style={{marginTop: 30}}>
+              <TouchableOpacity
+                style={style.button}
+                activeOpacity={0.8}
+                disabled={!this.state.editable}
+                onPressOut={this.login.bind(this)}>
+                <Text style={style.text}>
+                  {text.login.label.enter}
+                </Text>
+              </TouchableOpacity>
+            </Shadow>
           </View>
         </KeyboardAvoidingView>
       </Container.ContainerLogin>
