@@ -14,6 +14,8 @@ import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/changePassword.style'
 
+import Shadow from '../elements/shadow'
+
 import global from '../util/global'
 import kts from '../util/kts'
 import urls from '../util/urls'
@@ -168,55 +170,68 @@ export default class Settings extends Component {
           behavior={'padding'}
           style={style.container}>
           <View style={style.formContainer}>
-            <TextInput
-              style={style.input}
-              editable={this.state.editable}
-              placeholder={text.changePassword.label.current}
-              placeholderTextColor={'#A8A8A8'}
-              secureTextEntry
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.onChangeText('tCurrent', text) }}
-              value={this.state.tCurrent}
-              onFocus={() => { this.onFocus() }}
-            />
-            <TextInput
-              style={style.input}
-              editable={this.state.editable}
-              placeholder={text.changePassword.label.new}
-              placeholderTextColor={'#A8A8A8'}
-              secureTextEntry
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.onChangeText('tNew', text) }}
-              value={this.state.tNew}
-              onFocus={() => { this.onFocus() }}
-            />
-            <TextInput
-              style={style.input}
-              editable={this.state.editable}
-              placeholder={text.changePassword.label.repeat}
-              placeholderTextColor={'#A8A8A8'}
-              secureTextEntry
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              underlineColorAndroid={'transparent'}
-              onChangeText={(text) => { this.onChangeText('tRepeat', text) }}
-              value={this.state.tRepeat}
-              onFocus={() => { this.onFocus() }}
-            />
+            <Shadow
+              setting={{width: 290, height: 45, borderRadius: 30}}
+              style={{marginBottom: 10}} >
+              <TextInput
+                style={style.input}
+                editable={this.state.editable}
+                placeholder={text.changePassword.label.current}
+                placeholderTextColor={'#A8A8A8'}
+                secureTextEntry
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => { this.onChangeText('tCurrent', text) }}
+                value={this.state.tCurrent}
+                onFocus={() => { this.onFocus() }} />
+            </Shadow>
+            <Shadow
+              setting={{width: 290, height: 45, borderRadius: 30}}
+              style={{marginBottom: 10}} >
+              <TextInput
+                style={style.input}
+                editable={this.state.editable}
+                placeholder={text.changePassword.label.new}
+                placeholderTextColor={'#A8A8A8'}
+                secureTextEntry
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => { this.onChangeText('tNew', text) }}
+                value={this.state.tNew}
+                onFocus={() => { this.onFocus() }} />
+            </Shadow>
+            <Shadow
+              setting={{width: 290, height: 45, borderRadius: 30}}
+              style={{marginBottom: 10}} >
+              <TextInput
+                style={style.input}
+                editable={this.state.editable}
+                placeholder={text.changePassword.label.repeat}
+                placeholderTextColor={'#A8A8A8'}
+                secureTextEntry
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                underlineColorAndroid={'transparent'}
+                onChangeText={(text) => { this.onChangeText('tRepeat', text) }}
+                value={this.state.tRepeat}
+                onFocus={() => { this.onFocus() }} />
+            </Shadow>
           </View>
-          <TouchableOpacity
-            style={style.button}
-            disabled={!this.state.editable}
-            onPressIn={() => { EventRegister.emit(kts.event.onShow) }}
-            onPressOut={this.changePassword.bind(this)}>
-            <Text style={style.text}>
-              {text.changePassword.label.save}
-            </Text>
-          </TouchableOpacity>
+          <Shadow
+            setting={{width: 290, height: 45, borderRadius: 30}}
+            style={{marginTop: 40}} >
+            <TouchableOpacity
+              style={style.button}
+              disabled={!this.state.editable}
+              onPressIn={() => { EventRegister.emit(kts.event.onShow) }}
+              onPressOut={this.changePassword.bind(this)}>
+              <Text style={style.text}>
+                {text.changePassword.label.save}
+              </Text>
+            </TouchableOpacity>
+          </Shadow>
         </KeyboardAvoidingView>
       </Container.ContainerGeneral>
     )

@@ -5,6 +5,8 @@ import * as Progress from 'react-native-progress'
 
 import style from '../style/modalOrder.style'
 
+import Shadow from '../elements/shadow'
+
 import util from '../util/util'
 import text from '../util/text'
 import kts from '../util/kts'
@@ -62,20 +64,26 @@ class ModalOrder extends Component {
             {`${parseInt(this.props.duration * 10)} ${text.app.label.second}`}
           </Text>
           <View style={style.buttons}>
-            <TouchableOpacity
-              style={[style.button, style.cancel]}
-              onPressOut={this.props.onCancel}>
-              <Text style={[style.tText, style.tCancel]}>
-                {text.app.label.cancel}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[style.button, style.accept]}
-              onPressOut={this.props.onAccept}>
-              <Text style={[style.tText, style.tAccept]}>
-                {text.app.label.accept}
-              </Text>
-            </TouchableOpacity>
+            <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={[style.button, style.cancel]}
+                onPressOut={this.props.onCancel}>
+                <Text style={[style.tText, style.tCancel]}>
+                  {text.app.label.cancel}
+                </Text>
+              </TouchableOpacity>
+            </Shadow>
+            <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={[style.button, style.accept]}
+                onPressOut={this.props.onAccept}>
+                <Text style={[style.tText, style.tAccept]}>
+                  {text.app.label.accept}
+                </Text>
+              </TouchableOpacity>
+            </Shadow>
           </View>
         </View>
       </Modal>

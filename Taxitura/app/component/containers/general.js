@@ -12,6 +12,8 @@ import Switch from 'react-native-switch-pro'
 
 import style from '../../style/containers/general.style'
 
+import Shadow from '../../elements/shadow'
+
 import global from '../../util/global'
 import text from '../../util/text'
 import kts from '../../util/kts'
@@ -125,7 +127,7 @@ class ContainerGeneral extends Component {
             <TouchableWithoutFeedback onPressIn={() => { if (this.state.disabled) this.onShowState() }}>
               <View>
                 <Text style={style.tState}>
-                  {this.state.state ? text.item.label.available : text.item.label.occupied}
+                  {this.state.state ? text.menu.label.available : text.menu.label.occupied}
                 </Text>
               </View>
             </TouchableWithoutFeedback>
@@ -189,28 +191,35 @@ class ContainerGeneral extends Component {
             style.content,
             style.footer ]}>
             <View style={style.contentFooter}>
-              <View style={style.itemFooter}>
-                <Text style={style.tNumber}>15</Text>
-                <Text
-                  style={style.tText}
-                  numberOfLines={2}
-                  ellipsizeMode={'tail'}>
-                  {text.app.label.available}
-                </Text>
-              </View>
-              <View style={style.itemFooter}>
-                <Text style={style.tNumber}>08</Text>
-                <Text style={style.tText}>
-                  {text.app.label.borroweb}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPressIn={this.onShowState.bind(this)}
-                style={style.ButtonGraphic}>
-                <Image
-                  style={style.iconGraphic}
-                  source={require('../../../img/charts.png')} />
-              </TouchableOpacity>
+              <Shadow setting={{height: 50, width: 137, borderRadius: 30}}>
+                <View style={style.itemFooter}>
+                  <Text style={style.tNumber}>15</Text>
+                  <Text
+                    style={style.tText}
+                    numberOfLines={2}
+                    ellipsizeMode={'tail'}>
+                    {text.app.label.available}
+                  </Text>
+                </View>
+              </Shadow>
+              <Shadow setting={{height: 50, width: 137, borderRadius: 30}}>
+                <View style={style.itemFooter}>
+                  <Text style={style.tNumber}>08</Text>
+                  <Text style={style.tText}>
+                    {text.app.label.borroweb}
+                  </Text>
+                </View>
+              </Shadow>
+              <Shadow setting={{height: 50, width: 50, borderRadius: 25}}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPressIn={this.onShowState.bind(this)}
+                  style={style.ButtonGraphic}>
+                  <Image
+                    style={style.iconGraphic}
+                    source={require('../../../img/charts.png')} />
+                </TouchableOpacity>
+              </Shadow>
             </View>
           </View>
           {this.props.children}

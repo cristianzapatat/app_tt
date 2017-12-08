@@ -26,7 +26,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     height: 45,
     width: 290,
-    marginTop: 30,
     borderRadius: 30
   },
   text: {

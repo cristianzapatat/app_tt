@@ -15,7 +15,6 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: '#FFF',
     color: '#2b2a2a',
-    marginBottom: 10,
     borderRadius: 30,
     textDecorationColor: 'transparent',
     textDecorationLine: 'none'
@@ -26,7 +25,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     height: 45,
     width: 290,
-    marginTop: 40,
     borderRadius: 30
   },
   text: {
