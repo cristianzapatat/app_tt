@@ -35,7 +35,7 @@ export default class Item extends Component {
           <View style={style.description}>
             <Text
               style={[style.package]}>
-              {text.item.label.package}{item.asistente_nombre}
+              {item.nombre_paquete !== null ? item.nombre_paquete : text.item.label.package}
             </Text>
             <Text
               style={[style.info]}
