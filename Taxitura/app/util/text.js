@@ -83,7 +83,9 @@ module.exports = {
       waitingServices: 'Servicios en espera',
       changePassword: 'Modificar contraseña',
       shoppingHistory: 'Historial recargas',
-      closeSession: 'Cerrar sesión'
+      closeSession: 'Cerrar sesión',
+      available: 'Disponible',
+      occupied: 'Ocupado'
     }
   },
   permission: {

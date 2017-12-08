@@ -16,7 +16,6 @@
     "react-native-modal": "^2.4.0",
     "react-native-open-settings": "^1.0.1",
     "react-native-progress": "^3.3.0",
-    "react-native-svg": "^6.0.1-rc.1",
     "react-native-switch-pro": "^0.4.6",
     "react-navigation": "^1.0.0-beta.13",
     "socket.io-client": "^2.0.3"

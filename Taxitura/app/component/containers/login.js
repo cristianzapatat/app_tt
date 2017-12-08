@@ -9,6 +9,8 @@ import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../../style/containers/login.style'
 
+import Shadow from '../../elements/shadow'
+
 import global from '../../util/global'
 import kts from '../../util/kts'
 
@@ -49,32 +51,28 @@ class ContainerLogin extends Component {
       <View style={style.container}>
         { this.__drawMap() }
         <View style={style.logoContainer}>
-          <Image
-            style={style.logo}
-            source={require('../../../img/taxitura.png')}
-          />
+          <Shadow setting={{height: 70, width: 70, borderRadius: 10}}>
+            <Image
+              style={style.logo}
+              source={require('../../../img/taxitura.png')} />
+          </Shadow>
         </View>
         <View style={style.children}>
           {this.props.children}
         </View>
         <View style={[
           {display: this.state.isMns ? 'flex' : 'none'},
-          style.msn
-        ]}>
+          style.msn ]}>
           <Image
             style={[
               {display: this.props.typeMessage === kts.enum.ERROR ? 'flex' : 'none'},
-              style.mIcon
-            ]}
-            source={require('../../../img/warning.png')}
-          />
+              style.mIcon ]}
+            source={require('../../../img/warning.png')} />
           <Image
             style={[
               {display: this.props.typeMessage === kts.enum.OK || !this.props.typeMessage ? 'flex' : 'none'},
-              style.mIcon
-            ]}
-            source={require('../../../img/ok.png')}
-          />
+              style.mIcon ]}
+            source={require('../../../img/ok.png')} />
           <Text
             style={style.mText}
             numberOfLines={2}
@@ -86,21 +84,21 @@ class ContainerLogin extends Component {
             onPressOut={() => { this.setState({isMns: false}) }}>
             <Image
               style={style.mClose}
-              source={require('../../../img/close.png')}
-            />
+              source={require('../../../img/close.png')} />
           </TouchableOpacity>
         </View>
         <View style={[
           {display: this.props.isFocus ? 'none' : 'flex'},
-          style.help
-        ]}>
-          <TouchableOpacity
-            style={style.ButtonHelp}>
-            <Image
-              style={style.iconHelp}
-              source={require('../../../img/question.png')}
-            />
-          </TouchableOpacity>
+          style.help ]}>
+          <Shadow setting={{height: 50, width: 50, borderRadius: 25}}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={style.ButtonHelp}>
+              <Image
+                style={style.iconHelp}
+                source={require('../../../img/question.png')} />
+            </TouchableOpacity>
+          </Shadow>
         </View>
       </View>
     )

@@ -39,8 +39,6 @@
 		B46D40045B414F33B0DD433B /* libDPMGpsState.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B1C312E2714C349CEFF80A /* libDPMGpsState.a */; };
 		2FD44E3603E54E61942A2397 /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4231FF73DEFB4CC9B20042D2 /* libReact Native Open Settings.a */; };
 		4673F74E84644829A1A154CA /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A07BCBA54FE4460BD11224E /* libRNBackgroundTimer.a */; };
-		285949DD72F549B0B0DDF15D /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ECE56AEA56E043E8A499BCC7 /* libRNSVG.a */; };
-		8B165B0B06CA4917AB327D3E /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA5C4B9E961F4209B43EDE87 /* libRNSVG-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,9 +266,6 @@
 		4231FF73DEFB4CC9B20042D2 /* libReact Native Open Settings.a */ = {isa = PBXFileReference; name = "libReact Native Open Settings.a"; path = "libReact Native Open Settings.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		808EA04BCD954EAEAD4AB572 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundTimer.xcodeproj"; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		6A07BCBA54FE4460BD11224E /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; name = "libRNBackgroundTimer.a"; path = "libRNBackgroundTimer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		277FC5D0D67C4F87ADFC6F54 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; name = "RNSVG.xcodeproj"; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		ECE56AEA56E043E8A499BCC7 /* libRNSVG.a */ = {isa = PBXFileReference; name = "libRNSVG.a"; path = "libRNSVG.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		FA5C4B9E961F4209B43EDE87 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -301,8 +296,6 @@
 				B46D40045B414F33B0DD433B /* libDPMGpsState.a in Frameworks */,
 				2FD44E3603E54E61942A2397 /* libReact Native Open Settings.a in Frameworks */,
 				4673F74E84644829A1A154CA /* libRNBackgroundTimer.a in Frameworks */,
-				285949DD72F549B0B0DDF15D /* libRNSVG.a in Frameworks */,
-				8B165B0B06CA4917AB327D3E /* libRNSVG-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,7 +466,6 @@
 				A7ED9B49FDB34702A24168DB /* DPMGpsState.xcodeproj */,
 				CE315AAF6DEE412E84FD942E /* React Native Open Settings.xcodeproj */,
 				808EA04BCD954EAEAD4AB572 /* RNBackgroundTimer.xcodeproj */,
-				277FC5D0D67C4F87ADFC6F54 /* RNSVG.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1010,8 +1002,6 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taxitura.app/Taxitura";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1019,7 +1009,6 @@
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
 					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 				);
 			};
 			name = Debug;
@@ -1040,8 +1029,6 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taxitura.app/Taxitura";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1049,7 +1036,6 @@
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
 					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 				);
 			};
 			name = Release;
@@ -1075,7 +1061,6 @@
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
 					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 				);
 			};
 			name = Debug;
@@ -1100,7 +1085,6 @@
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
 					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 				);
 			};
 			name = Release;
@@ -1130,8 +1114,6 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1139,7 +1121,6 @@
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
 					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 				);
 			};
 			name = Debug;
@@ -1169,8 +1150,6 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1178,7 +1157,6 @@
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
 					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
-					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 				);
 			};
 			name = Release;
@@ -1203,8 +1181,6 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -1229,8 +1205,6 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Release;

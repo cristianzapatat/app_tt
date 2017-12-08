@@ -12,9 +12,10 @@ import {
   BackHandler,
   Platform
 } from 'react-native'
-import Shadow from '../elements/shadow'
 
 import style from '../style/login.style'
+
+import Shadow from '../elements/shadow'
 
 import global from '../util/global'
 import kts from '../util/kts'
