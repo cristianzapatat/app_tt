@@ -80,6 +80,7 @@ class ContainerLogin extends Component {
             {this.props.message}
           </Text>
           <TouchableOpacity
+            activeOpacity={0.8}
             style={style.mButton}
             onPressOut={() => { this.setState({isMns: false}) }}>
             <Image

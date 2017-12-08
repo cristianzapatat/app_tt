@@ -7,9 +7,11 @@ import {
 } from 'react-native'
 import Modal from 'react-native-modal'
 import OpenSettings from 'react-native-open-settings'
+import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/modalPermission.style'
 
+import kts from '../util/kts'
 import text from '../util/text'
 
 class ModalPermission extends Component {
@@ -30,15 +32,21 @@ class ModalPermission extends Component {
           <Text style={[style.text, style.small]}>
             { text.permission.cause }
           </Text>
-          <TouchableOpacity onPressOut={() => {
-            this.props.onPreview()
-            OpenSettings.openSettings()
-          }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPressIn={() => { EventRegister.emit(kts.event.onShow) }}
+            onPressOut={() => {
+              this.props.onPreview()
+              OpenSettings.openSettings()
+            }}>
             <View style={[style.btn]}>
               <Text style={[style.text, style.go]}>{text.permission.go}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPressOut={this.props.onClose}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPressIn={() => { EventRegister.emit(kts.event.onShow) }}
+            onPressOut={this.props.onClose}>
             <View style={[style.btn]}>
               <Text style={[style.text, style.close]}>{text.permission.close}</Text>
             </View>

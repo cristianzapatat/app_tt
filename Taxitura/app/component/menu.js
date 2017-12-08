@@ -28,6 +28,7 @@ export default class Menu extends Component {
         <View style={style.container}>
           <View style={style.header}>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.out}
               onPressOut={this.props.onClose} >
               <Image
@@ -50,6 +51,7 @@ export default class Menu extends Component {
           </View>
           <View style={style.content}>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.item}
               onPressOut={this.props.goWaitingServices} >
               <Image
@@ -60,6 +62,7 @@ export default class Menu extends Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.item}
               onPressOut={this.props.goChangePassword}>
               <Image
@@ -70,6 +73,7 @@ export default class Menu extends Component {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.item}
               onPressOut={this.props.goShoppingHistory}>
               <Image
@@ -82,6 +86,7 @@ export default class Menu extends Component {
           </View>
           <View style={style.close}>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.ItemClose}
               onPressOut={this.props.closeSession}>
               <Image

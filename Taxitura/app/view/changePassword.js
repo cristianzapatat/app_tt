@@ -223,6 +223,7 @@ export default class Settings extends Component {
             setting={{width: 290, height: 45, borderRadius: 30}}
             style={{marginTop: 40}} >
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.button}
               disabled={!this.state.editable}
               onPressIn={() => { EventRegister.emit(kts.event.onShow) }}

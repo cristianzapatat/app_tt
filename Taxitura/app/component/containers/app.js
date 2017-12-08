@@ -199,6 +199,7 @@ class ContainerApp extends Component {
           { this.__drawMap() }
           <View style={[style.content, style.headerLogo]}>
             <TouchableOpacity
+              activeOpacity={0.8}
               onPressIn={this.onShowState.bind(this)}
               onPressOut={this.props.onPressMenu}
               style={style.menu} >
@@ -210,6 +211,7 @@ class ContainerApp extends Component {
               style={style.logo}
               source={require('../../../img/taxitura.png')} />
             <TouchableOpacity
+              activeOpacity={0.8}
               onPressOut={this.showState.bind(this)}
               style={style.state} >
               <Image
@@ -254,6 +256,7 @@ class ContainerApp extends Component {
               {this.props.textNoGps}
             </Text>
             <TouchableOpacity
+              activeOpacity={0.8}
               style={style.buttonWarning}
               onPressIn={this.onShowState.bind(this)}
               onPressOut={this.props.getStatus}>
