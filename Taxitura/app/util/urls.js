@@ -41,5 +41,8 @@ module.exports = {
   },
   getShoppingHistory: (id) => {
     return `${urlServer}/api/v1/recharges?user_id=${id}`
+  },
+  getRechargePoints: () => {
+    return `${urlServer}/api/v1/recharge_homes`
   }
 }

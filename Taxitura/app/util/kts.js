@@ -56,7 +56,8 @@ module.exports = {
   event: {
     changeMap: 'changeMap',
     changeState: 'changeState',
-    onShow: 'onShow'
+    onShow: 'onShow',
+    changePosition: 'changePosition'
   },
   hardware: {
     backPress: 'hardwareBackPress',
@@ -87,6 +88,9 @@ module.exports = {
   },
   changePassword: {
     id: 'changePassword'
+  },
+  rechargePoints: {
+    id: 'rechargePoints'
   },
   shoppingHistory: {
     id: 'shoppingHistory'

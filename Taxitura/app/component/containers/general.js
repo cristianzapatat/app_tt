@@ -59,9 +59,19 @@ class ContainerGeneral extends Component {
   }
   __drawMap () {
     if (this.state.isMap) {
-      return (<Map.Classic.MapDay style={style.map} />)
+      return (
+        <Map.Classic.MapDay
+          style={style.map}
+          cab={this.props.cab}
+          markers={this.props.markers} />
+      )
     } else {
-      return (<Map.Classic.MapNight style={style.map} />)
+      return (
+        <Map.Classic.MapNight
+          style={style.map}
+          cab={this.props.cab}
+          markers={this.props.markers} />
+      )
     }
   }
   showState () {
