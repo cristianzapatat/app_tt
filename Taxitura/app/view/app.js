@@ -178,6 +178,7 @@ export default class Taxitura extends Component {
   drawPosition (position) {
     this.sendPosition(position)
     this.getAddress(position)
+    EventRegister.emit(kts.event.changePosition, position)
     this.setState({
       latitude: position.latitude,
       longitude: position.longitude
@@ -387,6 +388,7 @@ export default class Taxitura extends Component {
           onClose={() => { this.setState({isMenu: false}) }}
           goWaitingServices={() => { this.navigate(kts.waitingServices.id) }}
           goChangePassword={() => { this.navigate(kts.changePassword.id) }}
+          goRechargePoints={() => { this.navigate(kts.rechargePoints.id) }}
           goShoppingHistory={() => { this.navigate(kts.shoppingHistory.id) }}
           closeSession={() => { this.closeSession() }} />
         <ModalOrder

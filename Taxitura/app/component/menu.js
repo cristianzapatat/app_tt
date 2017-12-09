@@ -75,6 +75,17 @@ export default class Menu extends Component {
             <TouchableOpacity
               activeOpacity={0.8}
               style={style.item}
+              onPressOut={this.props.goRechargePoints}>
+              <Image
+                style={style.iconItem}
+                source={require('../../img/recharge_points.png')} />
+              <Text style={style.textItem}>
+                {text.menu.label.rechargePoints}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={style.item}
               onPressOut={this.props.goShoppingHistory}>
               <Image
                 style={style.iconCard}

@@ -78,11 +78,17 @@ module.exports = {
       title: 'Historial recargas'
     }
   },
+  rechargePoints: {
+    label: {
+      title: 'Puntos de recarga'
+    }
+  },
   menu: {
     label: {
       waitingServices: 'Servicios en espera',
       changePassword: 'Modificar contraseña',
       shoppingHistory: 'Historial recargas',
+      rechargePoints: 'Puntos de recarga',
       closeSession: 'Cerrar sesión',
       available: 'Disponible',
       occupied: 'Ocupado'
