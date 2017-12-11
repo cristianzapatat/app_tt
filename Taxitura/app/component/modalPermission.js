@@ -5,11 +5,12 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native'
-import Modal from 'react-native-modal'
 import OpenSettings from 'react-native-open-settings'
 import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/modalPermission.style'
+
+import Modal from './modal'
 
 import kts from '../util/kts'
 import text from '../util/text'

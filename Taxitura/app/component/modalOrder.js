@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import {View, Image, Text, TouchableOpacity} from 'react-native'
-import Modal from 'react-native-modal'
 import * as Progress from 'react-native-progress'
 
 import style from '../style/modalOrder.style'
 
+import Modal from './modal'
 import Shadow from '../elements/shadow'
 
 import util from '../util/util'
