@@ -2,11 +2,12 @@ import { StyleSheet, Dimensions } from 'react-native'
 
 import kts from '../util/kts'
 
-const { height } = Dimensions.get(kts.hardware.window)
+const { width, height } = Dimensions.get(kts.hardware.window)
 
 export default StyleSheet.create({
   modal: {
-    margin: 0
+    margin: 0,
+    flexDirection: 'row'
   },
   container: {
     width: 210,
@@ -14,6 +15,10 @@ export default StyleSheet.create({
     backgroundColor: '#FFF',
     flexDirection: 'column',
     justifyContent: 'flex-start'
+  },
+  vClose: {
+    width: (width - 210),
+    height: height
   },
   header: {
     height: 210,

@@ -3,7 +3,8 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native'
 import Modal from 'react-native-modal'
 
@@ -70,6 +71,9 @@ export default class Menu extends Component {
               style={style.ItemClose} />
           </View>
         </View>
+        <TouchableWithoutFeedback onPressIn={this.props.onClose}>
+          <View style={style.vClose} />
+        </TouchableWithoutFeedback>
       </Modal>
     )
   }
