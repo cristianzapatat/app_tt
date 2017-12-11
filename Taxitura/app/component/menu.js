@@ -55,7 +55,7 @@ export default class Menu extends Component {
               style={style.item}
               onPressOut={this.props.goWaitingServices} >
               <Image
-                style={style.iconItem}
+                style={[style.iconItem, {width: 20.5, height: 26.5}]}
                 source={require('../../img/services.png')} />
               <Text style={style.textItem}>
                 {text.menu.label.waitingServices}
@@ -66,7 +66,7 @@ export default class Menu extends Component {
               style={style.item}
               onPressOut={this.props.goChangePassword}>
               <Image
-                style={style.iconItem}
+                style={[style.iconItem, {width: 20.5, height: 26.5}]}
                 source={require('../../img/password.png')} />
               <Text style={style.textItem}>
                 {text.menu.label.changePassword}
@@ -77,7 +77,7 @@ export default class Menu extends Component {
               style={style.item}
               onPressOut={this.props.goRechargePoints}>
               <Image
-                style={style.iconItem}
+                style={[style.iconItem, {width: 20, height: 25.5}]}
                 source={require('../../img/recharge_points.png')} />
               <Text style={style.textItem}>
                 {text.menu.label.rechargePoints}
@@ -88,7 +88,7 @@ export default class Menu extends Component {
               style={style.item}
               onPressOut={this.props.goShoppingHistory}>
               <Image
-                style={style.iconCard}
+                style={[style.iconItem, {width: 20.5, height: 15.42}]}
                 source={require('../../img/card_recharge.png')} />
               <Text style={style.textItem}>
                 {text.menu.label.shoppingHistory}
@@ -101,7 +101,7 @@ export default class Menu extends Component {
               style={style.ItemClose}
               onPressOut={this.props.closeSession}>
               <Image
-                style={style.iconClose}
+                style={[style.iconItem, {width: 20.5, height: 21.42}]}
                 source={require('../../img/close_session.png')} />
               <Text style={style.textItem}>
                 {text.menu.label.closeSession}

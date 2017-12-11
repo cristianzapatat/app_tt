@@ -11,7 +11,7 @@ import text from '../util/text'
 
 import Container from '../component/container'
 
-let chageList = false
+let changeList = false
 
 export default class rechargePoints extends Component {
   constructor (props) {
@@ -24,7 +24,7 @@ export default class rechargePoints extends Component {
   componentWillMount () {
     this.eventChangePosition = EventRegister.addEventListener(kts.event.changePosition, (pos) => {
       if (this.state.isNoGps) this.setState({isNoGps: false})
-      if (!chageList) this.getList()
+      if (!changeList) this.getList()
       this.setState({
         latitude: pos.latitude,
         longitude: pos.longitude
@@ -52,6 +52,7 @@ export default class rechargePoints extends Component {
     try {
       let result = await fetch(urls.getRechargePoints())
       let json = await result.json()
+      changeList = true
       this.setState({
         data: json,
         latitude: global.position.latitude,

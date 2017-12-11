@@ -12,7 +12,7 @@ export default class Shadow extends Component {
         borderRadius = 0,
         opacity = 0.3,
         x = 0,
-        y = 5,
+        y = 4,
         style = {marginVertical: 5}
       },
       children } = this.props

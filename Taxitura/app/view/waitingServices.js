@@ -14,8 +14,8 @@ import text from '../util/text'
 import Container from '../component/container'
 import Item from '../component/itemService'
 
-let idSet
 let status = true
+let changeList = false
 
 export default class WaitingServices extends Component {
   constructor (props) {
@@ -26,6 +26,10 @@ export default class WaitingServices extends Component {
   }
 
   componentWillMount () {
+    this.eventChangePos = EventRegister.addEventListener(kts.event.changePosition, (pos) => {
+      if (this.state.isNoGps) this.setState({isNoGps: false})
+      if (!changeList) this.getList()
+    })
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
       .then(granted => {
         if (granted) {
@@ -33,7 +37,6 @@ export default class WaitingServices extends Component {
             this.getList()
           } else {
             this.setState({isNoGps: true, textNoGps: text.waitingServices.label.position})
-            this.UpdateView()
           }
         } else {
           this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission})
@@ -42,7 +45,7 @@ export default class WaitingServices extends Component {
   }
 
   componentWillUnmount () {
-    clearInterval(idSet)
+    EventRegister.removeEventListener(this.eventChangePos)
     if (status) {
       global.socket.emit(kts.socket.nextService, global.user.id)
     }
@@ -58,16 +61,6 @@ export default class WaitingServices extends Component {
           data: json
         })
       })
-  }
-
-  UpdateView () {
-    idSet = setInterval(() => {
-      if (global.position !== null) {
-        this.setState({isNoGps: false})
-        this.getList()
-        clearInterval(idSet)
-      }
-    }, 3000)
   }
 
   goBack () {

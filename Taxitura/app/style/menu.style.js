@@ -81,14 +81,6 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   iconItem: {
-    width: 28,
-    height: 35,
-    marginRight: 10
-  },
-  iconCard: {
-    width: 36,
-    height: 27,
-    marginLeft: -3,
     marginRight: 10
   },
   textItem: {
@@ -110,10 +102,5 @@ export default StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: '#DCDCDC'
-  },
-  iconClose: {
-    width: 29,
-    height: 30,
-    marginRight: 10
   }
 })
