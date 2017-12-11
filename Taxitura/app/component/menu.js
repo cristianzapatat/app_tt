@@ -9,6 +9,9 @@ import Modal from 'react-native-modal'
 
 import style from '../style/menu.style'
 
+import Item from './itemMenu'
+import itemJson from '../json/menu'
+
 import global from '../util/global'
 import urls from '../util/urls'
 import text from '../util/text'
@@ -50,63 +53,21 @@ export default class Menu extends Component {
             </View>
           </View>
           <View style={style.content}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={style.item}
-              onPressOut={this.props.goWaitingServices} >
-              <Image
-                style={[style.iconItem, {width: 20.5, height: 26.5}]}
-                source={require('../../img/services.png')} />
-              <Text style={style.textItem}>
-                {text.menu.label.waitingServices}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={style.item}
-              onPressOut={this.props.goChangePassword}>
-              <Image
-                style={[style.iconItem, {width: 20.5, height: 26.5}]}
-                source={require('../../img/password.png')} />
-              <Text style={style.textItem}>
-                {text.menu.label.changePassword}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={style.item}
-              onPressOut={this.props.goRechargePoints}>
-              <Image
-                style={[style.iconItem, {width: 20, height: 25.5}]}
-                source={require('../../img/recharge_points.png')} />
-              <Text style={style.textItem}>
-                {text.menu.label.rechargePoints}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={style.item}
-              onPressOut={this.props.goShoppingHistory}>
-              <Image
-                style={[style.iconItem, {width: 20.5, height: 15.42}]}
-                source={require('../../img/card_recharge.png')} />
-              <Text style={style.textItem}>
-                {text.menu.label.shoppingHistory}
-              </Text>
-            </TouchableOpacity>
+            {itemJson.map((item, i) => (
+              <Item item={item} key={`${i}-item`} navigate={this.props.navigate} />
+            ))}
           </View>
           <View style={style.close}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={style.ItemClose}
-              onPressOut={this.props.closeSession}>
-              <Image
-                style={[style.iconItem, {width: 20.5, height: 21.42}]}
-                source={require('../../img/close_session.png')} />
-              <Text style={style.textItem}>
-                {text.menu.label.closeSession}
-              </Text>
-            </TouchableOpacity>
+            <Item
+              item={{
+                title: text.menu.label.closeSession,
+                icon: {
+                  url: require('../../img/close_session.png'),
+                  width: 20,
+                  height: 21.42 }
+              }}
+              navigate={this.props.closeSession}
+              style={style.ItemClose} />
           </View>
         </View>
       </Modal>

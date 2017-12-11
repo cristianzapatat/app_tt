@@ -6,8 +6,8 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import kts from '../../util/kts'
 import text from '../../util/text'
 
-import mapDay from './json/mapStyleDay.json'
-import mapNight from './json/mapStyleNight.json'
+import mapDay from '../../json/maps/mapStyleDay.json'
+import mapNight from '../../json/maps/mapStyleNight.json'
 
 const {width, height} = Dimensions.get(kts.hardware.window)
 const ASPECT_RATIO = width / height

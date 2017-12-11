@@ -6,7 +6,7 @@ import style from '../style/itemShoppingHistory.style'
 import util from '../util/util'
 import text from '../util/text'
 
-export default class Item extends Component {
+export default class ItemShoppingHistory extends Component {
   render () {
     let item = this.props.item
     return (

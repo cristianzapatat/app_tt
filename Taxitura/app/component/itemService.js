@@ -8,7 +8,7 @@ import Shadow from '../elements/shadow'
 import global from '../util/global'
 import text from '../util/text'
 
-export default class Item extends Component {
+export default class ItemService extends Component {
   render () {
     let disabled = !(!global.waitCanceled && global.service === null && global.waitId === null)
     return (
