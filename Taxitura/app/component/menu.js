@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native'
-import Modal from 'react-native-modal'
 
 import style from '../style/menu.style'
 
+import Modal from './modal'
 import Item from './itemMenu'
 import itemJson from '../json/menu'
 
