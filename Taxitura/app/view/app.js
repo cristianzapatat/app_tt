@@ -386,10 +386,7 @@ export default class Taxitura extends Component {
         <Menu
           isVisible={this.state.isMenu}
           onClose={() => { this.setState({isMenu: false}) }}
-          goWaitingServices={() => { this.navigate(kts.waitingServices.id) }}
-          goChangePassword={() => { this.navigate(kts.changePassword.id) }}
-          goRechargePoints={() => { this.navigate(kts.rechargePoints.id) }}
-          goShoppingHistory={() => { this.navigate(kts.shoppingHistory.id) }}
+          navigate={this.navigate.bind(this)}
           closeSession={() => { this.closeSession() }} />
         <ModalOrder
           isVisible={this.state.isModalOrder}

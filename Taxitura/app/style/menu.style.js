@@ -71,22 +71,6 @@ export default StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%'
   },
-  item: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 55,
-    paddingLeft: 13,
-    borderBottomWidth: 1,
-    borderBottomColor: '#DCDCDC',
-    alignItems: 'center'
-  },
-  iconItem: {
-    marginRight: 10
-  },
-  textItem: {
-    textAlign: 'left',
-    fontSize: 16
-  },
   close: {
     position: 'absolute',
     flexDirection: 'column',
@@ -95,11 +79,6 @@ export default StyleSheet.create({
     bottom: 15
   },
   ItemClose: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 55,
-    paddingLeft: 13,
-    alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: '#DCDCDC'
   }
