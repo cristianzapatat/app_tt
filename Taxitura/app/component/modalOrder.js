@@ -11,6 +11,37 @@ import text from '../util/text'
 import kts from '../util/kts'
 
 let cancelState = true
+let set
+
+class TextProgress extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      time: 10
+    }
+  }
+  componentDidMount () {
+    let time = 10
+    set = setInterval(() => {
+      if (time === 0) {
+        clearInterval(set)
+      } else {
+        time -= 1
+        this.setState({time})
+      }
+    }, 1000)
+  }
+  render () {
+    return (
+      <Text
+        style={[style.text, style.time]}
+        numberOfLines={1}
+        ellipsizeMode={kts.hardware.tail}>
+        {`${this.state.time} ${text.app.label.second}`}
+      </Text>
+    )
+  }
+}
 
 class ModalOrder extends Component {
   constructor (props) {
@@ -21,40 +52,36 @@ class ModalOrder extends Component {
       animated: new Animated.Value(1)
     }
   }
-
-  componentDidUpdate () {
-    if (this.props.isVisible) {
-      cancelState = true
-      this.reduction()
-    }
-  }
-
   reduction () {
     this.state.animated.setValue(1)
     Animated.timing(
       this.state.animated,
       {
         toValue: 0,
-        duration: 10000
+        duration: 10500
       }
     ).start(() => {
+      clearInterval(set)
       if (cancelState) {
         this.props.onCancel()
       } else {
         this.props.onAccept()
       }
+      this.setState({run: false})
     })
   }
-
   cancelOrder () {
     this.state.animated.stopAnimation()
   }
-
   acceptOrder () {
     cancelState = false
     this.state.animated.stopAnimation()
   }
-
+  startTime () {
+    cancelState = true
+    this.setState({run: true})
+    this.reduction()
+  }
   render () {
     let { animated } = this.state
     return (
@@ -62,7 +89,8 @@ class ModalOrder extends Component {
         animationInTiming={200}
         animationOutTiming={200}
         isVisible={this.props.isVisible}
-        callBack={this.cancelOrder.bind(this)}>
+        callBack={this.cancelOrder.bind(this)}
+        onModalShow={this.startTime.bind(this)}>
         <View style={style.content}>
           <Image
             style={style.image}
@@ -85,32 +113,14 @@ class ModalOrder extends Component {
             ellipsizeMode={kts.hardware.tail}>
             { this.props.address }
           </Text>
-          <View
-            style={{
-              width: 270,
-              height: 20,
-              backgroundColor: '#DCDCDC',
-              borderWidth: 1,
-              borderColor: '#DCDCDC',
-              marginTop: 22
-            }}>
+          <View style={style.progress}>
             <Animated.View
-              style={{
-                height: '100%',
-                backgroundColor: '#AFAFAF',
-                width: '100%',
+              style={[style.animated, {
                 transform: [{translateX: animated.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [-270, 0]
-                }) }]
-              }} />
+                  outputRange: [-270, 0] })}]}]} />
           </View>
-          <Text
-            style={[style.text, style.time]}
-            numberOfLines={1}
-            ellipsizeMode={kts.hardware.tail}>
-            {`${this.state.time} ${text.app.label.second}`}
-          </Text>
+          {this.state.run ? <TextProgress /> : null}
           <View style={style.buttons}>
             <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
               <TouchableOpacity

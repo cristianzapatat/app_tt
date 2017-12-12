@@ -26,13 +26,18 @@ export default StyleSheet.create({
     fontSize: 15,
     color: '#7c7979'
   },
-  address: {
-    fontSize: 19,
-    color: '#110f0f',
-    marginTop: 16
-  },
   progress: {
+    width: 270,
+    height: 20,
+    backgroundColor: '#DCDCDC',
+    borderWidth: 1,
+    borderColor: '#DCDCDC',
     marginTop: 22
+  },
+  animated: {
+    height: '100%',
+    backgroundColor: '#AFAFAF',
+    width: '100%'
   },
   time: {
     fontSize: 18,
