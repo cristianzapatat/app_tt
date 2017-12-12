@@ -48,7 +48,6 @@ class ModalOrder extends Component {
     super(props)
     this.state = {
       uri: kts.help.image,
-      time: 10,
       animated: new Animated.Value(1)
     }
   }
