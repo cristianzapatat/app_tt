@@ -114,7 +114,7 @@ export default class WaitingServices extends Component {
               <Item
                 item={item}
                 index={index}
-                onShow={() => { this.onShow() }}
+                onShow={this.onShow.bind(this)}
                 acceptService={() => { this.acceptService(item) }}
               />
           } />

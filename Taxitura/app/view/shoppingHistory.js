@@ -2,6 +2,7 @@
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {View, FlatList} from 'react-native'
+import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/shoppingHistory.style'
 
@@ -50,6 +51,10 @@ export default class ShoppingHistory extends Component {
     goBack()
   }
 
+  onShow () {
+    EventRegister.emit(kts.event.onShow)
+  }
+
   _keyExtractor (item, index) {
     return item.id
   }
@@ -67,7 +72,8 @@ export default class ShoppingHistory extends Component {
             renderItem={({item, index}) =>
               <Item
                 item={item}
-                index={index} />
+                index={index}
+                onShow={this.onShow.bind(this)} />
           } />
         </View>
       </Container.ContainerGeneral>
