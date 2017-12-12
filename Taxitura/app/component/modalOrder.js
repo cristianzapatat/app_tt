@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, Text, TouchableOpacity} from 'react-native'
-import * as Progress from 'react-native-progress'
+import {View, Image, Text, TouchableOpacity, Animated} from 'react-native'
 
 import style from '../style/modalOrder.style'
 
@@ -11,21 +10,87 @@ import util from '../util/util'
 import text from '../util/text'
 import kts from '../util/kts'
 
+let cancelState = true
+let set
+
+class TextProgress extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      time: 10
+    }
+  }
+  componentDidMount () {
+    let time = 10
+    set = setInterval(() => {
+      if (time === 0) {
+        clearInterval(set)
+      } else {
+        time -= 1
+        this.setState({time})
+      }
+    }, 1000)
+  }
+  render () {
+    return (
+      <Text
+        style={[style.text, style.time]}
+        numberOfLines={1}
+        ellipsizeMode={kts.hardware.tail}>
+        {`${this.state.time} ${text.app.label.second}`}
+      </Text>
+    )
+  }
+}
+
 class ModalOrder extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      uri: kts.help.image
+      uri: kts.help.image,
+      time: 10,
+      animated: new Animated.Value(1)
     }
   }
-
+  reduction () {
+    this.state.animated.setValue(1)
+    Animated.timing(
+      this.state.animated,
+      {
+        toValue: 0,
+        duration: 10500
+      }
+    ).start(() => {
+      clearInterval(set)
+      if (cancelState) {
+        this.props.onCancel()
+      } else {
+        this.props.onAccept()
+      }
+      this.setState({run: false})
+    })
+  }
+  cancelOrder () {
+    this.state.animated.stopAnimation()
+  }
+  acceptOrder () {
+    cancelState = false
+    this.state.animated.stopAnimation()
+  }
+  startTime () {
+    cancelState = true
+    this.setState({run: true})
+    this.reduction()
+  }
   render () {
+    let { animated } = this.state
     return (
       <Modal
         animationInTiming={200}
         animationOutTiming={200}
         isVisible={this.props.isVisible}
-        callBack={() => { this.cancelOrder() }}>
+        callBack={this.cancelOrder.bind(this)}
+        onModalShow={this.startTime.bind(this)}>
         <View style={style.content}>
           <Image
             style={style.image}
@@ -48,27 +113,20 @@ class ModalOrder extends Component {
             ellipsizeMode={kts.hardware.tail}>
             { this.props.address }
           </Text>
-          <Progress.Bar
-            progress={this.props.duration}
-            width={270}
-            height={20}
-            color={'#AFAFAF'}
-            unfilledColor={'#DCDCDC'}
-            borderColor={'#DCDCDC'}
-            borderRadius={0}
-            style={style.progress} />
-          <Text
-            style={[style.text, style.time]}
-            numberOfLines={1}
-            ellipsizeMode={kts.hardware.tail}>
-            {`${parseInt(this.props.duration * 10)} ${text.app.label.second}`}
-          </Text>
+          <View style={style.progress}>
+            <Animated.View
+              style={[style.animated, {
+                transform: [{translateX: animated.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-270, 0] })}]}]} />
+          </View>
+          {this.state.run ? <TextProgress /> : null}
           <View style={style.buttons}>
             <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[style.button, style.cancel]}
-                onPressOut={this.props.onCancel}>
+                onPressOut={this.cancelOrder.bind(this)}>
                 <Text style={[style.tText, style.tCancel]}>
                   {text.app.label.cancel}
                 </Text>
@@ -78,7 +136,7 @@ class ModalOrder extends Component {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[style.button, style.accept]}
-                onPressOut={this.props.onAccept}>
+                onPressOut={this.acceptOrder.bind(this)}>
                 <Text style={[style.tText, style.tAccept]}>
                   {text.app.label.accept}
                 </Text>

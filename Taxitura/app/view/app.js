@@ -106,7 +106,6 @@ export default class Taxitura extends Component {
   }
 
   componentWillUnmount () {
-    clearInterval(this.idSet)
     AppState.removeEventListener(kts.hardware.change)
     if (Platform.OS === kts.platform.android) {
       BackHandler.removeEventListener(kts.hardware.backPress)
@@ -231,32 +230,13 @@ export default class Taxitura extends Component {
           uri: global.service.user.url_pic,
           name: global.service.user.name,
           address: global.service.position_user.address,
-          duration: 1,
           isMenu: false,
           isModalOrder: true
         })
-        this.reductionduration()
       })
   }
 
-  reductionduration () {
-    setTimeout(() => {
-      this.idSet = setInterval(() => {
-        let duration = this.state.duration
-        if (duration <= 0.0) {
-          this.setState({duration})
-          clearInterval(this.idSet)
-          this.cancelOrder(true)
-        } else {
-          duration = duration - 0.1
-          this.setState({duration})
-        }
-      }, 1000)
-    }, 100)
-  }
-
   cancelOrder (status) {
-    clearInterval(this.idSet)
     this.setState({ isModalOrder: false })
     if (status) {
       global.service[kts.json.cabman] = { id: global.user.id }
@@ -268,7 +248,6 @@ export default class Taxitura extends Component {
   }
 
   acceptOrder () {
-    clearInterval(this.idSet)
     this.setState({ isModalOrder: false })
     if (global.service) {
       global.service[kts.json.cabman] = {
@@ -292,7 +271,6 @@ export default class Taxitura extends Component {
   }
 
   cleanService () {
-    clearInterval(this.idSet)
     global.service = null
     global.waitId = null
     coords = []
@@ -394,7 +372,6 @@ export default class Taxitura extends Component {
           name={this.state.name}
           distance={this.state.distance}
           address={this.state.address}
-          duration={this.state.duration}
           onCancel={() => { this.cancelOrder(true) }}
           onAccept={() => { this.acceptOrder() }}
           />

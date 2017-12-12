@@ -16,7 +16,6 @@
     "react-native-gps-state": "0.0.1",
     "react-native-maps": "^0.18.3",
     "react-native-open-settings": "^1.0.1",
-    "react-native-progress": "^3.3.0",
     "react-native-switch-pro": "^0.4.6",
     "react-navigation": "^1.0.0-beta.21",
     "socket.io-client": "^2.0.3"
