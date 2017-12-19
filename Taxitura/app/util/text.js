@@ -29,7 +29,8 @@ module.exports = {
       a: 'A',
       second: 'seg',
       iArrived: 'Llegué!',
-      weArrived: 'Llegamos!'
+      weArrived: 'Llegamos!',
+      coming: 'Viene en camino'
     },
     gps: {
       update: 'Actualizar',

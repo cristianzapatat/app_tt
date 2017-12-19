@@ -85,6 +85,37 @@ export default StyleSheet.create({
     fontSize: 18,
     textAlign: 'center'
   },
+  notification: {
+    position: 'absolute',
+    top: 120,
+    right: 0,
+    width: 185,
+    height: 60,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    backgroundColor: '#FFF',
+    borderWidth: 0.5,
+    borderColor: '#ffaf18',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 5
+  },
+  photo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 5
+  },
+  infoNoti: {
+    flexDirection: 'column',
+    height: '100%',
+    justifyContent: 'center'
+  },
+  textNoti: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#000'
+  },
   warning: {
     position: 'absolute',
     top: (height / 2) - 47,

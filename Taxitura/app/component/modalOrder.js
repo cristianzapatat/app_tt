@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, Text, TouchableOpacity, Animated} from 'react-native'
+import {View, Image, Text, TouchableOpacity, Animated, Vibration} from 'react-native'
 
 import style from '../style/modalOrder.style'
 
@@ -78,6 +78,7 @@ class ModalOrder extends Component {
   }
   startTime () {
     cancelState = true
+    Vibration.vibrate(500)
     this.setState({run: true})
     this.reduction()
   }

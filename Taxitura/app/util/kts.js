@@ -41,17 +41,19 @@ module.exports = {
     ios: 'ios'
   },
   socket: {
-    savePositionCab: 'savePositionCab',
     serviceInMemory: 'serviceInMemory',
     isServiceInMemory: 'isServiceInMemory',
-    app: 'app',
-    addServiceList: 'addServiceList',
+    receiveService: 'receiveService',
+    responseService: 'responseService',
     addServiceCanceled: 'addServiceCanceled',
     nextService: 'nextService',
-    accept: 'accept',
+    addServiceList: 'addServiceList',
+    acceptService: 'acceptService',
+    savePositionCab: 'savePositionCab',
     deleteService: 'deleteService',
     orderCanceled: 'orderCanceled',
-    acceptCancel: 'acceptCancel'
+    acceptCancel: 'acceptCancel',
+    onMyWay: 'onMyWay'
   },
   event: {
     changeMap: 'changeMap',

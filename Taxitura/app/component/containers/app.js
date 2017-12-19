@@ -6,7 +6,8 @@ import {
   Text,
   Animated,
   AsyncStorage,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Vibration
 } from 'react-native'
 import { EventRegister } from 'react-native-event-listeners'
 import Switch from 'react-native-switch-pro'
@@ -22,6 +23,7 @@ import kts from '../../util/kts'
 import Map from '../map'
 
 let isState = false
+let isNoti = false
 
 class ContainerApp extends Component {
   constructor (props) {
@@ -30,7 +32,8 @@ class ContainerApp extends Component {
       state: true,
       disabled: false,
       isMap: true,
-      animated: new Animated.Value(0)
+      animated: new Animated.Value(0),
+      animaNoti: new Animated.Value(0)
     }
     isState = false
     this.state.state = global.state
@@ -61,6 +64,13 @@ class ContainerApp extends Component {
     this.eventOnShow = EventRegister.addEventListener(kts.event.onShow, () => {
       this.onShowState()
     })
+  }
+  componentDidUpdate () {
+    if (this.props.isNoti && !isNoti) {
+      this.state.animaNoti.setValue(0)
+      isNoti = true
+      this.showNotification()
+    }
   }
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventeChangeState)
@@ -189,8 +199,27 @@ class ContainerApp extends Component {
     EventRegister.emit(kts.event.changeState, {state, case: 1})
     this.showState()
   }
+  showNotification () {
+    let value = isNoti ? 1 : 0
+    if (isNoti) Vibration.vibrate(500)
+    Animated.timing(
+      this.state.animaNoti,
+      {
+        toValue: value,
+        duration: 1000
+      }
+    ).start(() => {
+      if (isNoti) {
+        this.state.animaNoti.setValue(1)
+        setTimeout(() => {
+          isNoti = false
+          this.showNotification()
+        }, 5000)
+      }
+    })
+  }
   render () {
-    let { animated } = this.state
+    let { animated, animaNoti } = this.state
     return (
       <TouchableWithoutFeedback
         style={style.all}
@@ -246,6 +275,24 @@ class ContainerApp extends Component {
               {this.props.title}
             </Text>
           </View>
+          <Animated.View
+            style={[style.notification, {
+              transform: [{translateX: animaNoti.interpolate({
+                inputRange: [0, 1],
+                outputRange: [185, 0] })}]}]}>
+            <Image
+              style={style.photo}
+              source={{uri: this.props.isNoti || isNoti ? global.service.user.url_pic : kts.help.image}} />
+            <View style={style.infoNoti}>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode={kts.hardware.tail}
+                style={[style.textNoti, {fontWeight: '300'}]}>
+                {this.props.isNoti || isNoti ? global.service.user.first_name : ''}
+              </Text>
+              <Text style={style.textNoti}>{text.app.label.coming}</Text>
+            </View>
+          </Animated.View>
           <View style={[
             {display: this.props.isNoGps ? 'flex' : 'none'},
             style.warning ]}>

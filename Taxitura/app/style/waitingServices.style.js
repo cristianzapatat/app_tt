@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
   content: {
-    maxHeight: 430,
+    maxHeight: 425,
     width: 340,
     marginTop: 10
   },

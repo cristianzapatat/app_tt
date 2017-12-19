@@ -41,7 +41,7 @@ export default class Taxitura extends Component {
         isServiceInMemory = true
       }
     })
-    global.socket.on(kts.socket.app, order => {
+    global.socket.on(kts.socket.receiveService, order => {
       const { navigation } = this.props
       if (global.state && navigation.state.routeName === kts.app.id &&
         global.position !== null && !global.waitCanceled &&
@@ -65,7 +65,7 @@ export default class Taxitura extends Component {
         }
       } else { this.cleanService() }
     })
-    global.socket.on(kts.socket.accept, order => {
+    global.socket.on(kts.socket.acceptService, order => {
       if (order !== null) {
         if (order.service.id === global.waitId) {
           if (global.service === null) {
@@ -79,6 +79,14 @@ export default class Taxitura extends Component {
       if (global.service) {
         if (global.service.service.id === idService) {
           this.cancelOrder(false)
+        }
+      }
+    })
+    global.socket.on(kts.socket.onMyWay, (data) => {
+      if (global.service) {
+        if (global.service.service.id === parseInt(data.service.id)) {
+          this.setState({isNoti: true})
+          this.state.isNoti = false
         }
       }
     })
@@ -264,7 +272,7 @@ export default class Taxitura extends Component {
       global.service.action = kts.action.accept
       global.tempState = true
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
-      global.socket.emit(kts.socket.app, global.service)
+      global.socket.emit(kts.socket.responseService, global.service)
       global.waitId = global.service.service.id
       global.service = null
     }
@@ -308,7 +316,7 @@ export default class Taxitura extends Component {
 
   processService () {
     global.service.action = (global.service.action === kts.action.accept) ? kts.action.arrive : kts.action.end
-    global.socket.emit(kts.socket.app, global.service)
+    global.socket.emit(kts.socket.responseService, global.service)
     if (global.service.action === kts.action.arrive) {
       coords = []
       this.setState({ textButton: text.app.label.weArrived, isService: false })
@@ -360,7 +368,8 @@ export default class Taxitura extends Component {
             permissionsStatus = false
           }
           this.getStatus()
-        }}>
+        }}
+        isNoti={this.state.isNoti}>
         <Menu
           isVisible={this.state.isMenu}
           onClose={() => { this.setState({isMenu: false}) }}
