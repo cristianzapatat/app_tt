@@ -101,6 +101,7 @@ module.exports = {
     order: 'order',
     accept: 'accept',
     arrive: 'arrive',
+    aboard: 'aboard',
     end: 'end'
   },
   json: {

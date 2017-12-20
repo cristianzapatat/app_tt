@@ -29,6 +29,7 @@ module.exports = {
       a: 'A',
       second: 'seg',
       iArrived: 'Llegué!',
+      aboard: 'Pasajero abordo',
       weArrived: 'Llegamos!',
       coming: 'Viene en camino'
     },

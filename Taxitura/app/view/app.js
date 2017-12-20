@@ -288,39 +288,43 @@ export default class Taxitura extends Component {
   }
 
   async getInfoOrder () {
-    try {
-      let resp = await fetch(urls.getDirections(global.position, global.service.position_user))
-      let respJson = await resp.json()
-      let points = util.decode(respJson.routes[0].overview_polyline.points, 5)
-      coords = points.map((point, index) => {
-        return {
-          latitude: point[0],
-          longitude: point[1]
-        }
-      })
-    } catch (err) {
-      coords = [
-        {latitude: global.position.latitude, longitude: global.position.longitude},
-        {latitude: global.service.position_user.latitude, longitude: global.service.position_user.longitude}
-      ]
+    if (global.service.action === kts.action.accept) {
+      try {
+        let resp = await fetch(urls.getDirections(global.position, global.service.position_user))
+        let respJson = await resp.json()
+        let points = util.decode(respJson.routes[0].overview_polyline.points, 5)
+        coords = points.map((point, index) => {
+          return {
+            latitude: point[0],
+            longitude: point[1]
+          }
+        })
+      } catch (err) {
+        coords = [
+          {latitude: global.position.latitude, longitude: global.position.longitude},
+          {latitude: global.service.position_user.latitude, longitude: global.service.position_user.longitude}
+        ]
+      }
     }
     this.setState({
       latitudeService: global.service.position_user.latitude,
       longitudeService: global.service.position_user.longitude,
       address: global.service.position_user.andress,
-      textButton: global.service.action === kts.action.accept ? text.app.label.iArrived : text.app.label.weArrived,
+      textButton: util.getTextButton(global.service.action),
       isService: global.service.action === kts.action.accept,
       isButton: true
     })
   }
 
   processService () {
-    global.service.action = (global.service.action === kts.action.accept) ? kts.action.arrive : kts.action.end
+    global.service.action = util.getAction(global.service.action)
     global.socket.emit(kts.socket.responseService, global.service)
     if (global.service.action === kts.action.arrive) {
       coords = []
-      this.setState({ textButton: text.app.label.weArrived, isService: false })
-    } else {
+      this.setState({ textButton: text.app.label.aboard, isService: false })
+    } else if (global.service.action === kts.action.aboard) {
+      this.setState({ textButton: text.app.label.weArrived })
+    } else if (global.service.action === kts.action.end) {
       this.cleanService()
       global.socket.emit(kts.socket.nextService, global.user.id)
     }
