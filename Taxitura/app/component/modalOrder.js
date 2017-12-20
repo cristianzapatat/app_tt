@@ -1,5 +1,8 @@
+/* eslint handle-callback-err: ["error", "error"] */
+/* eslint no-useless-return: 0 */
 import React, {Component} from 'react'
 import {View, Image, Text, TouchableOpacity, Animated, Vibration} from 'react-native'
+import Play from 'react-native-sound'
 
 import style from '../style/modalOrder.style'
 
@@ -12,6 +15,7 @@ import kts from '../util/kts'
 
 let cancelState = true
 let set
+let song = null
 
 class TextProgress extends Component {
   constructor (props) {
@@ -51,6 +55,11 @@ class ModalOrder extends Component {
       animated: new Animated.Value(1)
     }
   }
+  componentWillMount () {
+    song = new Play('notification.mp3', Play.MAIN_BUNDLE, (err) => {
+      if (err) return
+    })
+  }
   reduction () {
     this.state.animated.setValue(1)
     Animated.timing(
@@ -61,6 +70,7 @@ class ModalOrder extends Component {
       }
     ).start(() => {
       clearInterval(set)
+      song.stop()
       if (cancelState) {
         this.props.onCancel()
       } else {
@@ -78,7 +88,12 @@ class ModalOrder extends Component {
   }
   startTime () {
     cancelState = true
-    Vibration.vibrate(500)
+    song.play((success) => {
+      if (!success) song.release()
+    });
+    (async () => {
+      Vibration.vibrate(500)
+    })()
     this.setState({run: true})
     this.reduction()
   }
