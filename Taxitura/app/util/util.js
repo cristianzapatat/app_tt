@@ -2,6 +2,18 @@ import kts from './kts'
 import text from './text'
 
 module.exports = {
+  getAction: (action) => {
+    if (!action) return kts.action.accept
+    if (action === kts.action.accept) return kts.action.arrive
+    if (action === kts.action.arrive) return kts.action.aboard
+    if (action === kts.action.aboard) return kts.action.end
+  },
+  getTextButton: (action) => {
+    if (!action) return text.app.label.iArrived
+    if (action === kts.action.accept) return text.app.label.iArrived
+    if (action === kts.action.arrive) return text.app.label.aboard
+    if (action === kts.action.aboard) return text.app.label.weArrived
+  },
   getIsMap: () => {
     let date = new Date()
     if ((((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) >= kts.time.START_NIGHT &&
@@ -43,7 +55,6 @@ module.exports = {
       return `Distacia indefinida`
     }
   },
-
   decode: (str, precision) => {
     let index = 0
     let lat = 0
