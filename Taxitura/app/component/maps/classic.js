@@ -33,6 +33,7 @@ class MapDay extends Component {
         style={this.props.style}
         provider={PROVIDER_GOOGLE}
         customMapStyle={mapDay}
+        onRegionChange={this._onRegionChange}
         region={{
           latitude: latitude,
           longitude: longitude,
@@ -84,6 +85,7 @@ class MapNight extends Component {
         style={this.props.style}
         provider={PROVIDER_GOOGLE}
         customMapStyle={mapNight}
+        onRegionChange={this._onRegionChange}
         region={{
           latitude: latitude,
           longitude: longitude,
