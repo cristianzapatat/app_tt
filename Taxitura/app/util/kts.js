@@ -46,8 +46,6 @@ module.exports = {
     receiveService: 'receiveService',
     responseService: 'responseService',
     addServiceCanceled: 'addServiceCanceled',
-    nextService: 'nextService',
-    addServiceList: 'addServiceList',
     acceptService: 'acceptService',
     savePositionCab: 'savePositionCab',
     deleteService: 'deleteService',
@@ -108,6 +106,10 @@ module.exports = {
     cabman: 'cabman',
     position_cabman: 'position_cabman',
     ok: 'OK'
+  },
+  color: {
+    inactive: '#B3B3B3',
+    active: '#ffaf18'
   },
   help: {
     image: 'https://scontent.feoh3-1.fna.fbcdn.net/v/t1.0-1/p50x50/17903408_1044586812340472_7176591297268243543_n.png?oh=20bc54a7ec0faffce536dfa16eff5388&oe=5AA9803D'

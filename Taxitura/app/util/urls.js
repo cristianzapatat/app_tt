@@ -1,5 +1,5 @@
-let urlServer = 'http://www.taxitura.com' // Url del servidor
-let urlInterface = 'https://taxituraserver.herokuapp.com' // 'http://192.168.1.53:3001' // Url de la intefaz o mediador
+let urlServer = 'http://taxituraapi.herokuapp.com/' // Url del servidor
+let urlInterface = /* 'https://taxiturainterface.herokuapp.com' */ /* 'http://52.14.236.110:3001' */ 'http://192.168.1.53:3001' // Url de la intefaz o mediador
 let keyDirections = 'AIzaSyCopllJ-78HCuKxGQZA64EtHrFC8rKGRGs' // Google Maps Direcctions API
 let keyDistanceMatrix = 'AIzaSyCANmSq518IoL2OU_Itx-U6qgy1sPN2Q1c' // Google Maps Distance Matrix API
 let keyGeocoding = 'AIzaSyA0A5cReZ2OlGwd5llnyVpaoER-p6KYpZQ' // Google Maps Geocodign API

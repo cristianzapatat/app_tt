@@ -14,7 +14,6 @@ import text from '../util/text'
 import Container from '../component/container'
 import Item from '../component/itemService'
 
-let status = true
 let changeList = false
 
 export default class WaitingServices extends Component {
@@ -46,9 +45,6 @@ export default class WaitingServices extends Component {
 
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventChangePos)
-    if (status) {
-      global.socket.emit(kts.socket.nextService, global.user.id)
-    }
   }
 
   getList () {
@@ -82,7 +78,6 @@ export default class WaitingServices extends Component {
       longitude: global.position.longitude
     }
     service.action = kts.action.accept
-    status = false
     global.tempState = global.state
     const { goBack } = this.props.navigation
     EventRegister.emit(kts.event.changeState, {state: false, case: 0})

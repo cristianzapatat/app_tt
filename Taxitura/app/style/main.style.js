@@ -4,19 +4,13 @@ export default StyleSheet.create({
   container: {
     flex: 1
   },
-  load: {
+  image: {
     flex: 1,
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#FFF',
+    width: null,
+    height: null,
+    resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  imgLoading: {
-    width: 180,
-    height: 180,
-    borderRadius: 90
-  },
-  loading: {
-    marginTop: 15
   }
 })

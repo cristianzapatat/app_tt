@@ -5,7 +5,7 @@ import {
   View,
   Image,
   AsyncStorage,
-  ActivityIndicator
+  ProgressBarAndroid
 } from 'react-native'
 import { StackNavigator } from 'react-navigation'
 import io from 'socket.io-client'
@@ -146,17 +146,14 @@ export default class Main extends Component {
       )
     } else {
       return (
-        <View style={styles.load}>
-          <Image
-            style={styles.imgLoading}
-            source={require('../img/taxitura.png')}
-          />
-          <ActivityIndicator
-            style={styles.loading}
-            animating={!this.state.loading}
-            size={50}
-            color='#2980b9' />
-        </View>
+        <Image
+          style={styles.image}
+          resizeMode={'cover'}
+          source={require('../img/splash.jpg')}>
+          <ProgressBarAndroid
+            styleAttr={'Horizontal'}
+            color={'#222222'} />
+        </Image>
       )
     }
   }

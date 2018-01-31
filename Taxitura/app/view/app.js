@@ -49,9 +49,6 @@ export default class Taxitura extends Component {
         global.waitId === null) {
         global.service = order
         this.openModalOrder(global.position, global.service.position_user)
-      } else if (order.action === kts.action.order) {
-        order[kts.json.cabman] = { id: global.user.id }
-        global.socket.emit(kts.socket.addServiceList, order)
       }
     })
     global.socket.on(kts.socket.orderCanceled, order => {
@@ -199,14 +196,19 @@ export default class Taxitura extends Component {
 
   sendPosition (position) {
     if (position) {
-      let response = {
-        position_cabman: {
-          latitude: position.latitude,
-          longitude: position.longitude
-        },
-        cabman: { id: global.user.id }
+      let data = {
+        id: global.user.id,
+        data: {
+          id: global.user.id,
+          service: global.service !== null ? global.service.service.id : null,
+          action: global.service !== null ? global.service.action : '',
+          position: {
+            latitude: position.latitude,
+            longitude: position.longitude
+          }
+        }
       }
-      global.socket.emit(kts.socket.savePositionCab, response)
+      global.socket.emit(kts.socket.savePositionCab, data)
     }
   }
 
@@ -252,12 +254,12 @@ export default class Taxitura extends Component {
     }
     global.service = null
     global.waitId = null
-    global.socket.emit(kts.socket.nextService, global.user.id)
   }
 
   acceptOrder () {
     this.setState({ isModalOrder: false })
     if (global.service) {
+      global.service.action = kts.action.accept
       global.service[kts.json.cabman] = {
         id: global.user.id,
         name: global.user.nombre,
@@ -269,7 +271,6 @@ export default class Taxitura extends Component {
         latitude: this.state.latitude,
         longitude: this.state.longitude
       }
-      global.service.action = kts.action.accept
       global.tempState = true
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
       global.socket.emit(kts.socket.responseService, global.service)
@@ -326,7 +327,6 @@ export default class Taxitura extends Component {
       this.setState({ textButton: text.app.label.weArrived })
     } else if (global.service.action === kts.action.end) {
       this.cleanService()
-      global.socket.emit(kts.socket.nextService, global.user.id)
     }
   }
 

@@ -2,6 +2,12 @@ import kts from './kts'
 import text from './text'
 
 module.exports = {
+  getValueText: (value, item) => {
+    let val = parseInt(value + item)
+    if (val < 10) return `00${val}`
+    else if (val < 100) return `0${val}`
+    return val
+  },
   getAction: (action) => {
     if (!action) return kts.action.accept
     if (action === kts.action.accept) return kts.action.arrive

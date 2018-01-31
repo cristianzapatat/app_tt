@@ -27,8 +27,7 @@ export default StyleSheet.create({
   },
   headerLogo: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: '#ffaf18'
+    justifyContent: 'center'
   },
   headerTitle: {
     backgroundColor: 'rgba(34, 33, 33, 0.7)',
@@ -153,6 +152,7 @@ export default StyleSheet.create({
     color: '#FFF'
   },
   footer: {
+    width: 350,
     position: 'absolute',
     bottom: 20,
     alignItems: 'center',
@@ -172,13 +172,13 @@ export default StyleSheet.create({
     color: '#FFF'
   },
   contentFooter: {
-    width: 335,
+    width: 350,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-around'
   },
   itemFooter: {
-    width: 137,
+    width: 170,
     height: 50,
     borderRadius: 30,
     backgroundColor: '#ffffff',
@@ -187,24 +187,14 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   tNumber: {
+    width: 70,
     fontSize: 36,
     color: '#000',
-    marginRight: 2
+    marginRight: 4,
+    textAlign: 'center'
   },
   tText: {
     fontSize: 14,
     color: '#B6B6B6'
-  },
-  ButtonGraphic: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#FFF',
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  iconGraphic: {
-    width: 22,
-    height: 22
   }
 })

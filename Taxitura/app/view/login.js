@@ -108,6 +108,7 @@ export default class Login extends Component {
           .catch(err => {
             this.setState({
               idCard: '',
+              password: '',
               editable: true,
               message: text.login.msn.verifyInternet,
               typeMessage: kts.enum.ERROR,

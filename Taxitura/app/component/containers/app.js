@@ -19,6 +19,7 @@ import Shadow from '../../elements/shadow'
 import global from '../../util/global'
 import text from '../../util/text'
 import kts from '../../util/kts'
+import util from '../../util/util'
 
 import Map from '../map'
 
@@ -33,9 +34,12 @@ class ContainerApp extends Component {
       disabled: false,
       isMap: true,
       animated: new Animated.Value(0),
-      animaNoti: new Animated.Value(0)
+      animaNoti: new Animated.Value(0),
+      color: kts.color.active,
+      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia)
     }
     isState = false
+    this.state.color = global.state ? kts.color.active : kts.color.inactive
     this.state.state = global.state
     this.state.isMap = global.isDay
   }
@@ -55,7 +59,7 @@ class ContainerApp extends Component {
       }
       if (this.state.state !== value.state) {
         global.state = value.state
-        this.setState({state: value.state})
+        this.setState({state: value.state, color: global.state ? kts.color.active : kts.color.inactive})
         global.user['state_app'] = value.state
         global.user['state_temp'] = global.tempState
         AsyncStorage.setItem(kts.key.user, JSON.stringify(global.user))
@@ -94,9 +98,9 @@ class ContainerApp extends Component {
     } else {
       return (
         <View style={style.contentFooter}>
-          <Shadow setting={{height: 50, width: 137, borderRadius: 30}}>
+          <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
             <View style={style.itemFooter}>
-              <Text style={style.tNumber}>15</Text>
+              <Text style={style.tNumber}>{this.state.countAvailable}</Text>
               <Text
                 style={style.tText}
                 numberOfLines={2}
@@ -105,23 +109,13 @@ class ContainerApp extends Component {
               </Text>
             </View>
           </Shadow>
-          <Shadow setting={{height: 50, width: 137, borderRadius: 30}}>
+          <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
             <View style={style.itemFooter}>
-              <Text style={style.tNumber}>08</Text>
+              <Text style={style.tNumber}>018</Text>
               <Text style={style.tText}>
                 {text.app.label.borroweb}
               </Text>
             </View>
-          </Shadow>
-          <Shadow setting={{height: 50, width: 50, borderRadius: 25}}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPressIn={this.onShowState.bind(this)}
-              style={style.ButtonGraphic}>
-              <Image
-                style={style.iconGraphic}
-                source={require('../../../img/charts.png')} />
-            </TouchableOpacity>
           </Shadow>
         </View>
       )
@@ -226,7 +220,7 @@ class ContainerApp extends Component {
         onPressIn={this.onShowState.bind(this)}>
         <View style={style.container}>
           { this.__drawMap() }
-          <View style={[style.content, style.headerLogo]}>
+          <View style={[style.content, style.headerLogo, {backgroundColor: this.state.color}]}>
             <TouchableOpacity
               activeOpacity={0.8}
               onPressIn={this.onShowState.bind(this)}

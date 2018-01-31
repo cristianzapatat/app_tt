@@ -48,6 +48,12 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  logoView: {
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    backgroundColor: '#ffaf18'
+  },
   logo: {
     width: 70,
     height: 70

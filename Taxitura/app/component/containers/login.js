@@ -52,9 +52,11 @@ class ContainerLogin extends Component {
         { this.__drawMap() }
         <View style={style.logoContainer}>
           <Shadow setting={{height: 70, width: 70, borderRadius: 10}}>
-            <Image
-              style={style.logo}
-              source={require('../../../img/taxitura.png')} />
+            <View style={style.logoView}>
+              <Image
+                style={style.logo}
+                source={require('../../../img/taxitura.png')} />
+            </View>
           </Shadow>
         </View>
         <View style={style.children}>
