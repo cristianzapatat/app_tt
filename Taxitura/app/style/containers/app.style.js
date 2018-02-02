@@ -84,6 +84,10 @@ export default StyleSheet.create({
     fontSize: 18,
     textAlign: 'center'
   },
+  load: {
+    position: 'absolute',
+    right: 10
+  },
   notification: {
     position: 'absolute',
     right: 0,

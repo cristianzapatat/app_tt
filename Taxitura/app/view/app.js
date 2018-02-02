@@ -32,7 +32,8 @@ export default class Taxitura extends Component {
     this.state = {
       isModalPermission: false,
       isModalOrder: false,
-      isMenu: false
+      isMenu: false,
+      load: true
     }
     global.socket.emit(kts.socket.serviceInMemory, global.user.id)
     global.socket.on(kts.socket.isServiceInMemory, order => {
@@ -84,7 +85,7 @@ export default class Taxitura extends Component {
           EventRegister.emit(kts.event.showOnMyWay, true)
         }
       })
-      this.getStatus()
+      this.getStatus(true)
     })
   }
 
@@ -115,11 +116,13 @@ export default class Taxitura extends Component {
     }
   }
 
-  getStatus () {
+  getStatus (action) {
+    if (!action) this.setState({load: true})
     GPSState.getStatus().then(status => {
       if (status === GPSState.RESTRICTED) {
-        this.setState({isNoGps: true, textNoGps: text.app.gps.offGps, title: ''})
+        this.setState({isNoGps: true, textNoGps: text.app.gps.offGps, title: '', load: false})
       } else if (status === GPSState.DENIED) {
+        this.setState({load: false})
         this.getPermissions()
       } else {
         this.analitycPosition()
@@ -133,11 +136,12 @@ export default class Taxitura extends Component {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
         .then(granted => {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            this.setState({load: true})
             this.analitycPosition()
           } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
-            this.setState({isNoGps: true, textNoGps: text.app.gps.withoutPermission, title: ''})
+            this.setState({isNoGps: true, textNoGps: text.app.gps.withoutPermission, title: '', load: false})
           } else if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
-            this.setState({isNoGps: false, title: '', isModalPermission: true})
+            this.setState({isNoGps: false, title: '', isModalPermission: true, load: false})
           }
         })
     }
@@ -219,13 +223,13 @@ export default class Taxitura extends Component {
         .then(json => {
           if (json.status && json.status === kts.json.ok) {
             let pos = json.results[0].formatted_address.split(kts.board.coma)
-            this.setState({title: `${pos[0]}, ${pos[1]}`})
+            this.setState({title: `${pos[0]}, ${pos[1]}`, load: false})
           } else {
-            this.setState({title: text.app.label.notAddress})
+            this.setState({title: text.app.label.notAddress, load: false})
           }
         })
         .catch(err => {
-          this.setState({title: text.app.label.notAddress})
+          this.setState({title: text.app.label.notAddress, load: false})
         })
     }
   }
@@ -250,7 +254,7 @@ export default class Taxitura extends Component {
   }
 
   cancelOrder (status) {
-    this.setState({ isModalOrder: false })
+    this.setState({ isModalOrder: false, isButton: false })
     if (status) {
       global.service[kts.json.cabman] = { id: global.user.id }
       global.socket.emit(kts.socket.addServiceCanceled, global.service)
@@ -260,7 +264,7 @@ export default class Taxitura extends Component {
   }
 
   acceptOrder () {
-    this.setState({ isModalOrder: false })
+    this.setState({ isModalOrder: false, isButton: null })
     if (global.service) {
       global.service.action = kts.action.accept
       global.service[kts.json.cabman] = {
@@ -354,6 +358,8 @@ export default class Taxitura extends Component {
   render () {
     return (
       <Container.ContainerApp
+        load={this.state.load}
+        loadService={this.state.loadService}
         title={this.state.title}
         onPressMenu={() => { this.setState({isMenu: true}) }}
         isService={this.state.isService}

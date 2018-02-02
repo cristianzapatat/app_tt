@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  ActivityIndicator,
   View,
   TouchableOpacity,
   Image,
@@ -260,9 +261,7 @@ class ContainerApp extends Component {
                 source={require('../../../img/state.png')} />
             </TouchableOpacity>
           </View>
-          <Animated.View style={[
-            {opacity: animated},
-            style.floatState]}>
+          <Animated.View style={[{opacity: animated}, style.floatState]}>
             <Switch
               width={50}
               height={25}
@@ -286,6 +285,11 @@ class ContainerApp extends Component {
               ellipsizeMode={kts.hardware.tail}>
               {this.props.title}
             </Text>
+            <ActivityIndicator
+              animating={this.props.load || this.props.loadService}
+              style={[{display: this.props.load || this.props.loadService ? 'flex' : 'none'}, style.load]}
+              size={24}
+              color={kts.color.white} />
           </View>
           <Animated.View
             style={[style.notification, style.onMyWay, {
@@ -322,9 +326,7 @@ class ContainerApp extends Component {
               </Text>
             </View>
           </Animated.View>
-          <View style={[
-            {display: this.props.isNoGps ? 'flex' : 'none'},
-            style.warning ]}>
+          <View style={[{display: this.props.isNoGps ? 'flex' : 'none'}, style.warning]}>
             <Image
               style={style.iconWarning}
               source={require('../../../img/no_gps.png')} />
