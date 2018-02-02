@@ -3,7 +3,8 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Text
+  Text,
+  ProgressBarAndroid
 } from 'react-native'
 import { EventRegister } from 'react-native-event-listeners'
 
@@ -62,9 +63,13 @@ class ContainerLogin extends Component {
         <View style={style.children}>
           {this.props.children}
         </View>
-        <View style={[
-          {display: this.state.isMns ? 'flex' : 'none'},
-          style.msn ]}>
+        <View style={[{display: this.props.isLoad ? 'flex' : 'none'}, style.load]}>
+          <ProgressBarAndroid
+            styleAttr={'Horizontal'}
+            animating={this.props.isLoad}
+            color={this.state.isMap ? kts.color.black : kts.color.white} />
+        </View>
+        <View style={[{display: this.state.isMns ? 'flex' : 'none'}, style.msn]}>
           <Image
             style={[
               {display: this.props.typeMessage === kts.enum.ERROR ? 'flex' : 'none'},
@@ -90,12 +95,11 @@ class ContainerLogin extends Component {
               source={require('../../../img/close.png')} />
           </TouchableOpacity>
         </View>
-        <View style={[
-          {display: this.props.isFocus ? 'none' : 'flex'},
-          style.help ]}>
+        <View style={[{display: this.props.isFocus ? 'none' : 'flex'}, style.help]}>
           <Shadow setting={{height: 50, width: 50, borderRadius: 25}}>
             <TouchableOpacity
               activeOpacity={0.8}
+              disabled={!this.props.editable}
               style={style.ButtonHelp}>
               <Image
                 style={style.iconHelp}

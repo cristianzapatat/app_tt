@@ -151,8 +151,9 @@ export default class Main extends Component {
           resizeMode={'cover'}
           source={require('../img/splash.jpg')}>
           <ProgressBarAndroid
+            animating={!this.state.loading}
             styleAttr={'Horizontal'}
-            color={'#222222'} />
+            color={kts.color.black} />
         </Image>
       )
     }

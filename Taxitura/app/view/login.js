@@ -67,7 +67,7 @@ export default class Login extends Component {
       let idCard = this.state.idCard
       let password = this.state.password
       if (idCard.length > 0 && password.length > 0) {
-        this.setState({editable: false})
+        this.setState({editable: false, isLoad: true})
         fetch(urls.loginService(idCard, password))
           .then(response => {
             return response.json()
@@ -81,6 +81,7 @@ export default class Login extends Component {
                     global.state = true
                     global.tempState = null
                     this.props.navigation.navigate(kts.app.id)
+                    this.setState({isLoad: false})
                   })
                 } else {
                   this.setState({
@@ -88,6 +89,7 @@ export default class Login extends Component {
                     editable: true,
                     message: text.login.msn.userInactive,
                     typeMessage: kts.enum.ERROR,
+                    isLoad: false,
                     isMns: true
                   })
                 }
@@ -98,11 +100,12 @@ export default class Login extends Component {
                   editable: true,
                   message: text.login.msn.verifyCredential,
                   typeMessage: kts.enum.ERROR,
+                  isLoad: false,
                   isMns: true
                 })
               }
             } else {
-              this.setState({idCard: '', password: '', editable: true})
+              this.setState({idCard: '', password: '', editable: true, isLoad: false})
             }
           })
           .catch(err => {
@@ -112,6 +115,7 @@ export default class Login extends Component {
               editable: true,
               message: text.login.msn.verifyInternet,
               typeMessage: kts.enum.ERROR,
+              isLoad: false,
               isMns: true
             })
           })
@@ -119,6 +123,7 @@ export default class Login extends Component {
         this.setState({
           message: text.login.msn.empty,
           typeMessage: kts.enum.ERROR,
+          isLoad: false,
           isMns: true
         })
       }
@@ -131,6 +136,8 @@ export default class Login extends Component {
         isFocus={this.state.isFocus}
         isMns={this.state.isMns}
         typeMessage={this.state.typeMessage}
+        editable={this.state.editable}
+        isLoad={this.state.isLoad}
         message={this.state.message}>
         <KeyboardAvoidingView
           behavior={'padding'}

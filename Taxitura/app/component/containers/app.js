@@ -24,7 +24,6 @@ import util from '../../util/util'
 import Map from '../map'
 
 let isState = false
-let isNoti = false
 
 class ContainerApp extends Component {
   constructor (props) {
@@ -33,8 +32,10 @@ class ContainerApp extends Component {
       state: true,
       disabled: false,
       isMap: true,
+      showOnMyWay: false,
       animated: new Animated.Value(0),
       animaNoti: new Animated.Value(0),
+      animaAccept: new Animated.Value(0),
       color: kts.color.active,
       countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia)
     }
@@ -68,17 +69,18 @@ class ContainerApp extends Component {
     this.eventOnShow = EventRegister.addEventListener(kts.event.onShow, () => {
       this.onShowState()
     })
-  }
-  componentDidUpdate () {
-    if (this.props.isNoti && !isNoti) {
-      this.state.animaNoti.setValue(0)
-      isNoti = true
-      this.showNotification()
-    }
+    this.eventShowOnMyWay = EventRegister.addEventListener(kts.event.showOnMyWay, value => {
+      this.showNotification(value, this.state.animaNoti, true)
+    })
+    this.eventShowOtherAccept = EventRegister.addEventListener(kts.event.showOtherAccept, value => {
+      this.showNotification(value, this.state.animaAccept, false)
+    })
   }
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventeChangeState)
     EventRegister.removeEventListener(this.eventOnShow)
+    EventRegister.removeEventListener(this.eventShowOnMyWay)
+    EventRegister.removeEventListener(this.eventShowOtherAccept)
   }
   __drawFooter () {
     if (this.props.isButton) {
@@ -193,27 +195,32 @@ class ContainerApp extends Component {
     EventRegister.emit(kts.event.changeState, {state, case: 1})
     this.showState()
   }
-  showNotification () {
-    let value = isNoti ? 1 : 0
-    if (isNoti) Vibration.vibrate(500)
+  showNotification (state, animate, kase) {
+    let value = state ? 1 : 0
+    if (state) {
+      animate.setValue(0)
+      if (kase) this.setState({showOnMyWay: state})
+      Vibration.vibrate(500)
+    }
     Animated.timing(
-      this.state.animaNoti,
+      animate,
       {
         toValue: value,
         duration: 1000
       }
     ).start(() => {
-      if (isNoti) {
-        this.state.animaNoti.setValue(1)
+      if (state) {
+        animate.setValue(1)
         setTimeout(() => {
-          isNoti = false
-          this.showNotification()
+          this.showNotification(false, animate, kase)
         }, 5000)
+      } else {
+        if (kase) this.setState({showOnMyWay: state})
       }
     })
   }
   render () {
-    let { animated, animaNoti } = this.state
+    let { animated, animaNoti, animaAccept } = this.state
     return (
       <TouchableWithoutFeedback
         style={style.all}
@@ -270,21 +277,38 @@ class ContainerApp extends Component {
             </Text>
           </View>
           <Animated.View
-            style={[style.notification, {
+            style={[style.notification, style.onMyWay, {
               transform: [{translateX: animaNoti.interpolate({
                 inputRange: [0, 1],
                 outputRange: [185, 0] })}]}]}>
             <Image
               style={style.photo}
-              source={{uri: this.props.isNoti || isNoti ? global.service.user.url_pic : kts.help.image}} />
+              source={{uri: this.state.showOnMyWay ? global.service.user.url_pic : kts.help.image}} />
             <View style={style.infoNoti}>
               <Text
                 numberOfLines={1}
                 ellipsizeMode={kts.hardware.tail}
-                style={[style.textNoti, {fontWeight: '300'}]}>
-                {this.props.isNoti || isNoti ? global.service.user.first_name : ''}
+                style={[style.textNoti]}>
+                {this.state.showOnMyWay ? global.service.user.first_name : ''}
               </Text>
               <Text style={style.textNoti}>{text.app.label.coming}</Text>
+            </View>
+          </Animated.View>
+          <Animated.View
+            style={[style.notification, style.otherAccept, {
+              transform: [{translateX: animaAccept.interpolate({
+                inputRange: [0, 1],
+                outputRange: [185, 0] })}]}]}>
+            <Image
+              style={style.photo}
+              source={require('../../../img/other_accept.png')} />
+            <View style={style.infoNoti}>
+              <Text
+                numberOfLines={2}
+                ellipsizeMode={kts.hardware.tail}
+                style={[style.textNoti]}>
+                {text.app.label.otherAccept}
+              </Text>
             </View>
           </Animated.View>
           <View style={[

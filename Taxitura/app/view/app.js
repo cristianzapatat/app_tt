@@ -64,27 +64,23 @@ export default class Taxitura extends Component {
     })
     global.socket.on(kts.socket.acceptService, order => {
       if (order !== null) {
-        if (order.service.id === global.waitId) {
-          if (global.service === null) {
-            global.service = order
-            this.getInfoOrder()
-          } else { this.cleanService() }
+        if (order.service.id === global.waitId && global.service === null) {
+          global.service = order
+          this.getInfoOrder()
         } else { this.cleanService() }
-      } else { this.cleanService() }
+      } else {
+        this.cleanService()
+        EventRegister.emit(kts.event.showOtherAccept, true)
+      }
     })
     global.socket.on(kts.socket.deleteService, idService => {
-      if (global.service) {
-        if (global.service.service.id === idService) {
-          this.cancelOrder(false)
-        }
+      if (global.service && global.service.service.id === idService) {
+        this.cancelOrder(false)
       }
     })
     global.socket.on(kts.socket.onMyWay, (data) => {
-      if (global.service) {
-        if (global.service.service.id === parseInt(data.service.id)) {
-          this.setState({isNoti: true})
-          this.state.isNoti = false
-        }
+      if (global.service && global.service.service.id === parseInt(data.service.id)) {
+        EventRegister.emit(kts.event.showOnMyWay, true)
       }
     })
     this.getStatus()
@@ -372,8 +368,7 @@ export default class Taxitura extends Component {
             permissionsStatus = false
           }
           this.getStatus()
-        }}
-        isNoti={this.state.isNoti}>
+        }}>
         <Menu
           isVisible={this.state.isMenu}
           onClose={() => { this.setState({isMenu: false}) }}

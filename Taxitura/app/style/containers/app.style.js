@@ -86,7 +86,6 @@ export default StyleSheet.create({
   },
   notification: {
     position: 'absolute',
-    top: 120,
     right: 0,
     width: 185,
     height: 60,
@@ -98,6 +97,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 5
+  },
+  onMyWay: {
+    top: 120
+  },
+  otherAccept: {
+    top: 185
   },
   photo: {
     width: 50,
@@ -113,7 +118,8 @@ export default StyleSheet.create({
   textNoti: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#000'
+    color: '#000',
+    fontWeight: '300'
   },
   warning: {
     position: 'absolute',

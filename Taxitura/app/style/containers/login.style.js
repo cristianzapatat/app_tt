@@ -12,6 +12,10 @@ export default StyleSheet.create({
   children: {
     backgroundColor: 'transparent'
   },
+  load: {
+    position: 'absolute',
+    bottom: 150
+  },
   msn: {
     position: 'absolute',
     flexDirection: 'row',
