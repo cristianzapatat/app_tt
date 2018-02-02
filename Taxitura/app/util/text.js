@@ -32,7 +32,8 @@ module.exports = {
       aboard: 'Pasajero abordo',
       weArrived: 'Llegamos!',
       coming: 'Viene en camino',
-      otherAccept: 'El servicio ya\nha sido aceptado'
+      otherAccept: 'El servicio ya\nha sido aceptado',
+      notAddress: 'Dirección no definida'
     },
     gps: {
       update: 'Actualizar',

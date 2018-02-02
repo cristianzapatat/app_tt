@@ -8,5 +8,7 @@ module.exports = {
   watchID: null,
   isDay: true,
   state: true,
-  tempState: null
+  tempState: null,
+  serviceFact: 0,
+  serviceToday: 0
 }

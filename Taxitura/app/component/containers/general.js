@@ -33,7 +33,8 @@ class ContainerGeneral extends Component {
       disabled: false,
       animated: new Animated.Value(0),
       color: kts.color.active,
-      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia)
+      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
+      countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact)
     }
     isState = false
     this.state.disabled = global.service !== null || global.waitId !== null || global.waitCanceled
@@ -221,7 +222,7 @@ class ContainerGeneral extends Component {
               </Shadow>
               <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
                 <View style={style.itemFooter}>
-                  <Text style={style.tNumber}>018</Text>
+                  <Text style={style.tNumber}>{this.state.countToday}</Text>
                   <Text style={style.tText}>
                     {text.app.label.borroweb}
                   </Text>

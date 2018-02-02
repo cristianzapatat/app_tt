@@ -80,14 +80,16 @@ export default class Main extends Component {
             .then(json => {
               if (json) {
                 if (json.activo) {
-                  json['state_app'] = user.state_app !== null ? user.state_app : true
-                  AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
-                    this.state.rendering = true
-                    global.user = json
-                    global.state = json.state_app
-                    global.tempState = user.state_temp
-                    this.__renderView()
-                  })
+                  fetch(urls.getCantServiceFact(json.id))
+                    .then(response => {
+                      return response.json()
+                    })
+                    .then(data => {
+                      this.goView(user, json, data)
+                    })
+                    .catch(err => {
+                      this.goView(user, json, null)
+                    })
                 } else {
                   this.__renderView()
                 }
@@ -116,6 +118,19 @@ export default class Main extends Component {
   componentWillUnmount () {
     EventRegister.removeAllListeners()
     Background.stopBackgroundTimer()
+  }
+
+  goView (user, json, data) {
+    json['state_app'] = user.state_app !== null ? user.state_app : true
+    AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+      this.state.rendering = true
+      global.user = json
+      global.state = json.state_app
+      global.tempState = user.state_temp
+      global.serviceFact = 0
+      global.serviceToday = data ? data.cant : 0
+      this.__renderView()
+    })
   }
 
   __renderView () {

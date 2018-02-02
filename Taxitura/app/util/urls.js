@@ -44,5 +44,6 @@ module.exports = {
   },
   getRechargePoints: () => {
     return `${urlServer}/api/v1/recharge_homes`
-  }
+  },
+  getCantServiceFact: (id) => `${urlInterface}/service_fact_today/${id}`
 }

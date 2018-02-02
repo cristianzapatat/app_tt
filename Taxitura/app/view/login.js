@@ -76,13 +76,16 @@ export default class Login extends Component {
             if (json) {
               if (json.token) {
                 if (json.activo) {
-                  AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
-                    global.user = json
-                    global.state = true
-                    global.tempState = null
-                    this.props.navigation.navigate(kts.app.id)
-                    this.setState({isLoad: false})
-                  })
+                  fetch(urls.getCantServiceFact(json.id))
+                    .then(response => {
+                      return response.json()
+                    })
+                    .then(data => {
+                      this.goView(json, data)
+                    })
+                    .catch(err => {
+                      this.goView(json, null)
+                    })
                 } else {
                   this.setState({
                     password: '',
@@ -128,6 +131,18 @@ export default class Login extends Component {
         })
       }
     }, 200)
+  }
+
+  goView (json, data) {
+    AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+      global.user = json
+      global.state = true
+      global.tempState = null
+      global.serviceFact = 0
+      global.serviceToday = data ? data.cant : 0
+      this.props.navigation.navigate(kts.app.id)
+      this.setState({isLoad: false})
+    })
   }
 
   render () {

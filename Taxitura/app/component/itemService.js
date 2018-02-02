@@ -10,7 +10,8 @@ import text from '../util/text'
 
 export default class ItemService extends Component {
   render () {
-    let disabled = !(!global.waitCanceled && global.service === null && global.waitId === null)
+    let disabled = !(!global.waitCanceled && global.service === null && global.waitId === null &&
+      ((parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0))
     return (
       <TouchableWithoutFeedback onPressIn={this.props.onShow}>
         <View style={[style.item]}>

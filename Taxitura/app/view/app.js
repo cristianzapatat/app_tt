@@ -39,51 +39,53 @@ export default class Taxitura extends Component {
       if (order) {
         global.service = order
         isServiceInMemory = true
-      }
-    })
-    global.socket.on(kts.socket.receiveService, order => {
-      const { navigation } = this.props
-      if (global.state && navigation.state.routeName === kts.app.id &&
-        global.position !== null && !global.waitCanceled &&
-        order.action === kts.action.order && global.service === null &&
-        global.waitId === null) {
-        global.service = order
-        this.openModalOrder(global.position, global.service.position_user)
-      }
-    })
-    global.socket.on(kts.socket.orderCanceled, order => {
-      if (order) {
-        const { navigation } = this.props
-        if (navigation.state.routeName === kts.app.id && global.position !== null &&
-          global.waitCanceled && order.action === kts.action.accept &&
-          global.service === null && global.waitId === null) {
-          global.service = order
-          this.getInfoOrder()
-        }
-      } else { this.cleanService() }
-    })
-    global.socket.on(kts.socket.acceptService, order => {
-      if (order !== null) {
-        if (order.service.id === global.waitId && global.service === null) {
-          global.service = order
-          this.getInfoOrder()
-        } else { this.cleanService() }
       } else {
-        this.cleanService()
-        EventRegister.emit(kts.event.showOtherAccept, true)
+        this.setState({isButton: false})
       }
+      global.socket.on(kts.socket.receiveService, order => {
+        const { navigation } = this.props
+        if (global.state && navigation.state.routeName === kts.app.id &&
+          global.position !== null && !global.waitCanceled &&
+          order.action === kts.action.order && global.service === null &&
+          global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+          global.service = order
+          this.openModalOrder(global.position, global.service.position_user)
+        }
+      })
+      global.socket.on(kts.socket.orderCanceled, order => {
+        if (order) {
+          const { navigation } = this.props
+          if (navigation.state.routeName === kts.app.id && global.position !== null &&
+            global.waitCanceled && order.action === kts.action.accept &&
+            global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+            global.service = order
+            this.getInfoOrder()
+          }
+        } else { this.cleanService() }
+      })
+      global.socket.on(kts.socket.acceptService, order => {
+        if (order !== null) {
+          if (order.service.id === global.waitId && global.service === null) {
+            global.service = order
+            this.getInfoOrder()
+          } else { this.cleanService() }
+        } else {
+          this.cleanService()
+          EventRegister.emit(kts.event.showOtherAccept, true)
+        }
+      })
+      global.socket.on(kts.socket.deleteService, idService => {
+        if (global.service && global.service.service.id === idService) {
+          this.cancelOrder(false)
+        }
+      })
+      global.socket.on(kts.socket.onMyWay, (data) => {
+        if (global.service && global.service.service.id === parseInt(data.service.id)) {
+          EventRegister.emit(kts.event.showOnMyWay, true)
+        }
+      })
+      this.getStatus()
     })
-    global.socket.on(kts.socket.deleteService, idService => {
-      if (global.service && global.service.service.id === idService) {
-        this.cancelOrder(false)
-      }
-    })
-    global.socket.on(kts.socket.onMyWay, (data) => {
-      if (global.service && global.service.service.id === parseInt(data.service.id)) {
-        EventRegister.emit(kts.event.showOnMyWay, true)
-      }
-    })
-    this.getStatus()
   }
 
   componentWillMount () {
@@ -218,7 +220,12 @@ export default class Taxitura extends Component {
           if (json.status && json.status === kts.json.ok) {
             let pos = json.results[0].formatted_address.split(kts.board.coma)
             this.setState({title: `${pos[0]}, ${pos[1]}`})
+          } else {
+            this.setState({title: text.app.label.notAddress})
           }
+        })
+        .catch(err => {
+          this.setState({title: text.app.label.notAddress})
         })
     }
   }
@@ -322,6 +329,7 @@ export default class Taxitura extends Component {
     } else if (global.service.action === kts.action.aboard) {
       this.setState({ textButton: text.app.label.weArrived })
     } else if (global.service.action === kts.action.end) {
+      EventRegister.emit(kts.event.addServiceToday, 1)
       this.cleanService()
     }
   }

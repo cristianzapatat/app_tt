@@ -37,7 +37,8 @@ class ContainerApp extends Component {
       animaNoti: new Animated.Value(0),
       animaAccept: new Animated.Value(0),
       color: kts.color.active,
-      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia)
+      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
+      countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact)
     }
     isState = false
     this.state.color = global.state ? kts.color.active : kts.color.inactive
@@ -75,15 +76,25 @@ class ContainerApp extends Component {
     this.eventShowOtherAccept = EventRegister.addEventListener(kts.event.showOtherAccept, value => {
       this.showNotification(value, this.state.animaAccept, false)
     })
+    this.eventAddServiceToday = EventRegister.addEventListener(kts.event.addServiceToday, value => {
+      global.serviceFact += value
+      this.setState({
+        countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
+        countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact)
+      })
+    })
   }
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventeChangeState)
     EventRegister.removeEventListener(this.eventOnShow)
     EventRegister.removeEventListener(this.eventShowOnMyWay)
     EventRegister.removeEventListener(this.eventShowOtherAccept)
+    EventRegister.removeEventListener(this.eventAddServiceToday)
   }
   __drawFooter () {
-    if (this.props.isButton) {
+    if (this.props.isButton === null) {
+      return (<View />)
+    } else if (this.props.isButton === true) {
       return (
         <Shadow setting={{height: 50, width: 290, borderRadius: 30}}>
           <TouchableOpacity
@@ -97,7 +108,7 @@ class ContainerApp extends Component {
           </TouchableOpacity>
         </Shadow>
       )
-    } else {
+    } else if (this.props.isButton === false) {
       return (
         <View style={style.contentFooter}>
           <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
@@ -113,7 +124,7 @@ class ContainerApp extends Component {
           </Shadow>
           <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
             <View style={style.itemFooter}>
-              <Text style={style.tNumber}>018</Text>
+              <Text style={style.tNumber}>{this.state.countToday}</Text>
               <Text style={style.tText}>
                 {text.app.label.borroweb}
               </Text>

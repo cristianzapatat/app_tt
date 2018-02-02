@@ -2,9 +2,10 @@ import kts from './kts'
 import text from './text'
 
 module.exports = {
-  getValueText: (value, item) => {
-    let val = parseInt(value + item)
-    if (val < 10) return `00${val}`
+  getValueText: (value, item, add) => {
+    let val = parseInt(value + item) - (add)
+    if (val < 0) return '000'
+    else if (val < 10) return `00${val}`
     else if (val < 100) return `0${val}`
     return val
   },

@@ -59,7 +59,8 @@ module.exports = {
     onShow: 'onShow',
     changePosition: 'changePosition',
     showOnMyWay: 'showOnMyWay',
-    showOtherAccept: 'showOtherAccept'
+    showOtherAccept: 'showOtherAccept',
+    addServiceToday: 'addServiceToday'
   },
   hardware: {
     backPress: 'hardwareBackPress',
