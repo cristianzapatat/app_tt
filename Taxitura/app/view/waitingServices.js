@@ -20,13 +20,14 @@ export default class WaitingServices extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      load: true,
       data: []
     }
   }
 
   componentWillMount () {
     this.eventChangePos = EventRegister.addEventListener(kts.event.changePosition, (pos) => {
-      if (this.state.isNoGps) this.setState({isNoGps: false})
+      if (this.state.isNoGps) this.setState({isNoGps: false, load: true})
       if (!changeList) this.getList()
     })
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
@@ -38,7 +39,7 @@ export default class WaitingServices extends Component {
             this.setState({isNoGps: true, textNoGps: text.waitingServices.label.position})
           }
         } else {
-          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission})
+          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission, load: false})
         }
       })
   }
@@ -53,19 +54,24 @@ export default class WaitingServices extends Component {
         return response.json()
       })
       .then(json => {
-        this.setState({
-          data: json
-        })
+        changeList = true
+        this.setState({data: json, load: false})
+      })
+      .catch(err => {
+        changeList = false
+        this.setState({data: []})
       })
   }
 
   goBack () {
     const { goBack } = this.props.navigation
+    this.setState({load: false, json: [], isNoGps: false})
     goBack()
   }
 
   acceptService (service) {
     global.waitCanceled = true
+    service.action = kts.action.accept
     service[kts.json.cabman] = {
       id: global.user.id,
       name: global.user.nombre,
@@ -77,12 +83,10 @@ export default class WaitingServices extends Component {
       latitude: global.position.latitude,
       longitude: global.position.longitude
     }
-    service.action = kts.action.accept
     global.tempState = global.state
-    const { goBack } = this.props.navigation
-    EventRegister.emit(kts.event.changeState, {state: false, case: 0})
     global.socket.emit(kts.socket.acceptCancel, service)
-    goBack()
+    EventRegister.emit(kts.event.appAcceptCancel)
+    this.goBack()
   }
 
   onShow () {
@@ -96,6 +100,7 @@ export default class WaitingServices extends Component {
   render () {
     return (
       <Container.ContainerGeneral
+        load={this.state.load}
         title={text.waitingServices.label.title}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}

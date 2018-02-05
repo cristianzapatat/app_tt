@@ -17,13 +17,14 @@ export default class rechargePoints extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      load: true,
       data: []
     }
   }
 
   componentWillMount () {
     this.eventChangePosition = EventRegister.addEventListener(kts.event.changePosition, (pos) => {
-      if (this.state.isNoGps) this.setState({isNoGps: false})
+      if (this.state.isNoGps) this.setState({isNoGps: false, load: true})
       if (!changeList) this.getList()
       this.setState({
         latitude: pos.latitude,
@@ -39,7 +40,7 @@ export default class rechargePoints extends Component {
             this.setState({isNoGps: true, textNoGps: text.waitingServices.label.position})
           }
         } else {
-          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission})
+          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission, load: false})
         }
       })
   }
@@ -56,21 +57,25 @@ export default class rechargePoints extends Component {
       this.setState({
         data: json,
         latitude: global.position.latitude,
-        longitude: global.position.longitude
+        longitude: global.position.longitude,
+        load: false
       })
     } catch (err) {
-      this.setState({data: []})
+      changeList = false
+      this.setState({data: [], load: false})
     }
   }
 
   goBack () {
     const { goBack } = this.props.navigation
+    this.setState({load: false, json: []})
     goBack()
   }
 
   render () {
     return (
       <Container.ContainerGeneral
+        load={this.state.load}
         title={text.rechargePoints.label.title}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}

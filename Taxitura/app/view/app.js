@@ -33,7 +33,8 @@ export default class Taxitura extends Component {
       isModalPermission: false,
       isModalOrder: false,
       isMenu: false,
-      load: true
+      load: true,
+      loadService: false
     }
     global.socket.emit(kts.socket.serviceInMemory, global.user.id)
     global.socket.on(kts.socket.isServiceInMemory, order => {
@@ -75,6 +76,18 @@ export default class Taxitura extends Component {
           EventRegister.emit(kts.event.showOtherAccept, true)
         }
       })
+      global.socket.on(kts.socket.processService, order => {
+        global.service = order
+        if (global.service.action === kts.action.arrive) {
+          coords = []
+          this.setState({textButton: text.app.label.aboard, isService: false, isButton: true, loadService: false})
+        } else if (global.service.action === kts.action.aboard) {
+          this.setState({textButton: text.app.label.weArrived, isButton: true, loadService: false})
+        } else if (global.service.action === kts.action.end) {
+          EventRegister.emit(kts.event.addServiceToday, 1)
+          this.cleanService()
+        }
+      })
       global.socket.on(kts.socket.deleteService, idService => {
         if (global.service && global.service.service.id === idService) {
           this.cancelOrder(false)
@@ -107,6 +120,10 @@ export default class Taxitura extends Component {
         this.getStatus()
       }
     })
+    this.appEventAcceptCancel = EventRegister.addEventListener(kts.event.appAcceptCancel, () => {
+      this.setState({isButton: null, loadService: true})
+      EventRegister.emit(kts.event.changeState, {state: false, case: 0})
+    })
   }
 
   componentWillUnmount () {
@@ -114,6 +131,7 @@ export default class Taxitura extends Component {
     if (Platform.OS === kts.platform.android) {
       BackHandler.removeEventListener(kts.hardware.backPress)
     }
+    EventRegister.removeEventListener(this.appEventAcceptCancel)
   }
 
   getStatus (action) {
@@ -254,9 +272,9 @@ export default class Taxitura extends Component {
   }
 
   cancelOrder (status) {
-    this.setState({ isModalOrder: false, isButton: false })
+    this.setState({isModalOrder: false, isButton: false, loadService: false})
     if (status) {
-      global.service[kts.json.cabman] = { id: global.user.id }
+      global.service[kts.json.cabman] = {id: global.user.id}
       global.socket.emit(kts.socket.addServiceCanceled, global.service)
     }
     global.service = null
@@ -264,7 +282,7 @@ export default class Taxitura extends Component {
   }
 
   acceptOrder () {
-    this.setState({ isModalOrder: false, isButton: null })
+    this.setState({isModalOrder: false, isButton: null, loadService: true})
     if (global.service) {
       global.service.action = kts.action.accept
       global.service[kts.json.cabman] = {
@@ -292,7 +310,7 @@ export default class Taxitura extends Component {
     coords = []
     global.waitCanceled = false
     EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
-    this.setState({ isButton: false, isService: false })
+    this.setState({isButton: false, isService: false, loadService: false})
   }
 
   async getInfoOrder () {
@@ -320,6 +338,7 @@ export default class Taxitura extends Component {
       address: global.service.position_user.andress,
       textButton: util.getTextButton(global.service.action),
       isService: global.service.action === kts.action.accept,
+      loadService: false,
       isButton: true
     })
   }
@@ -327,15 +346,7 @@ export default class Taxitura extends Component {
   processService () {
     global.service.action = util.getAction(global.service.action)
     global.socket.emit(kts.socket.responseService, global.service)
-    if (global.service.action === kts.action.arrive) {
-      coords = []
-      this.setState({ textButton: text.app.label.aboard, isService: false })
-    } else if (global.service.action === kts.action.aboard) {
-      this.setState({ textButton: text.app.label.weArrived })
-    } else if (global.service.action === kts.action.end) {
-      EventRegister.emit(kts.event.addServiceToday, 1)
-      this.cleanService()
-    }
+    this.setState({isButton: null, loadService: true})
   }
 
   navigate (id) {

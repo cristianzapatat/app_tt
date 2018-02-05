@@ -47,6 +47,7 @@ module.exports = {
     responseService: 'responseService',
     addServiceCanceled: 'addServiceCanceled',
     acceptService: 'acceptService',
+    processService: 'processService',
     savePositionCab: 'savePositionCab',
     deleteService: 'deleteService',
     orderCanceled: 'orderCanceled',
@@ -60,7 +61,8 @@ module.exports = {
     changePosition: 'changePosition',
     showOnMyWay: 'showOnMyWay',
     showOtherAccept: 'showOtherAccept',
-    addServiceToday: 'addServiceToday'
+    addServiceToday: 'addServiceToday',
+    appAcceptCancel: 'appAcceptCancel'
   },
   hardware: {
     backPress: 'hardwareBackPress',

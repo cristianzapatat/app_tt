@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  ActivityIndicator,
   View,
   TouchableOpacity,
   Image,
@@ -155,6 +156,11 @@ class ContainerGeneral extends Component {
               ellipsizeMode={kts.hardware.tail}>
               {this.props.title}
             </Text>
+            <ActivityIndicator
+              animating={this.props.load}
+              style={[{display: this.props.load ? 'flex' : 'none'}, style.load]}
+              size={24}
+              color={kts.color.white} />
           </View>
           <View style={[
             {display: this.props.isNoGps ? 'flex' : 'none'},

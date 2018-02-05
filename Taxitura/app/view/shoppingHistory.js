@@ -18,6 +18,7 @@ export default class ShoppingHistory extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      load: true,
       data: []
     }
   }
@@ -37,17 +38,18 @@ export default class ShoppingHistory extends Component {
       let result = await fetch(urls.getShoppingHistory(global.user.id), init)
       let json = await result.json()
       if (json.erros) {
-        this.setState({data: []})
+        this.setState({data: [], load: false})
       } else {
-        this.setState({data: json})
+        this.setState({data: json, load: false})
       }
     } catch (err) {
-      this.setState({data: []})
+      this.setState({data: [], load: false})
     }
   }
 
   goBack () {
     const { goBack } = this.props.navigation
+    this.setState({load: false, json: []})
     goBack()
   }
 
@@ -62,6 +64,7 @@ export default class ShoppingHistory extends Component {
   render () {
     return (
       <Container.ContainerGeneral
+        load={this.state.load}
         title={text.shoppingHistory.label.title}
         onBack={() => { this.goBack() }}>
         <View style={style.content}>

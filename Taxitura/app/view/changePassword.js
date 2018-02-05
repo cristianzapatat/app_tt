@@ -30,7 +30,8 @@ export default class Settings extends Component {
       editable: true,
       tCurrent: '',
       tNew: '',
-      tRepeat: ''
+      tRepeat: '',
+      load: false
     }
   }
 
@@ -50,6 +51,7 @@ export default class Settings extends Component {
 
   goBack () {
     const { goBack } = this.props.navigation
+    this.setState({load: false})
     goBack()
   }
 
@@ -61,7 +63,7 @@ export default class Settings extends Component {
       let tRepeat = this.state.tRepeat
       if (tCurrent.length > 0 && tNew.length > 0 && tRepeat.length > 0) {
         if (tNew === tRepeat) {
-          this.setState({editable: false})
+          this.setState({load: true, editable: false})
           let myHeaders = new Headers()
           myHeaders.append(kts.header.contentType, kts.header.multiparFormData)
           myHeaders.append(kts.key.userToken, global.user.token)
@@ -86,9 +88,10 @@ export default class Settings extends Component {
                     tCurrent: '',
                     tNew: '',
                     tRepeat: '',
-                    editable: true,
                     message: text.changePassword.msn.changeSuccess,
                     typeMessage: kts.enum.OK,
+                    load: false,
+                    editable: true,
                     isMns: true
                   })
                 })
@@ -98,9 +101,10 @@ export default class Settings extends Component {
                     tCurrent: '',
                     tNew: '',
                     tRepeat: '',
-                    editable: true,
                     message: json.message,
                     typeMessage: kts.enum.ERROR,
+                    load: false,
+                    editable: true,
                     isMns: true
                   })
                 } else {
@@ -108,9 +112,10 @@ export default class Settings extends Component {
                     tCurrent: '',
                     tNew: '',
                     tRepeat: '',
-                    editable: true,
                     message: text.changePassword.msn.verifyCredential,
                     typeMessage: kts.enum.ERROR,
+                    load: false,
+                    editable: true,
                     isMns: true
                   })
                 }
@@ -123,6 +128,8 @@ export default class Settings extends Component {
                 tRepeat: '',
                 message: text.changePassword.msn.verifyInternet,
                 typeMessage: kts.enum.ERROR,
+                load: false,
+                editable: true,
                 isMns: true
               })
             })
@@ -160,6 +167,7 @@ export default class Settings extends Component {
   render () {
     return (
       <Container.ContainerGeneral
+        load={this.state.load}
         title={text.changePassword.label.title}
         isFocus={this.state.isFocus}
         isMns={this.state.isMns}
