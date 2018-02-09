@@ -18,6 +18,7 @@ import style from '../style/login.style'
 import Shadow from '../elements/shadow'
 
 import global from '../util/global'
+import util from '../util/util'
 import kts from '../util/kts'
 import urls from '../util/urls'
 import text from '../util/text'
@@ -30,8 +31,9 @@ export default class Login extends Component {
     this.state = {
       idCard: '',
       password: '',
-      editable: true,
-      isFocus: false
+      editable: false,
+      isFocus: false,
+      isLoad: true
     }
   }
 
@@ -53,6 +55,19 @@ export default class Login extends Component {
     })
   }
 
+  componentDidMount () {
+    util.isInternet().then(status => {
+      this.setState({editable: true, isLoad: false})
+      if (!status) {
+        this.setState({
+          message: text.intenet.without,
+          typeMessage: kts.enum.WITHOUT,
+          isMns: true
+        })
+      }
+    })
+  }
+
   componentWillUnmount () {
     if (Platform.OS === kts.platform.android) {
       BackHandler.removeEventListener(kts.hardware.backPress)
@@ -63,65 +78,80 @@ export default class Login extends Component {
 
   async login () {
     Keyboard.dismiss()
+    this.setState({isMns: false})
     setTimeout(() => {
       let idCard = this.state.idCard
       let password = this.state.password
       if (idCard.length > 0 && password.length > 0) {
         this.setState({editable: false, isLoad: true})
-        fetch(urls.loginService(idCard, password))
-          .then(response => {
-            return response.json()
-          })
-          .then(json => {
-            if (json) {
-              if (json.token) {
-                if (json.activo) {
-                  fetch(urls.getCantServiceFact(json.id))
-                    .then(response => {
-                      return response.json()
+        util.isInternet().then(status => {
+          if (status) {
+            fetch(urls.loginService(idCard, password))
+              .then(response => {
+                return response.json()
+              })
+              .then(json => {
+                if (json) {
+                  if (json.token) {
+                    if (json.activo) {
+                      fetch(urls.getCantServiceFact(json.id))
+                        .then(response => {
+                          return response.json()
+                        })
+                        .then(data => {
+                          this.goView(json, data)
+                        })
+                        .catch(err => {
+                          this.goView(json, null)
+                        })
+                    } else {
+                      this.setState({
+                        password: '',
+                        editable: true,
+                        message: text.login.msn.userInactive,
+                        typeMessage: kts.enum.ERROR,
+                        isLoad: false,
+                        isMns: true
+                      })
+                    }
+                  } else {
+                    this.setState({
+                      idCard: '',
+                      password: '',
+                      editable: true,
+                      message: text.login.msn.verifyCredential,
+                      typeMessage: kts.enum.ERROR,
+                      isLoad: false,
+                      isMns: true
                     })
-                    .then(data => {
-                      this.goView(json, data)
-                    })
-                    .catch(err => {
-                      this.goView(json, null)
-                    })
+                  }
                 } else {
-                  this.setState({
-                    password: '',
-                    editable: true,
-                    message: text.login.msn.userInactive,
-                    typeMessage: kts.enum.ERROR,
-                    isLoad: false,
-                    isMns: true
-                  })
+                  this.setState({idCard: '', password: '', editable: true, isLoad: false})
                 }
-              } else {
+              })
+              .catch(err => {
                 this.setState({
                   idCard: '',
                   password: '',
                   editable: true,
-                  message: text.login.msn.verifyCredential,
+                  message: text.login.msn.verifyInternet,
                   typeMessage: kts.enum.ERROR,
                   isLoad: false,
                   isMns: true
                 })
-              }
-            } else {
-              this.setState({idCard: '', password: '', editable: true, isLoad: false})
-            }
-          })
-          .catch(err => {
+              })
+          } else {
             this.setState({
               idCard: '',
               password: '',
               editable: true,
-              message: text.login.msn.verifyInternet,
-              typeMessage: kts.enum.ERROR,
+              message: text.intenet.without,
+              typeMessage: kts.enum.WITHOUT,
               isLoad: false,
               isMns: true
             })
-          })
+          }
+        })
       } else {
         this.setState({
           message: text.login.msn.empty,

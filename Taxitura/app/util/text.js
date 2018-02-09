@@ -1,5 +1,8 @@
 /** Archivo que contiene los textos del aplicativo. **/
 module.exports = {
+  intenet: {
+    without: 'Sin conexión a internet'
+  },
   login: {
     label: {
       idCard: 'Cédula',

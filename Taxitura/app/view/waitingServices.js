@@ -10,6 +10,7 @@ import global from '../util/global'
 import kts from '../util/kts'
 import urls from '../util/urls'
 import text from '../util/text'
+import util from '../util/util'
 
 import Container from '../component/container'
 import Item from '../component/itemService'
@@ -27,7 +28,7 @@ export default class WaitingServices extends Component {
 
   componentWillMount () {
     this.eventChangePos = EventRegister.addEventListener(kts.event.changePosition, (pos) => {
-      if (this.state.isNoGps) this.setState({isNoGps: false, load: true})
+      if (this.state.isNoGps) this.setState({isNoGps: false, isMns: false})
       if (!changeList) this.getList()
     })
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
@@ -36,10 +37,10 @@ export default class WaitingServices extends Component {
           if (global.position !== null) {
             this.getList()
           } else {
-            this.setState({isNoGps: true, textNoGps: text.waitingServices.label.position})
+            this.setState({isNoGps: true, isMns: false, textNoGps: text.waitingServices.label.position})
           }
         } else {
-          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission, load: false})
+          this.setState({isNoGps: true, isMns: false, textNoGps: text.waitingServices.gps.withoutPermission, load: false})
         }
       })
   }
@@ -49,44 +50,68 @@ export default class WaitingServices extends Component {
   }
 
   getList () {
-    fetch(urls.getListWaitingServices(global.user.id))
-      .then(response => {
-        return response.json()
-      })
-      .then(json => {
-        changeList = true
-        this.setState({data: json, load: false})
-      })
-      .catch(err => {
+    this.setState({load: true, isMns: false})
+    util.isInternet().then(status => {
+      if (status) {
+        fetch(urls.getListWaitingServices(global.user.id))
+          .then(response => {
+            return response.json()
+          })
+          .then(json => {
+            changeList = true
+            this.setState({data: json, load: false, isMns: false})
+          })
+          .catch(err => {
+            changeList = false
+            this.setState({data: [], load: false, isMns: false})
+          })
+      } else {
         changeList = false
-        this.setState({data: []})
-      })
+        this.setState({
+          message: text.intenet.without,
+          typeMessage: kts.enum.WITHOUT,
+          load: false,
+          isMns: true
+        })
+      }
+    })
   }
 
   goBack () {
     const { goBack } = this.props.navigation
-    this.setState({load: false, json: [], isNoGps: false})
+    this.setState({load: false, json: [], isNoGps: false, isMns: false})
     goBack()
   }
 
   acceptService (service) {
-    global.waitCanceled = true
-    service.action = kts.action.accept
-    service[kts.json.cabman] = {
-      id: global.user.id,
-      name: global.user.nombre,
-      photo: urls.getUrlPhoto(global.user.foto.url)
-    }
-    service[kts.json.position_cabman] = {
-      distance: null,
-      time: null,
-      latitude: global.position.latitude,
-      longitude: global.position.longitude
-    }
-    global.tempState = global.state
-    global.socket.emit(kts.socket.acceptCancel, service)
-    EventRegister.emit(kts.event.appAcceptCancel)
-    this.goBack()
+    util.isInternet().then(status => {
+      if (status) {
+        global.waitCanceled = true
+        service.action = kts.action.accept
+        service[kts.json.cabman] = {
+          id: global.user.id,
+          name: global.user.nombre,
+          photo: urls.getUrlPhoto(global.user.foto.url)
+        }
+        service[kts.json.position_cabman] = {
+          distance: null,
+          time: null,
+          latitude: global.position.latitude,
+          longitude: global.position.longitude
+        }
+        global.tempState = global.state
+        global.socket.emit(kts.socket.acceptCancel, service)
+        EventRegister.emit(kts.event.appAcceptCancel)
+        this.goBack()
+      } else {
+        this.setState({
+          message: text.intenet.without,
+          typeMessage: kts.enum.WITHOUT,
+          load: false,
+          isMns: true
+        })
+      }
+    })
   }
 
   onShow () {
@@ -104,8 +129,11 @@ export default class WaitingServices extends Component {
         title={text.waitingServices.label.title}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}
+        isMns={this.state.isMns}
+        typeMessage={this.state.typeMessage}
+        message={this.state.message}
         onBack={() => { this.goBack() }}>
-        <View style={style.content}>
+        <View style={[{maxHeight: this.state.isMns ? 325 : 425}, style.content]}>
           <FlatList
             style={style.list}
             data={this.state.data}

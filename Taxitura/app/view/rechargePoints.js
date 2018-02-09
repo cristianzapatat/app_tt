@@ -8,6 +8,7 @@ import global from '../util/global'
 import kts from '../util/kts'
 import urls from '../util/urls'
 import text from '../util/text'
+import util from '../util/util'
 
 import Container from '../component/container'
 
@@ -24,7 +25,7 @@ export default class rechargePoints extends Component {
 
   componentWillMount () {
     this.eventChangePosition = EventRegister.addEventListener(kts.event.changePosition, (pos) => {
-      if (this.state.isNoGps) this.setState({isNoGps: false, load: true})
+      if (this.state.isNoGps) this.setState({isNoGps: false, isMns: false})
       if (!changeList) this.getList()
       this.setState({
         latitude: pos.latitude,
@@ -37,10 +38,10 @@ export default class rechargePoints extends Component {
           if (global.position !== null) {
             this.getList()
           } else {
-            this.setState({isNoGps: true, textNoGps: text.waitingServices.label.position})
+            this.setState({isNoGps: true, isMns: false, textNoGps: text.waitingServices.label.position})
           }
         } else {
-          this.setState({isNoGps: true, textNoGps: text.waitingServices.gps.withoutPermission, load: false})
+          this.setState({isNoGps: true, isMns: false, textNoGps: text.waitingServices.gps.withoutPermission, load: false})
         }
       })
   }
@@ -49,26 +50,40 @@ export default class rechargePoints extends Component {
     EventRegister.removeEventListener(this.eventChangePosition)
   }
 
-  async getList () {
-    try {
-      let result = await fetch(urls.getRechargePoints())
-      let json = await result.json()
-      changeList = true
-      this.setState({
-        data: json,
-        latitude: global.position.latitude,
-        longitude: global.position.longitude,
-        load: false
-      })
-    } catch (err) {
-      changeList = false
-      this.setState({data: [], load: false})
-    }
+  getList () {
+    this.setState({load: true, isMns: false})
+    util.isInternet().then(async (status) => {
+      if (status) {
+        try {
+          let result = await fetch(urls.getRechargePoints())
+          let json = await result.json()
+          changeList = true
+          this.setState({
+            data: json,
+            latitude: global.position.latitude,
+            longitude: global.position.longitude,
+            load: false,
+            isMns: false
+          })
+        } catch (err) {
+          changeList = false
+          this.setState({data: [], load: false, isMns: false})
+        }
+      } else {
+        changeList = false
+        this.setState({
+          message: text.intenet.without,
+          typeMessage: kts.enum.WITHOUT,
+          load: false,
+          isMns: true
+        })
+      }
+    })
   }
 
   goBack () {
     const { goBack } = this.props.navigation
-    this.setState({load: false, json: []})
+    this.setState({load: false, json: [], isMns: false, isNoGps: false})
     goBack()
   }
 
@@ -79,6 +94,9 @@ export default class rechargePoints extends Component {
         title={text.rechargePoints.label.title}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}
+        isMns={this.state.isMns}
+        typeMessage={this.state.typeMessage}
+        message={this.state.message}
         cab={[{
           latitude: this.state.latitude,
           longitude: this.state.longitude

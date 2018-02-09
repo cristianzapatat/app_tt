@@ -34,71 +34,80 @@ export default class Taxitura extends Component {
       isModalOrder: false,
       isMenu: false,
       load: true,
-      loadService: false
+      loadService: false,
+      message: text.intenet.without,
+      typeMessage: kts.enum.WITHOUT,
+      isMns: false
     }
-    global.socket.emit(kts.socket.serviceInMemory, global.user.id)
-    global.socket.on(kts.socket.isServiceInMemory, order => {
-      if (order) {
-        global.service = order
-        isServiceInMemory = true
-      } else {
-        this.setState({isButton: false})
-      }
-      global.socket.on(kts.socket.receiveService, order => {
-        const { navigation } = this.props
-        if (global.state && navigation.state.routeName === kts.app.id &&
-          global.position !== null && !global.waitCanceled &&
-          order.action === kts.action.order && global.service === null &&
-          global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
-          global.service = order
-          this.openModalOrder(global.position, global.service.position_user)
-        }
-      })
-      global.socket.on(kts.socket.orderCanceled, order => {
-        if (order) {
-          const { navigation } = this.props
-          if (navigation.state.routeName === kts.app.id && global.position !== null &&
-            global.waitCanceled && order.action === kts.action.accept &&
-            global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+    util.isInternet().then(status => {
+      if (status) {
+        global.socket.emit(kts.socket.serviceInMemory, global.user.id)
+        global.socket.on(kts.socket.isServiceInMemory, order => {
+          if (order) {
             global.service = order
-            this.getInfoOrder()
+            isServiceInMemory = true
+          } else {
+            this.setState({isButton: false})
           }
-        } else { this.cleanService() }
-      })
-      global.socket.on(kts.socket.acceptService, order => {
-        if (order !== null) {
-          if (order.service.id === global.waitId && global.service === null) {
+          global.socket.on(kts.socket.receiveService, order => {
+            const { navigation } = this.props
+            if (global.state && navigation.state.routeName === kts.app.id &&
+              global.position !== null && !global.waitCanceled &&
+              order.action === kts.action.order && global.service === null &&
+              global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+              global.service = order
+              this.openModalOrder(global.position, global.service.position_user)
+            }
+          })
+          global.socket.on(kts.socket.orderCanceled, order => {
+            if (order) {
+              const { navigation } = this.props
+              if (navigation.state.routeName === kts.app.id && global.position !== null &&
+                global.waitCanceled && order.action === kts.action.accept &&
+                global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+                global.service = order
+                this.getInfoOrder()
+              }
+            } else { this.cleanService() }
+          })
+          global.socket.on(kts.socket.acceptService, order => {
+            if (order !== null) {
+              if (order.service.id === global.waitId && global.service === null) {
+                global.service = order
+                this.getInfoOrder()
+              } else { this.cleanService() }
+            } else {
+              this.cleanService()
+              EventRegister.emit(kts.event.showOtherAccept, true)
+            }
+          })
+          global.socket.on(kts.socket.processService, order => {
             global.service = order
-            this.getInfoOrder()
-          } else { this.cleanService() }
-        } else {
-          this.cleanService()
-          EventRegister.emit(kts.event.showOtherAccept, true)
-        }
-      })
-      global.socket.on(kts.socket.processService, order => {
-        global.service = order
-        if (global.service.action === kts.action.arrive) {
-          coords = []
-          this.setState({textButton: text.app.label.aboard, isService: false, isButton: true, loadService: false})
-        } else if (global.service.action === kts.action.aboard) {
-          this.setState({textButton: text.app.label.weArrived, isButton: true, loadService: false})
-        } else if (global.service.action === kts.action.end) {
-          EventRegister.emit(kts.event.addServiceToday, 1)
-          this.cleanService()
-        }
-      })
-      global.socket.on(kts.socket.deleteService, idService => {
-        if (global.service && global.service.service.id === idService) {
-          this.cancelOrder(false)
-        }
-      })
-      global.socket.on(kts.socket.onMyWay, (data) => {
-        if (global.service && global.service.service.id === parseInt(data.service.id)) {
-          EventRegister.emit(kts.event.showOnMyWay, true)
-        }
-      })
-      this.getStatus(true)
+            if (global.service.action === kts.action.arrive) {
+              coords = []
+              this.setState({textButton: text.app.label.aboard, isService: false, isButton: true, loadService: false})
+            } else if (global.service.action === kts.action.aboard) {
+              this.setState({textButton: text.app.label.weArrived, isButton: true, loadService: false})
+            } else if (global.service.action === kts.action.end) {
+              EventRegister.emit(kts.event.addServiceToday, 1)
+              this.cleanService()
+            }
+          })
+          global.socket.on(kts.socket.deleteService, idService => {
+            if (global.service && global.service.service.id === idService) {
+              this.cancelOrder(false)
+            }
+          })
+          global.socket.on(kts.socket.onMyWay, (data) => {
+            if (global.service && global.service.service.id === parseInt(data.service.id)) {
+              EventRegister.emit(kts.event.showOnMyWay, true)
+            }
+          })
+          this.getStatus(true)
+        })
+      } else {
+        this.setState({isMns: true, load: false})
+      }
     })
   }
 
@@ -216,19 +225,15 @@ export default class Taxitura extends Component {
 
   sendPosition (position) {
     if (position) {
-      let data = {
+      global.socket.emit(kts.socket.savePositionCab, {
         id: global.user.id,
-        data: {
-          id: global.user.id,
-          service: global.service !== null ? global.service.service.id : null,
-          action: global.service !== null ? global.service.action : '',
-          position: {
-            latitude: position.latitude,
-            longitude: position.longitude
-          }
+        service: global.service !== null ? global.service.service.id : null,
+        action: global.service !== null ? global.service.action : '',
+        position: {
+          latitude: position.latitude,
+          longitude: position.longitude
         }
-      }
-      global.socket.emit(kts.socket.savePositionCab, data)
+      })
     }
   }
 
@@ -254,54 +259,74 @@ export default class Taxitura extends Component {
 
   openModalOrder (start, end) {
     EventRegister.emit(kts.event.onShow)
-    fetch(urls.getDistanceMatrix(start, end))
-      .then(result => {
-        return result.json()
-      })
-      .then(json => {
-        this.setState({
-          distance: json.rows[0].elements[0].distance.value,
-          time: json.rows[0].elements[0].duration.value,
-          uri: global.service.user.url_pic,
-          name: global.service.user.name,
-          address: global.service.position_user.address,
-          isMenu: false,
-          isModalOrder: true
-        })
-      })
+    util.isInternet().then(status => {
+      if (status) {
+        fetch(urls.getDistanceMatrix(start, end))
+          .then(result => {
+            return result.json()
+          })
+          .then(json => {
+            this.setState({
+              distance: json.rows[0].elements[0].distance.value,
+              time: json.rows[0].elements[0].duration.value,
+              uri: global.service.user.url_pic,
+              name: global.service.user.name,
+              address: global.service.position_user.address,
+              isMenu: false,
+              isModalOrder: true
+            })
+          })
+      } else {
+        this.setState({isMns: true})
+      }
+    })
   }
 
   cancelOrder (status) {
     this.setState({isModalOrder: false, isButton: false, loadService: false})
     if (status) {
-      global.service[kts.json.cabman] = {id: global.user.id}
-      global.socket.emit(kts.socket.addServiceCanceled, global.service)
+      util.isInternet().then(status => {
+        if (status) {
+          global.service[kts.json.cabman] = {id: global.user.id}
+          global.socket.emit(kts.socket.addServiceCanceled, global.service)
+        } else {
+          this.setState({isMns: true})
+        }
+      })
     }
     global.service = null
     global.waitId = null
   }
 
   acceptOrder () {
-    this.setState({isModalOrder: false, isButton: null, loadService: true})
-    if (global.service) {
-      global.service.action = kts.action.accept
-      global.service[kts.json.cabman] = {
-        id: global.user.id,
-        name: global.user.nombre,
-        photo: urls.getUrlPhoto(global.user.foto.url)
+    this.setState({isModalOrder: false})
+    util.isInternet().then(status => {
+      if (status) {
+        this.setState({isButton: null, loadService: true})
+        if (global.service) {
+          global.service.action = kts.action.accept
+          global.service[kts.json.cabman] = {
+            id: global.user.id,
+            name: global.user.nombre,
+            photo: urls.getUrlPhoto(global.user.foto.url)
+          }
+          global.service[kts.json.position_cabman] = {
+            distance: this.state.distance,
+            time: this.state.time,
+            latitude: this.state.latitude,
+            longitude: this.state.longitude
+          }
+          global.tempState = true
+          EventRegister.emit(kts.event.changeState, {state: false, case: 0})
+          global.socket.emit(kts.socket.responseService, global.service)
+          global.waitId = global.service.service.id
+          global.service = null
+        }
+      } else {
+        this.cleanService()
+        this.setState({isButton: false, loadService: false, isMns: true})
       }
-      global.service[kts.json.position_cabman] = {
-        distance: this.state.distance,
-        time: this.state.time,
-        latitude: this.state.latitude,
-        longitude: this.state.longitude
-      }
-      global.tempState = true
-      EventRegister.emit(kts.event.changeState, {state: false, case: 0})
-      global.socket.emit(kts.socket.responseService, global.service)
-      global.waitId = global.service.service.id
-      global.service = null
-    }
+    })
   }
 
   cleanService () {
@@ -344,9 +369,15 @@ export default class Taxitura extends Component {
   }
 
   processService () {
-    global.service.action = util.getAction(global.service.action)
-    global.socket.emit(kts.socket.responseService, global.service)
-    this.setState({isButton: null, loadService: true})
+    util.isInternet().then(status => {
+      if (status) {
+        global.service.action = util.getAction(global.service.action)
+        global.socket.emit(kts.socket.responseService, global.service)
+        this.setState({isButton: null, loadService: true, isMns: false})
+      } else {
+        this.setState({isMns: true})
+      }
+    })
   }
 
   navigate (id) {
@@ -385,6 +416,10 @@ export default class Taxitura extends Component {
         onProcess={() => { this.processService() }}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}
+        isMns={this.state.isMns}
+        typeMessage={this.state.typeMessage}
+        message={this.state.message}
+        closeMns={() => { this.setState({isMns: false}) }}
         getStatus={() => {
           this.setState({isNoGps: false})
           if (!permissionsStatus) {

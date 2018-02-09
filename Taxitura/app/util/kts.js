@@ -18,6 +18,7 @@ module.exports = {
   },
   enum: {
     ERROR: 'error',
+    WITHOUT: 'without',
     OK: 'ok'
   },
   board: {
@@ -41,6 +42,8 @@ module.exports = {
     ios: 'ios'
   },
   socket: {
+    getClient: 'getClient',
+    responseClient: 'responseClient',
     serviceInMemory: 'serviceInMemory',
     isServiceInMemory: 'isServiceInMemory',
     receiveService: 'receiveService',

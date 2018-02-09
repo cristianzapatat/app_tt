@@ -80,6 +80,11 @@ class ContainerLogin extends Component {
               {display: this.props.typeMessage === kts.enum.OK || !this.props.typeMessage ? 'flex' : 'none'},
               style.mIcon ]}
             source={require('../../../img/ok.png')} />
+          <Image
+            style={[
+              {display: this.props.typeMessage === kts.enum.WITHOUT || !this.props.typeMessage ? 'flex' : 'none'},
+              style.mIcon ]}
+            source={require('../../../img/without.png')} />
           <Text
             style={style.mText}
             numberOfLines={2}

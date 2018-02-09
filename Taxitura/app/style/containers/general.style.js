@@ -157,6 +157,7 @@ export default StyleSheet.create({
   mButton: {
     marginRight: 5,
     marginTop: 3,
+    width: 20,
     height: '100%',
     justifyContent: 'flex-start'
   },

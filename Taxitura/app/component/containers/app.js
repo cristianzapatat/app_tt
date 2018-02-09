@@ -343,6 +343,30 @@ class ContainerApp extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+          <View style={[
+            {display: this.props.isMns ? 'flex' : 'none'},
+            style.msn ]}>
+            <Image
+              style={[
+                {display: this.props.typeMessage === kts.enum.WITHOUT || !this.props.typeMessage ? 'flex' : 'none'},
+                style.mIcon ]}
+              source={require('../../../img/without.png')} />
+            <Text
+              style={style.mText}
+              numberOfLines={2}
+              ellipsizeMode={kts.hardware.tail}>
+              {this.props.message}
+            </Text>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={style.mButton}
+              onPressIn={this.onShowState.bind(this)}
+              onPressOut={() => { this.props.closeMns() }}>
+              <Image
+                style={[style.mClose]}
+                source={require('../../../img/close.png')} />
+            </TouchableOpacity>
+          </View>
           <View style={[style.content, style.footer]}>
             { this.__drawFooter() }
           </View>

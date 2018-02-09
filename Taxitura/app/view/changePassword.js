@@ -20,6 +20,7 @@ import global from '../util/global'
 import kts from '../util/kts'
 import urls from '../util/urls'
 import text from '../util/text'
+import util from '../util/util'
 
 import Container from '../component/container'
 
@@ -51,7 +52,7 @@ export default class Settings extends Component {
 
   goBack () {
     const { goBack } = this.props.navigation
-    this.setState({load: false})
+    this.setState({load: false, isMns: false})
     goBack()
   }
 
@@ -76,63 +77,78 @@ export default class Settings extends Component {
             headers: myHeaders,
             body: data
           }
-          fetch(urls.updatePasswordService(global.user.id), init)
-            .then(response => {
-              return response.json()
-            })
-            .then(json => {
-              if (json.token) {
-                AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
-                  global.user = json
+          util.isInternet().then(status => {
+            if (status) {
+              fetch(urls.updatePasswordService(global.user.id), init)
+                .then(response => {
+                  return response.json()
+                })
+                .then(json => {
+                  if (json.token) {
+                    AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
+                      global.user = json
+                      this.setState({
+                        tCurrent: '',
+                        tNew: '',
+                        tRepeat: '',
+                        message: text.changePassword.msn.changeSuccess,
+                        typeMessage: kts.enum.OK,
+                        load: false,
+                        editable: true,
+                        isMns: true
+                      })
+                    })
+                  } else {
+                    if (json.message) {
+                      this.setState({
+                        tCurrent: '',
+                        tNew: '',
+                        tRepeat: '',
+                        message: json.message,
+                        typeMessage: kts.enum.ERROR,
+                        load: false,
+                        editable: true,
+                        isMns: true
+                      })
+                    } else {
+                      this.setState({
+                        tCurrent: '',
+                        tNew: '',
+                        tRepeat: '',
+                        message: text.changePassword.msn.verifyCredential,
+                        typeMessage: kts.enum.ERROR,
+                        load: false,
+                        editable: true,
+                        isMns: true
+                      })
+                    }
+                  }
+                })
+                .catch(err => {
                   this.setState({
                     tCurrent: '',
                     tNew: '',
                     tRepeat: '',
-                    message: text.changePassword.msn.changeSuccess,
-                    typeMessage: kts.enum.OK,
+                    message: text.changePassword.msn.verifyInternet,
+                    typeMessage: kts.enum.ERROR,
                     load: false,
                     editable: true,
                     isMns: true
                   })
                 })
-              } else {
-                if (json.message) {
-                  this.setState({
-                    tCurrent: '',
-                    tNew: '',
-                    tRepeat: '',
-                    message: json.message,
-                    typeMessage: kts.enum.ERROR,
-                    load: false,
-                    editable: true,
-                    isMns: true
-                  })
-                } else {
-                  this.setState({
-                    tCurrent: '',
-                    tNew: '',
-                    tRepeat: '',
-                    message: text.changePassword.msn.verifyCredential,
-                    typeMessage: kts.enum.ERROR,
-                    load: false,
-                    editable: true,
-                    isMns: true
-                  })
-                }
-              }
-            })
-            .catch(err => {
+            } else {
               this.setState({
                 tCurrent: '',
                 tNew: '',
                 tRepeat: '',
-                message: text.changePassword.msn.verifyInternet,
-                typeMessage: kts.enum.ERROR,
-                load: false,
+                message: text.intenet.without,
+                typeMessage: kts.enum.WITHOUT,
+                isLoad: false,
                 editable: true,
                 isMns: true
               })
-            })
+            }
+          })
         } else {
           this.setState({
             tNew: '',
@@ -173,6 +189,7 @@ export default class Settings extends Component {
         isMns={this.state.isMns}
         typeMessage={this.state.typeMessage}
         message={this.state.message}
+        isClose
         onBack={() => { this.goBack() }}>
         <KeyboardAvoidingView
           behavior={'padding'}

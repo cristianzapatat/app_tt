@@ -181,6 +181,39 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: '#FFF'
   },
+  msn: {
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    bottom: 100,
+    backgroundColor: 'rgba(113, 112, 110, 0.79)',
+    width: 260,
+    height: 45,
+    borderRadius: 10
+  },
+  mIcon: {
+    marginLeft: 5,
+    width: 25,
+    height: 25
+  },
+  mText: {
+    fontSize: 17,
+    color: '#FFF',
+    width: 190,
+    textAlign: 'center'
+  },
+  mButton: {
+    marginRight: 5,
+    marginTop: 3,
+    width: 20,
+    height: '100%',
+    justifyContent: 'flex-start'
+  },
+  mClose: {
+    width: 20,
+    height: 20
+  },
   contentFooter: {
     width: 350,
     flexDirection: 'row',

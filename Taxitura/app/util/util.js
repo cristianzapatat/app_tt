@@ -1,12 +1,25 @@
+/* global fetch:true */
 import kts from './kts'
 import text from './text'
+import urls from './urls'
 
 module.exports = {
+  isInternet: async () => {
+    try {
+      let json = await fetch(urls.isInternet)
+      let status = await json.json()
+      if (status.status) return true
+      return false
+    } catch (err) {
+      return false
+    }
+  },
   getValueText: (value, item, add) => {
     let val = parseInt(value + item) - (add)
     if (val < 0) return '000'
     else if (val < 10) return `00${val}`
     else if (val < 100) return `0${val}`
+    else if (val === undefined || val === null || val.isNaN()) return '---'
     return val
   },
   getAction: (action) => {

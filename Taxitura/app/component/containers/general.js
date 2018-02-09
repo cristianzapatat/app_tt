@@ -194,6 +194,11 @@ class ContainerGeneral extends Component {
                 {display: this.props.typeMessage === kts.enum.OK || !this.props.typeMessage ? 'flex' : 'none'},
                 style.mIcon ]}
               source={require('../../../img/ok.png')} />
+            <Image
+              style={[
+                {display: this.props.typeMessage === kts.enum.WITHOUT || !this.props.typeMessage ? 'flex' : 'none'},
+                style.mIcon ]}
+              source={require('../../../img/without.png')} />
             <Text
               style={style.mText}
               numberOfLines={2}
@@ -202,11 +207,12 @@ class ContainerGeneral extends Component {
             </Text>
             <TouchableOpacity
               activeOpacity={0.8}
+              disabled={!this.props.isClose}
               style={style.mButton}
               onPressIn={this.onShowState.bind(this)}
               onPressOut={() => { this.setState({isMns: false}) }}>
               <Image
-                style={style.mClose}
+                style={[{display: this.props.isClose ? 'flex' : 'none'}, style.mClose]}
                 source={require('../../../img/close.png')} />
             </TouchableOpacity>
           </View>

@@ -56,8 +56,17 @@ export default class Main extends Component {
       loading: false,
       rendering: false
     }
-    this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
-    global.socket = this.socket
+    util.isInternet().then(status => {
+      if (status) {
+        this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
+        this.socket.on(kts.socket.getClient, status => {
+          if (status && global.user) {
+            this.socket.emit(kts.socket.responseClient, global.user.id)
+          }
+        })
+        global.socket = this.socket
+      }
+    })
   }
 
   componentDidMount () {
@@ -73,34 +82,31 @@ export default class Main extends Component {
             method: kts.method.get,
             headers: myHeaders
           }
-          fetch(urls.meService, init)
-            .then(response => {
-              return response.json()
-            })
-            .then(json => {
-              if (json) {
-                if (json.activo) {
-                  fetch(urls.getCantServiceFact(json.id))
-                    .then(response => {
-                      return response.json()
-                    })
-                    .then(data => {
-                      this.goView(user, json, data)
-                    })
-                    .catch(err => {
-                      this.goView(user, json, null)
-                    })
-                } else {
+          util.isInternet().then(status => {
+            if (status) {
+              fetch(urls.meService, init)
+                .then(response => response.json())
+                .then(json => {
+                  if (json) {
+                    if (json.activo) {
+                      fetch(urls.getCantServiceFact(json.id))
+                        .then(response => response.json())
+                        .then(data => this.goView(user, json, data))
+                        .catch(err => this.goView(user, json, null))
+                    } else {
+                      this.__renderView()
+                    }
+                  } else {
+                    this.__renderView()
+                  }
+                })
+                .catch(err => {
                   this.__renderView()
-                }
-              } else {
-                this.__renderView()
-              }
-            })
-            .catch(err => {
-              // TODO advertencia sobre la red - internet
+                })
+            } else {
               this.__renderView()
-            })
+            }
+          })
         } else {
           this.__renderView()
         }
