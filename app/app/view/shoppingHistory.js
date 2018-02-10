@@ -1,4 +1,4 @@
-/* global fetch, Headers:true */
+/* global fetch:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {View, FlatList} from 'react-native'
@@ -31,14 +31,8 @@ export default class ShoppingHistory extends Component {
   getList () {
     util.isInternet().then(async (status) => {
       if (status) {
-        let myHeaders = new Headers()
-        myHeaders.append(kts.key.userToken, global.user.token)
-        let init = {
-          method: kts.method.get,
-          headers: myHeaders
-        }
         try {
-          let result = await fetch(urls.getShoppingHistory(global.user.id), init)
+          let result = await fetch(urls.getShoppingHistory(global.user.id))
           let json = await result.json()
           if (json.erros) {
             this.setState({data: [], load: false})

@@ -55,7 +55,9 @@ module.exports = {
     deleteService: 'deleteService',
     orderCanceled: 'orderCanceled',
     acceptCancel: 'acceptCancel',
-    onMyWay: 'onMyWay'
+    onMyWay: 'onMyWay',
+    sessionEnd: 'sessionEnd',
+    sessionStart: 'sessionStart'
   },
   event: {
     changeMap: 'changeMap',
@@ -65,7 +67,8 @@ module.exports = {
     showOnMyWay: 'showOnMyWay',
     showOtherAccept: 'showOtherAccept',
     addServiceToday: 'addServiceToday',
-    appAcceptCancel: 'appAcceptCancel'
+    appAcceptCancel: 'appAcceptCancel',
+    sessionEnd: 'sessionEnd'
   },
   hardware: {
     backPress: 'hardwareBackPress',

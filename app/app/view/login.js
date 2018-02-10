@@ -95,70 +95,28 @@ export default class Login extends Component {
                   if (json.token) {
                     if (json.activo) {
                       fetch(urls.getCantServiceFact(json.id))
-                        .then(response => {
-                          return response.json()
-                        })
-                        .then(data => {
-                          this.goView(json, data)
-                        })
-                        .catch(err => {
-                          this.goView(json, null)
-                        })
+                        .then(response => { return response.json() })
+                        .then(data => this.goView(json, data))
+                        .catch(err => this.goView(json, null))
                     } else {
-                      this.setState({
-                        password: '',
-                        editable: true,
-                        message: text.login.msn.userInactive,
-                        typeMessage: kts.enum.ERROR,
-                        isLoad: false,
-                        isMns: true
-                      })
+                      this.setState({password: '', editable: true, message: text.login.msn.userInactive, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
                     }
                   } else {
-                    this.setState({
-                      idCard: '',
-                      password: '',
-                      editable: true,
-                      message: text.login.msn.verifyCredential,
-                      typeMessage: kts.enum.ERROR,
-                      isLoad: false,
-                      isMns: true
-                    })
+                    this.setState({idCard: '', password: '', editable: true, message: text.login.msn.verifyCredential, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
                   }
                 } else {
                   this.setState({idCard: '', password: '', editable: true, isLoad: false})
                 }
               })
               .catch(err => {
-                this.setState({
-                  idCard: '',
-                  password: '',
-                  editable: true,
-                  message: text.login.msn.verifyInternet,
-                  typeMessage: kts.enum.ERROR,
-                  isLoad: false,
-                  isMns: true
-                })
+                this.setState({idCard: '', password: '', editable: true, message: text.login.msn.verifyInternet, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
               })
           } else {
-            this.setState({
-              idCard: '',
-              password: '',
-              editable: true,
-              message: text.intenet.without,
-              typeMessage: kts.enum.WITHOUT,
-              isLoad: false,
-              isMns: true
-            })
+            this.setState({idCard: '', password: '', editable: true, message: text.intenet.without, typeMessage: kts.enum.WITHOUT, isLoad: false, isMns: true})
           }
         })
       } else {
-        this.setState({
-          message: text.login.msn.empty,
-          typeMessage: kts.enum.ERROR,
-          isLoad: false,
-          isMns: true
-        })
+        this.setState({message: text.login.msn.empty, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
       }
     }, 200)
   }
@@ -171,6 +129,8 @@ export default class Login extends Component {
       global.serviceFact = 0
       global.serviceToday = data ? data.cant : 0
       this.props.navigation.navigate(kts.app.id)
+      global.socket.open()
+      global.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
       this.setState({isLoad: false})
     })
   }

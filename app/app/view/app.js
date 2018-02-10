@@ -41,7 +41,13 @@ export default class Taxitura extends Component {
     }
     util.isInternet().then(status => {
       if (status) {
-        global.socket.emit(kts.socket.serviceInMemory, global.user.id)
+        global.socket.on(kts.socket.sessionEnd, (id, token) => {
+          if (global.user.id === id && global.user.token !== token) this.sessionEnd()
+        })
+        global.socket.on(kts.socket.getClient, status => {
+          if (status && global.user) global.socket.emit(kts.socket.responseClient, global.user.id, global.user.token)
+        })
+        global.socket.emit(kts.socket.serviceInMemory, global.user.id, global.user.token)
         global.socket.on(kts.socket.isServiceInMemory, order => {
           if (order) {
             global.service = order
@@ -133,6 +139,9 @@ export default class Taxitura extends Component {
       this.setState({isButton: null, loadService: true})
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
     })
+    this.appEventSessionEnd = EventRegister.addEventListener(kts.event.sessionEnd, () => {
+      this.sessionEnd()
+    })
   }
 
   componentWillUnmount () {
@@ -141,6 +150,7 @@ export default class Taxitura extends Component {
       BackHandler.removeEventListener(kts.hardware.backPress)
     }
     EventRegister.removeEventListener(this.appEventAcceptCancel)
+    EventRegister.removeEventListener(this.appEventSessionEnd)
   }
 
   getStatus (action) {
@@ -288,7 +298,7 @@ export default class Taxitura extends Component {
       util.isInternet().then(status => {
         if (status) {
           global.service[kts.json.cabman] = {id: global.user.id}
-          global.socket.emit(kts.socket.addServiceCanceled, global.service)
+          global.socket.emit(kts.socket.addServiceCanceled, global.service, global.user.token)
         } else {
           this.setState({isMns: true})
         }
@@ -318,7 +328,7 @@ export default class Taxitura extends Component {
           }
           global.tempState = true
           EventRegister.emit(kts.event.changeState, {state: false, case: 0})
-          global.socket.emit(kts.socket.responseService, global.service)
+          global.socket.emit(kts.socket.responseService, global.service, global.user.token)
           global.waitId = global.service.service.id
           global.service = null
         }
@@ -372,7 +382,7 @@ export default class Taxitura extends Component {
     util.isInternet().then(status => {
       if (status) {
         global.service.action = util.getAction(global.service.action)
-        global.socket.emit(kts.socket.responseService, global.service)
+        global.socket.emit(kts.socket.responseService, global.service, global.user.token)
         this.setState({isButton: null, loadService: true, isMns: false})
       } else {
         this.setState({isMns: true})
@@ -389,12 +399,17 @@ export default class Taxitura extends Component {
 
   closeSession () {
     this.setState({isMenu: false})
-    navigator.geolocation.clearWatch(this.watchID)
     setTimeout(() => {
-      AsyncStorage.removeItem(kts.key.user, () => {
-        this.props.navigation.navigate(kts.login.id)
-      })
+      this.sessionEnd()
     }, 400)
+  }
+
+  sessionEnd () {
+    navigator.geolocation.clearWatch(this.watchID)
+    global.socket.close()
+    AsyncStorage.removeItem(kts.key.user, () => {
+      this.props.navigation.navigate(kts.login.id)
+    })
   }
 
   render () {

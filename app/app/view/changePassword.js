@@ -56,6 +56,19 @@ export default class Settings extends Component {
     goBack()
   }
 
+  resetView (message, value) {
+    this.setState({
+      tCurrent: '',
+      tNew: '',
+      tRepeat: '',
+      message: message,
+      typeMessage: value,
+      load: false,
+      editable: true,
+      isMns: true
+    })
+  }
+
   async changePassword () {
     Keyboard.dismiss()
     setTimeout(() => {
@@ -81,89 +94,39 @@ export default class Settings extends Component {
             if (status) {
               fetch(urls.updatePasswordService(global.user.id), init)
                 .then(response => {
-                  return response.json()
+                  if ((response.status >= 200 && response.status <= 299) || response.status === 422) {
+                    return response.json()
+                  } else {
+                    this.goBack()
+                    EventRegister.emit(kts.event.sessionEnd)
+                  }
                 })
                 .then(json => {
                   if (json.token) {
                     AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
                       global.user = json
-                      this.setState({
-                        tCurrent: '',
-                        tNew: '',
-                        tRepeat: '',
-                        message: text.changePassword.msn.changeSuccess,
-                        typeMessage: kts.enum.OK,
-                        load: false,
-                        editable: true,
-                        isMns: true
-                      })
+                      this.resetView(text.changePassword.msn.changeSuccess, kts.enum.OK)
                     })
                   } else {
                     if (json.message) {
-                      this.setState({
-                        tCurrent: '',
-                        tNew: '',
-                        tRepeat: '',
-                        message: json.message,
-                        typeMessage: kts.enum.ERROR,
-                        load: false,
-                        editable: true,
-                        isMns: true
-                      })
+                      this.resetView(json.message, kts.enum.ERROR)
                     } else {
-                      this.setState({
-                        tCurrent: '',
-                        tNew: '',
-                        tRepeat: '',
-                        message: text.changePassword.msn.verifyCredential,
-                        typeMessage: kts.enum.ERROR,
-                        load: false,
-                        editable: true,
-                        isMns: true
-                      })
+                      this.resetView(text.changePassword.msn.verifyCredential, kts.enum.ERROR)
                     }
                   }
                 })
                 .catch(err => {
-                  this.setState({
-                    tCurrent: '',
-                    tNew: '',
-                    tRepeat: '',
-                    message: text.changePassword.msn.verifyInternet,
-                    typeMessage: kts.enum.ERROR,
-                    load: false,
-                    editable: true,
-                    isMns: true
-                  })
+                  this.resetView(text.changePassword.msn.verifyInternet, kts.enum.ERROR)
                 })
             } else {
-              this.setState({
-                tCurrent: '',
-                tNew: '',
-                tRepeat: '',
-                message: text.intenet.without,
-                typeMessage: kts.enum.WITHOUT,
-                isLoad: false,
-                editable: true,
-                isMns: true
-              })
+              this.resetView(text.intenet.without, kts.enum.WITHOUT)
             }
           })
         } else {
-          this.setState({
-            tNew: '',
-            tRepeat: '',
-            message: text.changePassword.msn.noEquals,
-            typeMessage: kts.enum.ERROR,
-            isMns: true
-          })
+          this.setState({tNew: '', tRepeat: '', message: text.changePassword.msn.noEquals, typeMessage: kts.enum.ERROR, isMns: true})
         }
       } else {
-        this.setState({
-          message: text.changePassword.msn.empty,
-          typeMessage: kts.enum.ERROR,
-          isMns: true
-        })
+        this.setState({message: text.changePassword.msn.empty, typeMessage: kts.enum.ERROR, isMns: true})
       }
     }, 200)
   }

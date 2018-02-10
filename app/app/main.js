@@ -59,11 +59,6 @@ export default class Main extends Component {
     util.isInternet().then(status => {
       if (status) {
         this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
-        this.socket.on(kts.socket.getClient, status => {
-          if (status && global.user) {
-            this.socket.emit(kts.socket.responseClient, global.user.id)
-          }
-        })
         global.socket = this.socket
       }
     })
@@ -94,21 +89,21 @@ export default class Main extends Component {
                         .then(data => this.goView(user, json, data))
                         .catch(err => this.goView(user, json, null))
                     } else {
-                      this.__renderView()
+                      this.__renderView(true)
                     }
                   } else {
-                    this.__renderView()
+                    this.__renderView(true)
                   }
                 })
                 .catch(err => {
-                  this.__renderView()
+                  this.__renderView(true)
                 })
             } else {
-              this.__renderView()
+              this.__renderView(true)
             }
           })
         } else {
-          this.__renderView()
+          this.__renderView(true)
         }
       }
     })
@@ -135,11 +130,14 @@ export default class Main extends Component {
       global.tempState = user.state_temp
       global.serviceFact = 0
       global.serviceToday = data ? data.cant : 0
-      this.__renderView()
+      this.socket.open()
+      this.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
+      this.__renderView(false)
     })
   }
 
-  __renderView () {
+  __renderView (status) {
+    if (status) AsyncStorage.removeItem(kts.key.user)
     idSet = setInterval(() => {
       this.setState({ loading: true })
       clearInterval(idSet)
