@@ -130,6 +130,8 @@ export default class Main extends Component {
       global.tempState = user.state_temp
       global.serviceFact = 0
       global.serviceToday = data ? data.cant : 0
+      global.isSession = true
+      global.isApp = true
       this.socket.open()
       this.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
       this.__renderView(false)

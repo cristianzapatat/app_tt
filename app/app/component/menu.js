@@ -52,6 +52,14 @@ export default class Menu extends Component {
                 {global.user.nombre}
               </Text>
             </View>
+            <View style={style.headerPlaca}>
+              <Text
+                style={[style.placa]}
+                numberOfLines={1}
+                ellipsizeMode={kts.hardware.tail}>
+                {global.user.taxis[0].placa}
+              </Text>
+            </View>
           </View>
           <View style={style.content}>
             {itemJson.map((item, i) => (

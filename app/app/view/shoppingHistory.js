@@ -25,7 +25,14 @@ export default class ShoppingHistory extends Component {
   }
 
   componentWillMount () {
+    this.isApp = EventRegister.addEventListener(kts.event.appIsApp, () => {
+      this.goBack()
+    })
     this.getList()
+  }
+
+  componentWillUnmount () {
+    EventRegister.removeEventListener(this.isApp)
   }
 
   getList () {
@@ -56,6 +63,7 @@ export default class ShoppingHistory extends Component {
   goBack () {
     const { goBack } = this.props.navigation
     this.setState({load: false, json: [], isMns: false})
+    global.isApp = true
     goBack()
   }
 

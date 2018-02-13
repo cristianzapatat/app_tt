@@ -12,6 +12,7 @@ import {
   BackHandler,
   Platform
 } from 'react-native'
+import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../style/login.style'
 
@@ -53,6 +54,13 @@ export default class Login extends Component {
     Keyboard.addListener(kts.hardware.keyboardDidHide, () => {
       this.setState({isFocus: false})
     })
+    this.loginSessionEnd = EventRegister.addEventListener(kts.event.loginSessionEnd, () => {
+      this.setState({
+        message: text.intenet.sessionEnd,
+        typeMessage: kts.enum.ERROR,
+        isMns: true
+      })
+    })
   }
 
   componentDidMount () {
@@ -74,6 +82,7 @@ export default class Login extends Component {
     }
     Keyboard.removeAllListeners(kts.hardware.keyboardDidShow)
     Keyboard.removeAllListeners(kts.hardware.keyboardDidHide)
+    EventRegister.removeEventListener(this.loginSessionEnd)
   }
 
   async login () {
@@ -88,14 +97,18 @@ export default class Login extends Component {
           if (status) {
             fetch(urls.loginService(idCard, password))
               .then(response => {
-                return response.json()
+                if (response.status >= 200 && response.status <= 299) {
+                  return response.json()
+                } else {
+                  throw response.status
+                }
               })
               .then(json => {
                 if (json) {
                   if (json.token) {
                     if (json.activo) {
                       fetch(urls.getCantServiceFact(json.id))
-                        .then(response => { return response.json() })
+                        .then(info => info.json())
                         .then(data => this.goView(json, data))
                         .catch(err => this.goView(json, null))
                     } else {
@@ -109,7 +122,11 @@ export default class Login extends Component {
                 }
               })
               .catch(err => {
-                this.setState({idCard: '', password: '', editable: true, message: text.login.msn.verifyInternet, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
+                let msn = text.login.msn.error
+                if (err === 500) {
+                  msn = text.login.msn.errorTaxi
+                }
+                this.setState({idCard: '', password: '', editable: true, message: msn, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
               })
           } else {
             this.setState({idCard: '', password: '', editable: true, message: text.intenet.without, typeMessage: kts.enum.WITHOUT, isLoad: false, isMns: true})
@@ -128,6 +145,8 @@ export default class Login extends Component {
       global.tempState = null
       global.serviceFact = 0
       global.serviceToday = data ? data.cant : 0
+      global.isSession = true
+      global.isApp = true
       this.props.navigation.navigate(kts.app.id)
       global.socket.open()
       global.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)

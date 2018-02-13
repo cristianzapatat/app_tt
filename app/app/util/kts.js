@@ -26,7 +26,8 @@ module.exports = {
   },
   method: {
     get: 'GET',
-    put: 'PUT'
+    put: 'PUT',
+    post: 'POST'
   },
   header: {
     contentType: 'Content-Type',
@@ -68,7 +69,9 @@ module.exports = {
     showOtherAccept: 'showOtherAccept',
     addServiceToday: 'addServiceToday',
     appAcceptCancel: 'appAcceptCancel',
-    sessionEnd: 'sessionEnd'
+    sessionEnd: 'sessionEnd',
+    loginSessionEnd: 'loginSessionEnd',
+    appIsApp: 'appIsApp'
   },
   hardware: {
     backPress: 'hardwareBackPress',

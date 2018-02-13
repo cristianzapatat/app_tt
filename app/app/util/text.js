@@ -13,7 +13,10 @@ module.exports = {
       empty: 'Debe diligenciar sus credenciales.',
       verifyInternet: 'Verifique su coneción de Internet.',
       verifyCredential: 'Verifique sus credenciales',
-      userInactive: 'Usuario inactivo, Comuniquese a soporte'
+      userInactive: 'Usuario inactivo, Comuniquese a soporte',
+      error: 'Se presento un error, Intenta de nuevo',
+      sessionEnd: 'La sesión a finalizado',
+      errorTaxi: 'Su taxi esta ocupado o no se ha resgistrado'
     }
   },
   app: {
@@ -77,7 +80,8 @@ module.exports = {
       empty: 'Debe diligenciar todos los campos.',
       noEquals: 'Las nuevas contraseñas no coinciden.',
       verifyInternet: 'Verifique su coneción de Internet.',
-      verifyCredential: 'Verifique sus credenciales'
+      verifyCredential: 'Verifique sus credenciales',
+      error: 'Se presento un error, Intenta de nuevo'
     }
   },
   shoppingHistory: {

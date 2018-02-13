@@ -61,6 +61,7 @@ export default StyleSheet.create({
     height: 30,
     maxHeight: 30,
     borderRadius: 30,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
@@ -68,8 +69,32 @@ export default StyleSheet.create({
   },
   name: {
     fontSize: 16,
+    width: '100%',
     color: '#FFF',
-    textAlign: 'center'
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    paddingTop: 5
+  },
+  headerPlaca: {
+    backgroundColor: '#FFF',
+    width: 166,
+    height: 25,
+    maxHeight: 30,
+    borderRadius: 30,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 7,
+    paddingHorizontal: 6
+  },
+  placa: {
+    fontSize: 18,
+    width: '100%',
+    fontWeight: 'bold',
+    color: '#858585',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    paddingTop: 2
   },
   content: {
     flexDirection: 'column',

@@ -43,16 +43,21 @@ export default class Settings extends Component {
     Keyboard.addListener(kts.hardware.keyboardDidHide, () => {
       this.setState({isFocus: false})
     })
+    this.isApp = EventRegister.addEventListener(kts.event.appIsApp, () => {
+      this.goBack()
+    })
   }
 
   componentWillUnmount () {
     Keyboard.removeAllListeners(kts.hardware.keyboardDidShow)
     Keyboard.removeAllListeners(kts.hardware.keyboardDidHide)
+    EventRegister.removeEventListener(this.isApp)
   }
 
   goBack () {
     const { goBack } = this.props.navigation
     this.setState({load: false, isMns: false})
+    global.isApp = true
     goBack()
   }
 
@@ -116,7 +121,7 @@ export default class Settings extends Component {
                   }
                 })
                 .catch(err => {
-                  this.resetView(text.changePassword.msn.verifyInternet, kts.enum.ERROR)
+                  this.resetView(text.changePassword.msn.error, kts.enum.ERROR)
                 })
             } else {
               this.resetView(text.intenet.without, kts.enum.WITHOUT)

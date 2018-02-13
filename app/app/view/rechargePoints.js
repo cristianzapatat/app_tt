@@ -32,6 +32,9 @@ export default class rechargePoints extends Component {
         longitude: pos.longitude
       })
     })
+    this.isApp = EventRegister.addEventListener(kts.event.appIsApp, () => {
+      this.goBack()
+    })
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
       .then(granted => {
         if (granted) {
@@ -48,6 +51,7 @@ export default class rechargePoints extends Component {
 
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventChangePosition)
+    EventRegister.removeEventListener(this.isApp)
   }
 
   getList () {
@@ -84,6 +88,7 @@ export default class rechargePoints extends Component {
   goBack () {
     const { goBack } = this.props.navigation
     this.setState({load: false, json: [], isMns: false, isNoGps: false})
+    global.isApp = true
     goBack()
   }
 

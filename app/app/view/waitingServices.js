@@ -31,6 +31,9 @@ export default class WaitingServices extends Component {
       if (this.state.isNoGps) this.setState({isNoGps: false, isMns: false})
       if (!changeList) this.getList()
     })
+    this.isApp = EventRegister.addEventListener(kts.event.appIsApp, () => {
+      this.goBack()
+    })
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
       .then(granted => {
         if (granted) {
@@ -47,6 +50,7 @@ export default class WaitingServices extends Component {
 
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventChangePos)
+    EventRegister.removeEventListener(this.isApp)
   }
 
   getList () {
@@ -80,6 +84,7 @@ export default class WaitingServices extends Component {
   goBack () {
     const { goBack } = this.props.navigation
     this.setState({load: false, json: [], isNoGps: false, isMns: false})
+    global.isApp = true
     goBack()
   }
 

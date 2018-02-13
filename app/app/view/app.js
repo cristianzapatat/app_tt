@@ -1,4 +1,4 @@
-/* global fetch:true */
+/* global fetch,Headers:true */
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
@@ -42,7 +42,10 @@ export default class Taxitura extends Component {
     util.isInternet().then(status => {
       if (status) {
         global.socket.on(kts.socket.sessionEnd, (id, token) => {
-          if (global.user.id === id && global.user.token !== token) this.sessionEnd()
+          if (global.user.id === id && global.user.token !== token) {
+            this.sessionEnd()
+            EventRegister.emit(kts.event.loginSessionEnd)
+          }
         })
         global.socket.on(kts.socket.getClient, status => {
           if (status && global.user) global.socket.emit(kts.socket.responseClient, global.user.id, global.user.token)
@@ -58,7 +61,7 @@ export default class Taxitura extends Component {
           global.socket.on(kts.socket.receiveService, order => {
             const { navigation } = this.props
             if (global.state && navigation.state.routeName === kts.app.id &&
-              global.position !== null && !global.waitCanceled &&
+              global.position !== null && !global.waitCanceled && global.isSession &&
               order.action === kts.action.order && global.service === null &&
               global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
               global.service = order
@@ -69,7 +72,7 @@ export default class Taxitura extends Component {
             if (order) {
               const { navigation } = this.props
               if (navigation.state.routeName === kts.app.id && global.position !== null &&
-                global.waitCanceled && order.action === kts.action.accept &&
+                global.waitCanceled && order.action === kts.action.accept && global.isSession &&
                 global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
                 global.service = order
                 this.getInfoOrder()
@@ -141,6 +144,7 @@ export default class Taxitura extends Component {
     })
     this.appEventSessionEnd = EventRegister.addEventListener(kts.event.sessionEnd, () => {
       this.sessionEnd()
+      EventRegister.emit(kts.event.loginSessionEnd)
     })
   }
 
@@ -302,17 +306,20 @@ export default class Taxitura extends Component {
         } else {
           this.setState({isMns: true})
         }
+        global.service = null
+        global.waitId = null
       })
     }
-    global.service = null
-    global.waitId = null
   }
 
   acceptOrder () {
-    this.setState({isModalOrder: false})
+    this.setState({isModalOrder: false, isButton: null, loadService: true})
     util.isInternet().then(status => {
       if (status) {
-        this.setState({isButton: null, loadService: true})
+        if (!global.isApp) {
+          global.isApp = true
+          EventRegister.emit(kts.event.appIsApp)
+        }
         if (global.service) {
           global.service.action = kts.action.accept
           global.service[kts.json.cabman] = {
@@ -334,7 +341,7 @@ export default class Taxitura extends Component {
         }
       } else {
         this.cleanService()
-        this.setState({isButton: false, loadService: false, isMns: true})
+        this.setState({isMns: true})
       }
     })
   }
@@ -393,21 +400,34 @@ export default class Taxitura extends Component {
   navigate (id) {
     this.setState({isMenu: false})
     setTimeout(() => {
+      global.isApp = false
       this.props.navigation.navigate(id)
     }, 400)
   }
 
   closeSession () {
-    this.setState({isMenu: false})
-    setTimeout(() => {
+    global.isSession = false
+    global.isApp = false
+    this.setState({isMenu: false, load: true})
+    setTimeout(async () => {
+      let myHeaders = new Headers()
+      myHeaders.append(kts.key.userToken, global.user.token)
+      let init = {
+        method: kts.method.post,
+        headers: myHeaders
+      }
+      await fetch(urls.logoutService, init)
       this.sessionEnd()
     }, 400)
   }
 
   sessionEnd () {
+    global.isSession = false
+    global.isApp = false
     navigator.geolocation.clearWatch(this.watchID)
     global.socket.close()
     AsyncStorage.removeItem(kts.key.user, () => {
+      this.setState({load: false})
       this.props.navigation.navigate(kts.login.id)
     })
   }
