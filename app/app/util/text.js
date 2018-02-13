@@ -12,9 +12,9 @@ module.exports = {
     msn: {
       empty: 'Debe diligenciar sus credenciales.',
       verifyInternet: 'Verifique su coneción de Internet.',
-      verifyCredential: 'Verifique sus credenciales',
-      userInactive: 'Usuario inactivo, Comuniquese a soporte',
-      error: 'Se presento un error, Intenta de nuevo',
+      verifyCredential: 'Aceso denegado, verifique sus credenciales',
+      userInactive: 'Usuario inactivo, comuniquese a soporte',
+      error: 'Se presento un error, intenta de nuevo',
       sessionEnd: 'La sesión a finalizado',
       errorTaxi: 'Su taxi esta ocupado o no se ha resgistrado'
     }
@@ -81,7 +81,7 @@ module.exports = {
       noEquals: 'Las nuevas contraseñas no coinciden.',
       verifyInternet: 'Verifique su coneción de Internet.',
       verifyCredential: 'Verifique sus credenciales',
-      error: 'Se presento un error, Intenta de nuevo'
+      error: 'Se presento un error, intenta de nuevo'
     }
   },
   shoppingHistory: {
