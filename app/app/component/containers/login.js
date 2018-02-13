@@ -87,7 +87,7 @@ class ContainerLogin extends Component {
             source={require('../../../img/without.png')} />
           <Text
             style={style.mText}
-            numberOfLines={2}
+            numberOfLines={3}
             ellipsizeMode={kts.hardware.tail}>
             {this.props.message}
           </Text>
