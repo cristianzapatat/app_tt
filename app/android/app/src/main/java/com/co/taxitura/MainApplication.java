@@ -1,4 +1,4 @@
-package com.taxitura;
+package com.co.taxitura;
 
 import android.app.Application;
 

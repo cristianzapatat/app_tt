@@ -97,7 +97,7 @@ export default class Login extends Component {
           if (status) {
             fetch(urls.loginService(idCard, password))
               .then(response => {
-                if (response.status >= 200 && response.status <= 299) {
+                if ((response.status >= 200 && response.status <= 299) || response.status === 401) {
                   return response.json()
                 } else {
                   throw response.status
@@ -114,19 +114,21 @@ export default class Login extends Component {
                     } else {
                       this.setState({password: '', editable: true, message: text.login.msn.userInactive, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
                     }
+                  } else if (json.message) {
+                    if (json.message === kts.text.accessDenied) {
+                      this.setState({idCard: '', password: '', editable: true, message: text.login.msn.verifyCredential, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
+                    } else {
+                      this.setState({idCard: '', password: '', editable: true, message: json.message, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
+                    }
                   } else {
-                    this.setState({idCard: '', password: '', editable: true, message: text.login.msn.verifyCredential, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
+                    this.setState({idCard: '', password: '', editable: true, message: text.login.msn.error, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
                   }
                 } else {
-                  this.setState({idCard: '', password: '', editable: true, isLoad: false})
+                  this.setState({idCard: '', password: '', editable: true, message: text.login.msn.error, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
                 }
               })
               .catch(err => {
-                let msn = text.login.msn.error
-                if (err === 500) {
-                  msn = text.login.msn.errorTaxi
-                }
-                this.setState({idCard: '', password: '', editable: true, message: msn, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
+                this.setState({idCard: '', password: '', editable: true, message: text.login.msn.error, typeMessage: kts.enum.ERROR, isLoad: false, isMns: true})
               })
           } else {
             this.setState({idCard: '', password: '', editable: true, message: text.intenet.without, typeMessage: kts.enum.WITHOUT, isLoad: false, isMns: true})

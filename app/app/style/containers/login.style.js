@@ -24,7 +24,7 @@ export default StyleSheet.create({
     bottom: 130,
     backgroundColor: 'rgba(113, 112, 110, 0.79)',
     width: 260,
-    height: 45,
+    height: 55,
     borderRadius: 10
   },
   mText: {

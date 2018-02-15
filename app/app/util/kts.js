@@ -121,6 +121,9 @@ module.exports = {
     position_cabman: 'position_cabman',
     ok: 'OK'
   },
+  text: {
+    accessDenied: 'acceso_denegado'
+  },
   color: {
     inactive: '#B3B3B3',
     active: '#ffaf18',
