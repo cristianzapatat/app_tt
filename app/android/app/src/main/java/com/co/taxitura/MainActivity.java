@@ -1,4 +1,4 @@
-package com.taxitura;
+package com.co.taxitura;
 
 import com.facebook.react.ReactActivity;
 
