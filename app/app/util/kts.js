@@ -14,7 +14,7 @@ module.exports = {
   },
   key: {
     user: 'user_login',
-    userToken: 'user_token'
+    userToken: 'USER-TOKEN'
   },
   enum: {
     ERROR: 'error',
