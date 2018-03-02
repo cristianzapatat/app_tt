@@ -6,8 +6,11 @@ import {
   Platform,
   BackHandler,
   PermissionsAndroid,
-  AsyncStorage
+  AsyncStorage,
+  DeviceEventEmitter,
+  NativeModules
 } from 'react-native'
+import io from 'socket.io-client'
 import GPSState from 'react-native-gps-state'
 import { EventRegister } from 'react-native-event-listeners'
 
@@ -22,6 +25,12 @@ import Menu from '../component/menu'
 import ModalOrder from '../component/modalOrder'
 import ModalPermission from '../component/modalPermission'
 
+const socket = io(urls.urlInterface, {
+  transports: [kts.main.websocket],
+  path: '/client'
+})
+var Gps = NativeModules.RNGps
+
 let coords = []
 let permissionsStatus = false
 let isServiceInMemory = false
@@ -35,89 +44,13 @@ export default class Taxitura extends Component {
       isMenu: false,
       load: true,
       loadService: false,
+      loadIsService: true,
+      isButton: false,
       message: text.intenet.without,
       typeMessage: kts.enum.WITHOUT,
       isMns: false
     }
-    util.isInternet().then(status => {
-      if (status) {
-        global.socket.on(kts.socket.sessionEnd, (id, token) => {
-          if (global.user.id === id && global.user.token !== token) {
-            this.sessionEnd()
-            EventRegister.emit(kts.event.loginSessionEnd)
-          }
-        })
-        global.socket.on(kts.socket.getClient, status => {
-          if (status && global.user) global.socket.emit(kts.socket.responseClient, global.user.id, global.user.token)
-        })
-        global.socket.emit(kts.socket.serviceInMemory, global.user.id, global.user.token)
-        global.socket.on(kts.socket.isServiceInMemory, order => {
-          if (order) {
-            global.service = order
-            isServiceInMemory = true
-          } else {
-            this.setState({isButton: false})
-          }
-          global.socket.on(kts.socket.receiveService, order => {
-            const { navigation } = this.props
-            if (global.state && navigation.state.routeName === kts.app.id &&
-              global.position !== null && !global.waitCanceled && global.isSession &&
-              order.action === kts.action.order && global.service === null &&
-              global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
-              global.service = order
-              this.openModalOrder(global.position, global.service.position_user)
-            }
-          })
-          global.socket.on(kts.socket.orderCanceled, order => {
-            if (order) {
-              const { navigation } = this.props
-              if (navigation.state.routeName === kts.app.id && global.position !== null &&
-                global.waitCanceled && order.action === kts.action.accept && global.isSession &&
-                global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
-                global.service = order
-                this.getInfoOrder()
-              }
-            } else { this.cleanService() }
-          })
-          global.socket.on(kts.socket.acceptService, order => {
-            if (order !== null) {
-              if (order.service.id === global.waitId && global.service === null) {
-                global.service = order
-                this.getInfoOrder()
-              } else { this.cleanService() }
-            } else {
-              this.cleanService()
-              EventRegister.emit(kts.event.showOtherAccept, true)
-            }
-          })
-          global.socket.on(kts.socket.processService, order => {
-            global.service = order
-            if (global.service.action === kts.action.arrive) {
-              coords = []
-              this.setState({textButton: text.app.label.aboard, isService: false, isButton: true, loadService: false})
-            } else if (global.service.action === kts.action.aboard) {
-              this.setState({textButton: text.app.label.weArrived, isButton: true, loadService: false})
-            } else if (global.service.action === kts.action.end) {
-              EventRegister.emit(kts.event.addServiceToday, 1)
-              this.cleanService()
-            }
-          })
-          global.socket.on(kts.socket.deleteService, idService => {
-            if (global.service && global.service.service.id === idService) {
-              this.cancelOrder(false)
-            }
-          })
-          global.socket.on(kts.socket.onMyWay, (data) => {
-            if (global.service && global.service.service.id === parseInt(data.service.id)) {
-              EventRegister.emit(kts.event.showOnMyWay, true)
-            }
-          })
-          this.getStatus(true)
-        })
-      } else {
-        this.setState({isMns: true, load: false})
-      }
-    })
+    this.onSocket(true)
   }
 
   componentWillMount () {
@@ -138,13 +71,90 @@ export default class Taxitura extends Component {
         this.getStatus()
       }
     })
-    this.appEventAcceptCancel = EventRegister.addEventListener(kts.event.appAcceptCancel, () => {
+    this.appEventAcceptCancel = EventRegister.addEventListener(kts.event.appAcceptCancel, (service) => {
+      socket.emit(kts.socket.acceptCancel, service, global.user.token)
       this.setState({isButton: null, loadService: true})
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
     })
     this.appEventSessionEnd = EventRegister.addEventListener(kts.event.sessionEnd, () => {
       this.sessionEnd()
       EventRegister.emit(kts.event.loginSessionEnd)
+    })
+  }
+
+  onSocket (status) {
+    socket.on('connect', () => {
+      socket.emit('changeSocket', global.user.id)
+    })
+    socket.on(kts.socket.sessionEnd, (id, token) => {
+      if (global.user.id === id && global.user.token !== token) {
+        this.sessionEnd()
+        EventRegister.emit(kts.event.loginSessionEnd)
+      }
+    })
+    socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
+    socket.on(kts.socket.isServiceInMemory, order => {
+      if (order) {
+        global.service = order
+        isServiceInMemory = true
+      } else {
+        this.setState({loadIsService: false})
+      }
+      socket.on(kts.socket.receiveService, order => {
+        const { navigation } = this.props
+        if (global.state && navigation.state.routeName === kts.app.id &&
+          global.position !== null && !global.waitCanceled && global.isSession &&
+          order.action === kts.action.order && global.service === null &&
+          global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+          global.service = order
+          this.openModalOrder(global.position, global.service.position_user)
+        }
+      })
+      socket.on(kts.socket.orderCanceled, order => {
+        if (order) {
+          const { navigation } = this.props
+          if (navigation.state.routeName === kts.app.id && global.position !== null &&
+            global.waitCanceled && order.action === kts.action.accept && global.isSession &&
+            global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+            global.service = order
+            this.getInfoOrder()
+          }
+        } else { this.cleanService() }
+      })
+      socket.on(kts.socket.acceptService, order => {
+        if (order !== null) {
+          if (order.service.id === global.waitId && global.service === null) {
+            global.service = order
+            this.getInfoOrder()
+          } else { this.cleanService() }
+        } else {
+          this.cleanService()
+          EventRegister.emit(kts.event.showOtherAccept, true)
+        }
+      })
+      socket.on(kts.socket.processService, order => {
+        global.service = order
+        if (global.service.action === kts.action.arrive) {
+          coords = []
+          this.setState({textButton: text.app.label.aboard, isService: false, isButton: true, loadService: false})
+        } else if (global.service.action === kts.action.aboard) {
+          this.setState({textButton: text.app.label.weArrived, isButton: true, loadService: false})
+        } else if (global.service.action === kts.action.end) {
+          EventRegister.emit(kts.event.addServiceToday, 1)
+          this.cleanService()
+        }
+      })
+      socket.on(kts.socket.deleteService, idService => {
+        if (global.service && global.service.service.id === idService) {
+          this.cancelOrder(false)
+        }
+      })
+      socket.on(kts.socket.onMyWay, (data) => {
+        if (global.service && global.service.service.id === parseInt(data.service.id)) {
+          EventRegister.emit(kts.event.showOnMyWay, true)
+        }
+      })
+      if (status) this.getStatus(true)
     })
   }
 
@@ -157,7 +167,7 @@ export default class Taxitura extends Component {
     EventRegister.removeEventListener(this.appEventSessionEnd)
   }
 
-  getStatus (action) {
+  async getStatus (action) {
     if (!action) this.setState({load: true})
     GPSState.getStatus().then(status => {
       if (status === GPSState.RESTRICTED) {
@@ -193,33 +203,13 @@ export default class Taxitura extends Component {
     if (global.position !== null) {
       this.drawPosition(global.position)
     }
-    navigator.geolocation.getCurrentPosition(position => {
-      global.position = {
-        latitude: parseFloat(position.coords.latitude),
-        longitude: parseFloat(position.coords.longitude)
-      }
+    Gps.stopLocation()
+    Gps.getLocation(Gps.NETWORK, kts.time.TIME_GPS, kts.time.DISTANCE_GPS)
+    DeviceEventEmitter.removeAllListeners()
+    DeviceEventEmitter.addListener(Gps.GET_LOCATION, (location) => {
+      global.position = location
       this.drawPosition(global.position)
-    },
-    err => {
-      if (global.position === null) {
-        global.position = null
-      }
-    },
-    {enableHighAccuracy: false, timeout: 8000, maximumAge: 1000})
-    this.watchID = navigator.geolocation.watchPosition(position => {
-      global.position = {
-        latitude: parseFloat(position.coords.latitude),
-        longitude: parseFloat(position.coords.longitude)
-      }
-      this.drawPosition(global.position)
-    },
-    err => {
-      if (global.position === null) {
-        global.position = null
-      }
-      this.getStatus()
-    },
-    {enableHighAccuracy: true, timeout: 1000, maximumAge: 1000, distanceFilter: 0.5})
+    })
   }
 
   drawPosition (position) {
@@ -237,9 +227,9 @@ export default class Taxitura extends Component {
     }
   }
 
-  sendPosition (position) {
+  async sendPosition (position) {
     if (position) {
-      global.socket.emit(kts.socket.savePositionCab, {
+      socket.emit(kts.socket.savePositionCab, {
         id: global.user.id,
         service: global.service !== null ? global.service.service.id : null,
         action: global.service !== null ? global.service.action : '',
@@ -251,7 +241,7 @@ export default class Taxitura extends Component {
     }
   }
 
-  getAddress (position) {
+  async getAddress (position) {
     if (position) {
       fetch(urls.getGeocoding(position))
         .then(result => {
@@ -297,12 +287,13 @@ export default class Taxitura extends Component {
   }
 
   cancelOrder (status) {
-    this.setState({isModalOrder: false, isButton: false, loadService: false})
+    this.setState({isModalOrder: false})
+    this.setState({isButton: false, loadService: false})
     if (status) {
       util.isInternet().then(status => {
         if (status) {
           global.service[kts.json.cabman] = {id: global.user.id}
-          global.socket.emit(kts.socket.addServiceCanceled, global.service, global.user.token)
+          socket.emit(kts.socket.addServiceCanceled, global.service, global.user.token)
         } else {
           this.setState({isMns: true})
         }
@@ -313,7 +304,8 @@ export default class Taxitura extends Component {
   }
 
   acceptOrder () {
-    this.setState({isModalOrder: false, isButton: null, loadService: true})
+    this.setState({isModalOrder: false})
+    this.setState({isButton: null, loadService: true})
     util.isInternet().then(status => {
       if (status) {
         if (!global.isApp) {
@@ -335,7 +327,7 @@ export default class Taxitura extends Component {
           }
           global.tempState = true
           EventRegister.emit(kts.event.changeState, {state: false, case: 0})
-          global.socket.emit(kts.socket.responseService, global.service, global.user.token)
+          socket.emit(kts.socket.responseService, global.service, global.user.token)
           global.waitId = global.service.service.id
           global.service = null
         }
@@ -381,6 +373,7 @@ export default class Taxitura extends Component {
       textButton: util.getTextButton(global.service.action),
       isService: global.service.action === kts.action.accept,
       loadService: false,
+      loadIsService: false,
       isButton: true
     })
   }
@@ -389,7 +382,7 @@ export default class Taxitura extends Component {
     util.isInternet().then(status => {
       if (status) {
         global.service.action = util.getAction(global.service.action)
-        global.socket.emit(kts.socket.responseService, global.service, global.user.token)
+        socket.emit(kts.socket.responseService, global.service, global.user.token)
         this.setState({isButton: null, loadService: true, isMns: false})
       } else {
         this.setState({isMns: true})
@@ -425,7 +418,7 @@ export default class Taxitura extends Component {
     global.isSession = false
     global.isApp = false
     navigator.geolocation.clearWatch(this.watchID)
-    global.socket.close()
+    socket.close()
     AsyncStorage.removeItem(kts.key.user, () => {
       this.setState({load: false})
       this.props.navigation.navigate(kts.login.id)
@@ -435,8 +428,7 @@ export default class Taxitura extends Component {
   render () {
     return (
       <Container.ContainerApp
-        load={this.state.load}
-        loadService={this.state.loadService}
+        load={this.state.load || this.state.loadService || this.state.loadIsService}
         title={this.state.title}
         onPressMenu={() => { this.setState({isMenu: true}) }}
         isService={this.state.isService}

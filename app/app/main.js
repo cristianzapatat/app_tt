@@ -8,7 +8,6 @@ import {
   ProgressBarAndroid
 } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import io from 'socket.io-client'
 import Background from 'react-native-background-timer'
 import { EventRegister } from 'react-native-event-listeners'
 
@@ -56,12 +55,6 @@ export default class Main extends Component {
       loading: false,
       rendering: false
     }
-    util.isInternet().then(status => {
-      if (status) {
-        this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
-        global.socket = this.socket
-      }
-    })
   }
 
   componentDidMount () {
@@ -132,8 +125,6 @@ export default class Main extends Component {
       global.serviceToday = data ? data.cant : 0
       global.isSession = true
       global.isApp = true
-      this.socket.open()
-      this.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
       this.__renderView(false)
     })
   }

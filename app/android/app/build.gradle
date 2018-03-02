@@ -144,6 +144,7 @@ android {
 }
 
 dependencies {
+    compile project(':RNGps')
     compile project(':react-native-sound')
     compile project(':react-native-background-timer')
     compile project(':react-native-open-settings')

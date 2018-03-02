@@ -14,38 +14,7 @@ import text from '../util/text'
 import kts from '../util/kts'
 
 let cancelState = true
-let set
 let song = null
-
-class TextProgress extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      time: 10
-    }
-  }
-  componentDidMount () {
-    let time = 10
-    set = setInterval(() => {
-      if (time === 0) {
-        clearInterval(set)
-      } else {
-        time -= 1
-        this.setState({time})
-      }
-    }, 1000)
-  }
-  render () {
-    return (
-      <Text
-        style={[style.text, style.time]}
-        numberOfLines={1}
-        ellipsizeMode={kts.hardware.tail}>
-        {`${this.state.time} ${text.app.label.second}`}
-      </Text>
-    )
-  }
-}
 
 class ModalOrder extends Component {
   constructor (props) {
@@ -69,7 +38,6 @@ class ModalOrder extends Component {
         duration: 10500
       }
     ).start(() => {
-      clearInterval(set)
       song.stop()
       if (cancelState) {
         this.props.onCancel()
@@ -135,13 +103,12 @@ class ModalOrder extends Component {
                   inputRange: [0, 1],
                   outputRange: [-270, 0] })}]}]} />
           </View>
-          {this.state.run ? <TextProgress /> : null}
           <View style={style.buttons}>
             <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[style.button, style.cancel]}
-                onPressOut={this.cancelOrder.bind(this)}>
+                onPress={this.cancelOrder.bind(this)}>
                 <Text style={[style.tText, style.tCancel]}>
                   {text.app.label.cancel}
                 </Text>
@@ -151,7 +118,7 @@ class ModalOrder extends Component {
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[style.button, style.accept]}
-                onPressOut={this.acceptOrder.bind(this)}>
+                onPress={this.acceptOrder.bind(this)}>
                 <Text style={[style.tText, style.tAccept]}>
                   {text.app.label.accept}
                 </Text>

@@ -56,7 +56,7 @@ export default class Login extends Component {
     })
     this.loginSessionEnd = EventRegister.addEventListener(kts.event.loginSessionEnd, () => {
       this.setState({
-        message: text.intenet.sessionEnd,
+        message: text.login.msn.sessionEnd,
         typeMessage: kts.enum.ERROR,
         isMns: true
       })
@@ -85,7 +85,7 @@ export default class Login extends Component {
     EventRegister.removeEventListener(this.loginSessionEnd)
   }
 
-  async login () {
+  login () {
     Keyboard.dismiss()
     this.setState({isMns: false})
     setTimeout(() => {
@@ -150,8 +150,6 @@ export default class Login extends Component {
       global.isSession = true
       global.isApp = true
       this.props.navigation.navigate(kts.app.id)
-      global.socket.open()
-      global.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
       this.setState({isLoad: false})
     })
   }

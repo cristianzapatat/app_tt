@@ -286,8 +286,8 @@ class ContainerApp extends Component {
               {this.props.title}
             </Text>
             <ActivityIndicator
-              animating={this.props.load || this.props.loadService}
-              style={[{display: this.props.load || this.props.loadService ? 'flex' : 'none'}, style.load]}
+              animating={this.props.load}
+              style={[{display: this.props.load ? 'flex' : 'none'}, style.load]}
               size={24}
               color={kts.color.white} />
           </View>
