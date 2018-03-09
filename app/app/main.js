@@ -115,7 +115,7 @@ export default class Main extends Component {
   }
 
   goView (user, json, data) {
-    json['state_app'] = user.state_app !== null ? user.state_app : true
+    json['state_app'] = user.state_app || true
     AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
       this.state.rendering = true
       global.user = json

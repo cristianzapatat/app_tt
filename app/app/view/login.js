@@ -32,9 +32,9 @@ export default class Login extends Component {
     this.state = {
       idCard: '',
       password: '',
-      editable: false,
+      editable: true,
       isFocus: false,
-      isLoad: true
+      isLoad: false
     }
   }
 
@@ -65,7 +65,6 @@ export default class Login extends Component {
 
   componentDidMount () {
     util.isInternet().then(status => {
-      this.setState({editable: true, isLoad: false})
       if (!status) {
         this.setState({
           message: text.intenet.without,
@@ -149,8 +148,8 @@ export default class Login extends Component {
       global.serviceToday = data ? data.cant : 0
       global.isSession = true
       global.isApp = true
+      this.setState({editable: true, isLoad: false})
       this.props.navigation.navigate(kts.app.id)
-      this.setState({isLoad: false})
     })
   }
 

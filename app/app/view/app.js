@@ -2,17 +2,16 @@
 /* eslint handle-callback-err: ["error", "error"] */
 import React, { Component } from 'react'
 import {
-  AppState,
-  Platform,
-  BackHandler,
   PermissionsAndroid,
   AsyncStorage,
   DeviceEventEmitter,
-  NativeModules
+  BackHandler,
+  Platform
 } from 'react-native'
 import io from 'socket.io-client'
 import GPSState from 'react-native-gps-state'
 import { EventRegister } from 'react-native-event-listeners'
+import Gps from '../../native/taxitura-gps'
 
 import global from '../util/global'
 import kts from '../util/kts'
@@ -29,7 +28,6 @@ const socket = io(urls.urlInterface, {
   transports: [kts.main.websocket],
   path: '/client'
 })
-var Gps = NativeModules.RNGps
 
 let coords = []
 let permissionsStatus = false
@@ -42,6 +40,7 @@ export default class Taxitura extends Component {
       isModalPermission: false,
       isModalOrder: false,
       isMenu: false,
+      title: text.app.label.sessionStarting,
       load: true,
       loadService: false,
       loadIsService: true,
@@ -63,14 +62,6 @@ export default class Taxitura extends Component {
         return false
       })
     }
-    AppState.addEventListener(kts.hardware.change, (nextAppState) => {
-      if (nextAppState === kts.hardware.background) {
-        this.componentWillUnmount()
-      } else if (nextAppState === kts.hardware.active) {
-        this.getAddress(global.position)
-        this.getStatus()
-      }
-    })
     this.appEventAcceptCancel = EventRegister.addEventListener(kts.event.appAcceptCancel, (service) => {
       socket.emit(kts.socket.acceptCancel, service, global.user.token)
       this.setState({isButton: null, loadService: true})
@@ -82,9 +73,19 @@ export default class Taxitura extends Component {
     })
   }
 
+  componentWillUnmount () {
+    Gps.stopLocation()
+    if (Platform.OS === kts.platform.android) {
+      BackHandler.removeEventListener(kts.hardware.backPress)
+    }
+    EventRegister.removeEventListener(this.appEventAcceptCancel)
+    EventRegister.removeEventListener(this.appEventSessionEnd)
+  }
+
   onSocket (status) {
-    socket.on('connect', () => {
-      socket.emit('changeSocket', global.user.id)
+    socket.open()
+    socket.on(kts.socket.connect, () => {
+      socket.emit(kts.socket.changeSocket, global.user.id)
     })
     socket.on(kts.socket.sessionEnd, (id, token) => {
       if (global.user.id === id && global.user.token !== token) {
@@ -158,15 +159,6 @@ export default class Taxitura extends Component {
     })
   }
 
-  componentWillUnmount () {
-    AppState.removeEventListener(kts.hardware.change)
-    if (Platform.OS === kts.platform.android) {
-      BackHandler.removeEventListener(kts.hardware.backPress)
-    }
-    EventRegister.removeEventListener(this.appEventAcceptCancel)
-    EventRegister.removeEventListener(this.appEventSessionEnd)
-  }
-
   async getStatus (action) {
     if (!action) this.setState({load: true})
     GPSState.getStatus().then(status => {
@@ -203,9 +195,8 @@ export default class Taxitura extends Component {
     if (global.position !== null) {
       this.drawPosition(global.position)
     }
-    Gps.stopLocation()
     Gps.getLocation(Gps.NETWORK, kts.time.TIME_GPS, kts.time.DISTANCE_GPS)
-    DeviceEventEmitter.removeAllListeners()
+    DeviceEventEmitter.removeListener(Gps.GET_LOCATION)
     DeviceEventEmitter.addListener(Gps.GET_LOCATION, (location) => {
       global.position = location
       this.drawPosition(global.position)
@@ -401,26 +392,27 @@ export default class Taxitura extends Component {
   closeSession () {
     global.isSession = false
     global.isApp = false
-    this.setState({isMenu: false, load: true})
-    setTimeout(async () => {
+    this.setState({isMenu: false})
+    setTimeout(() => {
       let myHeaders = new Headers()
       myHeaders.append(kts.key.userToken, global.user.token)
       let init = {
         method: kts.method.post,
         headers: myHeaders
       }
-      await fetch(urls.logoutService, init)
+      fetch(urls.logoutService, init)
       this.sessionEnd()
     }, 400)
   }
 
   sessionEnd () {
+    socket.close()
+    Gps.stopLocation()
+    this.setState({title: text.app.label.sessionEnding, load: true})
     global.isSession = false
     global.isApp = false
-    navigator.geolocation.clearWatch(this.watchID)
-    socket.close()
     AsyncStorage.removeItem(kts.key.user, () => {
-      this.setState({load: false})
+      this.setState({load: false, title: ''})
       this.props.navigation.navigate(kts.login.id)
     })
   }

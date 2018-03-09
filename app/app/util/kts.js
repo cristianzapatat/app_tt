@@ -45,9 +45,8 @@ module.exports = {
     ios: 'ios'
   },
   socket: {
-    getClient: 'getClient',
-    responseClient: 'responseClient',
-    serviceInMemory: 'serviceInMemory',
+    connect: 'connect',
+    changeSocket: 'changeSocket',
     isServiceInMemory: 'isServiceInMemory',
     receiveService: 'receiveService',
     responseService: 'responseService',

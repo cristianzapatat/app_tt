@@ -39,7 +39,9 @@ module.exports = {
       weArrived: 'Llegamos!',
       coming: 'Viene en camino',
       otherAccept: 'El servicio ya\nha sido aceptado',
-      notAddress: 'Dirección no definida'
+      notAddress: 'Dirección no definida',
+      sessionEnding: 'Cerrando sesión',
+      sessionStarting: 'Iniciando sesión'
     },
     gps: {
       update: 'Actualizar',
