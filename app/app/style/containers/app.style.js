@@ -183,17 +183,24 @@ export default StyleSheet.create({
   },
   msn: {
     position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     alignItems: 'center',
-    bottom: 100,
+    bottom: 110,
     backgroundColor: 'rgba(113, 112, 110, 0.79)',
     width: 260,
-    height: 45,
+    height: 70,
     borderRadius: 10
   },
+  contenMsn: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 4
+  },
   mIcon: {
-    marginLeft: 5,
+    position: 'absolute',
+    left: 5,
     width: 25,
     height: 25
   },
@@ -203,16 +210,21 @@ export default StyleSheet.create({
     width: 190,
     textAlign: 'center'
   },
-  mButton: {
-    marginRight: 5,
-    marginTop: 3,
-    width: 20,
-    height: '100%',
-    justifyContent: 'flex-start'
+  buttonTry: {
+    backgroundColor: '#ffaf18',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 30,
+    width: 170,
+    borderRadius: 30,
+    marginTop: 5,
+    marginBottom: 5
   },
-  mClose: {
-    width: 20,
-    height: 20
+  textTry: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#FFF'
   },
   contentFooter: {
     width: 350,

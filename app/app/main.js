@@ -24,6 +24,7 @@ import WaitingServices from './view/waitingServices'
 import ChangePassword from './view/changePassword'
 import ShoppingHistory from './view/shoppingHistory'
 import RechargePoints from './view/rechargePoints'
+import WebPage from './view/webPage'
 
 const roots = {
   login: {screen: Login},
@@ -31,7 +32,8 @@ const roots = {
   waitingServices: {screen: WaitingServices},
   changePassword: {screen: ChangePassword},
   shoppingHistory: {screen: ShoppingHistory},
-  rechargePoints: {screen: RechargePoints}
+  rechargePoints: {screen: RechargePoints},
+  webPage: {screen: WebPage}
 }
 
 const config = {

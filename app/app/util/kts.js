@@ -98,6 +98,9 @@ module.exports = {
   app: {
     id: 'app'
   },
+  webPage: {
+    id: 'webPage'
+  },
   waitingServices: {
     id: 'waitingServices'
   },

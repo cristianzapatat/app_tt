@@ -49,7 +49,6 @@ export default class Taxitura extends Component {
       typeMessage: kts.enum.WITHOUT,
       isMns: false
     }
-    this.onSocket(true)
   }
 
   componentWillMount () {
@@ -73,6 +72,10 @@ export default class Taxitura extends Component {
     })
   }
 
+  componentDidMount () {
+    this.validateConection(false)
+  }
+
   componentWillUnmount () {
     Gps.stopLocation()
     if (Platform.OS === kts.platform.android) {
@@ -80,6 +83,19 @@ export default class Taxitura extends Component {
     }
     EventRegister.removeEventListener(this.appEventAcceptCancel)
     EventRegister.removeEventListener(this.appEventSessionEnd)
+  }
+
+  validateConection (state) {
+    if (state) {
+      this.setState({isMns: false, title: text.app.label.sessionStarting, load: true, loadIsService: true})
+    }
+    util.isInternet().then(status => {
+      if (status) {
+        this.onSocket(true)
+      } else {
+        this.setState({title: '', load: false, loadService: false, loadIsService: false, isMns: true})
+      }
+    })
   }
 
   onSocket (status) {
@@ -438,7 +454,7 @@ export default class Taxitura extends Component {
         isMns={this.state.isMns}
         typeMessage={this.state.typeMessage}
         message={this.state.message}
-        closeMns={() => { this.setState({isMns: false}) }}
+        closeMns={() => { this.validateConection(true) }}
         getStatus={() => {
           this.setState({isNoGps: false})
           if (!permissionsStatus) {
@@ -460,8 +476,7 @@ export default class Taxitura extends Component {
           distance={this.state.distance}
           address={this.state.address}
           onCancel={() => { this.cancelOrder(true) }}
-          onAccept={() => { this.acceptOrder() }}
-          />
+          onAccept={() => { this.acceptOrder() }} />
         <ModalPermission
           isVisible={this.state.isModalPermission}
           onClose={() => {

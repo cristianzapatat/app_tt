@@ -161,7 +161,8 @@ export default class Login extends Component {
         typeMessage={this.state.typeMessage}
         editable={this.state.editable}
         isLoad={this.state.isLoad}
-        message={this.state.message}>
+        message={this.state.message}
+        help={() => { this.props.navigation.navigate(kts.webPage.id) }}>
         <KeyboardAvoidingView
           behavior={'padding'}
           style={style.container} >

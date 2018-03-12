@@ -1,11 +1,12 @@
 let urlServer = 'https://taxituraapi.herokuapp.com' // Url del servidor
-let urlInterface = 'http://192.168.1.53:3001' // Url de la intefaz o mediador
+let urlInterface = 'https://taxiturainterface.herokuapp.com' // Url de la intefaz o mediador
 let keyDirections = 'AIzaSyCopllJ-78HCuKxGQZA64EtHrFC8rKGRGs' // Google Maps Direcctions API
 let keyDistanceMatrix = 'AIzaSyCANmSq518IoL2OU_Itx-U6qgy1sPN2Q1c' // Google Maps Distance Matrix API
 let keyGeocoding = 'AIzaSyA0A5cReZ2OlGwd5llnyVpaoER-p6KYpZQ' // Google Maps Geocodign API
 
 module.exports = {
   urlServer,
+  serverHelp: `${urlServer}/#QUESTIONS`,
   urlInterface,
   keyDirections,
   keyDistanceMatrix,

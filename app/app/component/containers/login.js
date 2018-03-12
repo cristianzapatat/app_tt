@@ -105,7 +105,8 @@ class ContainerLogin extends Component {
             <TouchableOpacity
               activeOpacity={0.8}
               disabled={!this.props.editable}
-              style={style.ButtonHelp}>
+              style={style.ButtonHelp}
+              onPressOut={() => { this.props.help() }} >
               <Image
                 style={style.iconHelp}
                 source={require('../../../img/question.png')} />
