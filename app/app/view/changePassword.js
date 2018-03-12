@@ -74,7 +74,7 @@ export default class Settings extends Component {
     })
   }
 
-  async changePassword () {
+  changePassword () {
     Keyboard.dismiss()
     setTimeout(() => {
       let tCurrent = this.state.tCurrent

@@ -286,8 +286,8 @@ class ContainerApp extends Component {
               {this.props.title}
             </Text>
             <ActivityIndicator
-              animating={this.props.load || this.props.loadService}
-              style={[{display: this.props.load || this.props.loadService ? 'flex' : 'none'}, style.load]}
+              animating={this.props.load}
+              style={[{display: this.props.load ? 'flex' : 'none'}, style.load]}
               size={24}
               color={kts.color.white} />
           </View>
@@ -346,25 +346,27 @@ class ContainerApp extends Component {
           <View style={[
             {display: this.props.isMns ? 'flex' : 'none'},
             style.msn ]}>
-            <Image
-              style={[
-                {display: this.props.typeMessage === kts.enum.WITHOUT || !this.props.typeMessage ? 'flex' : 'none'},
-                style.mIcon ]}
-              source={require('../../../img/without.png')} />
-            <Text
-              style={style.mText}
-              numberOfLines={2}
-              ellipsizeMode={kts.hardware.tail}>
-              {this.props.message}
-            </Text>
+            <View style={style.contenMsn}>
+              <Image
+                style={[
+                  {display: this.props.typeMessage === kts.enum.WITHOUT || !this.props.typeMessage ? 'flex' : 'none'},
+                  style.mIcon ]}
+                source={require('../../../img/without.png')} />
+              <Text
+                style={style.mText}
+                numberOfLines={2}
+                ellipsizeMode={kts.hardware.tail}>
+                {this.props.message}
+              </Text>
+            </View>
             <TouchableOpacity
               activeOpacity={0.8}
-              style={style.mButton}
+              style={style.buttonTry}
               onPressIn={this.onShowState.bind(this)}
               onPressOut={() => { this.props.closeMns() }}>
-              <Image
-                style={[style.mClose]}
-                source={require('../../../img/close.png')} />
+              <Text style={style.textTry}>
+                {text.app.label.internetTry}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={[style.content, style.footer]}>

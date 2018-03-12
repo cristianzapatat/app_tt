@@ -8,7 +8,6 @@ import {
   ProgressBarAndroid
 } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import io from 'socket.io-client'
 import Background from 'react-native-background-timer'
 import { EventRegister } from 'react-native-event-listeners'
 
@@ -25,6 +24,7 @@ import WaitingServices from './view/waitingServices'
 import ChangePassword from './view/changePassword'
 import ShoppingHistory from './view/shoppingHistory'
 import RechargePoints from './view/rechargePoints'
+import WebPage from './view/webPage'
 
 const roots = {
   login: {screen: Login},
@@ -32,7 +32,8 @@ const roots = {
   waitingServices: {screen: WaitingServices},
   changePassword: {screen: ChangePassword},
   shoppingHistory: {screen: ShoppingHistory},
-  rechargePoints: {screen: RechargePoints}
+  rechargePoints: {screen: RechargePoints},
+  webPage: {screen: WebPage}
 }
 
 const config = {
@@ -56,12 +57,6 @@ export default class Main extends Component {
       loading: false,
       rendering: false
     }
-    util.isInternet().then(status => {
-      if (status) {
-        this.socket = io(urls.urlInterface, { transports: [kts.main.websocket] })
-        global.socket = this.socket
-      }
-    })
   }
 
   componentDidMount () {
@@ -122,7 +117,7 @@ export default class Main extends Component {
   }
 
   goView (user, json, data) {
-    json['state_app'] = user.state_app !== null ? user.state_app : true
+    json['state_app'] = user.state_app || true
     AsyncStorage.setItem(kts.key.user, JSON.stringify(json), () => {
       this.state.rendering = true
       global.user = json
@@ -132,8 +127,6 @@ export default class Main extends Component {
       global.serviceToday = data ? data.cant : 0
       global.isSession = true
       global.isApp = true
-      this.socket.open()
-      this.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
       this.__renderView(false)
     })
   }

@@ -32,9 +32,9 @@ export default class Login extends Component {
     this.state = {
       idCard: '',
       password: '',
-      editable: false,
+      editable: true,
       isFocus: false,
-      isLoad: true
+      isLoad: false
     }
   }
 
@@ -56,7 +56,7 @@ export default class Login extends Component {
     })
     this.loginSessionEnd = EventRegister.addEventListener(kts.event.loginSessionEnd, () => {
       this.setState({
-        message: text.intenet.sessionEnd,
+        message: text.login.msn.sessionEnd,
         typeMessage: kts.enum.ERROR,
         isMns: true
       })
@@ -65,7 +65,6 @@ export default class Login extends Component {
 
   componentDidMount () {
     util.isInternet().then(status => {
-      this.setState({editable: true, isLoad: false})
       if (!status) {
         this.setState({
           message: text.intenet.without,
@@ -85,7 +84,7 @@ export default class Login extends Component {
     EventRegister.removeEventListener(this.loginSessionEnd)
   }
 
-  async login () {
+  login () {
     Keyboard.dismiss()
     this.setState({isMns: false})
     setTimeout(() => {
@@ -149,10 +148,8 @@ export default class Login extends Component {
       global.serviceToday = data ? data.cant : 0
       global.isSession = true
       global.isApp = true
+      this.setState({editable: true, isLoad: false})
       this.props.navigation.navigate(kts.app.id)
-      global.socket.open()
-      global.socket.emit(kts.socket.sessionStart, global.user.id, global.user.token)
-      this.setState({isLoad: false})
     })
   }
 
@@ -164,7 +161,8 @@ export default class Login extends Component {
         typeMessage={this.state.typeMessage}
         editable={this.state.editable}
         isLoad={this.state.isLoad}
-        message={this.state.message}>
+        message={this.state.message}
+        help={() => { this.props.navigation.navigate(kts.webPage.id) }}>
         <KeyboardAvoidingView
           behavior={'padding'}
           style={style.container} >
