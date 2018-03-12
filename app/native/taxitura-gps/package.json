@@ -1,0 +1,22 @@
+{
+  "_id": "taxitura-gps@0.0.1",
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Libreria de soporte del GPS para Android.",
+  "devDependencies": {
+    "react-native": "^0.46.1"
+  },
+  "keywords": [
+    "react-native",
+    "react-component",
+    "ios",
+    "android",
+    "location",
+    "gps",
+    "taxitura"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "taxitura-gps",
+  "version": "0.0.1"
+}

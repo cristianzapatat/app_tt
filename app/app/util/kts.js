@@ -5,7 +5,9 @@ module.exports = {
     START_NIGHT: 1080, // dato en minutos = 6pm
     MIDDLE_NIGHT: 1440, // dato en minutos = 11:53pm
     END_NIGHT: 360, // dato en minutos = 5am
-    FOR_MINUTE: 60
+    FOR_MINUTE: 60,
+    DISTANCE_GPS: 2,
+    TIME_GPS: 500
   },
   position: {
     DELTA: 0.015,
@@ -43,9 +45,8 @@ module.exports = {
     ios: 'ios'
   },
   socket: {
-    getClient: 'getClient',
-    responseClient: 'responseClient',
-    serviceInMemory: 'serviceInMemory',
+    connect: 'connect',
+    changeSocket: 'changeSocket',
     isServiceInMemory: 'isServiceInMemory',
     receiveService: 'receiveService',
     responseService: 'responseService',
@@ -96,6 +97,9 @@ module.exports = {
   },
   app: {
     id: 'app'
+  },
+  webPage: {
+    id: 'webPage'
   },
   waitingServices: {
     id: 'waitingServices'

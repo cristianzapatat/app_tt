@@ -105,8 +105,7 @@ export default class WaitingServices extends Component {
           longitude: global.position.longitude
         }
         global.tempState = global.state
-        global.socket.emit(kts.socket.acceptCancel, service, global.user.token)
-        EventRegister.emit(kts.event.appAcceptCancel)
+        EventRegister.emit(kts.event.appAcceptCancel, service)
         this.goBack()
       } else {
         this.setState({
