@@ -50,7 +50,9 @@ module.exports = {
   },
   getTextServiceCommission: (item) => {
     let cantSer = parseInt(item.cantidad_de_carreras)
+    if (isNaN(cantSer)) cantSer = 0
     let cantComm = parseInt(parseInt(item.ganancia_taxista) / parseInt(item.valor_de_carrera))
+    if (isNaN(cantComm)) cantComm = 0
     return `${cantSer} ${text.item.label.services} ${text.item.label.symbolMore} ${cantComm} ${text.item.label.commission}`
   },
   separatorComa: (value) => {
