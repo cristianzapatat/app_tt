@@ -10,6 +10,7 @@ import {
 import { StackNavigator } from 'react-navigation'
 import Background from 'react-native-background-timer'
 import { EventRegister } from 'react-native-event-listeners'
+import KeepAwake from 'react-native-keep-awake'
 
 import styles from './style/main.style'
 
@@ -156,6 +157,7 @@ export default class Main extends Component {
       return (
         <View style={styles.container}>
           { this.isRendering() }
+          <KeepAwake />
         </View>
       )
     } else {
