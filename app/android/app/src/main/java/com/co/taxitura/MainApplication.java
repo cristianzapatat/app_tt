@@ -3,6 +3,7 @@ package com.co.taxitura;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.corbt.keepawake.KCKeepAwakePackage;
 import com.co.taxitura.gps.RNGpsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.opensettings.OpenSettingsPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new KCKeepAwakePackage(),
             new RNSoundPackage(),
             new OpenSettingsPackage(),
             new MapsPackage(),
