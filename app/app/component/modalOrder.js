@@ -65,24 +65,6 @@ class ModalOrder extends Component {
     this.setState({run: true})
     this.reduction()
   }
-  _drawAcceptService () {
-    if (this.props.isCredit) {
-      return (
-        <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[style.button, style.accept]}
-                onPress={this.acceptOrder.bind(this)}>
-                <Text style={[style.tText, style.tAccept]}>
-                  {text.app.label.accept}
-                </Text>
-              </TouchableOpacity>
-            </Shadow>
-      )
-    } else {
-      return null
-    }
-  }
   render () {
     let { animated } = this.state
     return (
@@ -121,7 +103,7 @@ class ModalOrder extends Component {
                   inputRange: [0, 1],
                   outputRange: [-270, 0] })}]}]} />
           </View>
-          <View style={[style.buttons, {justifyContent: this.props.isCredit ? 'space-between' : 'center'}]}>
+          <View style={style.buttons}>
             <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
               <TouchableOpacity
                 activeOpacity={0.8}
@@ -132,7 +114,16 @@ class ModalOrder extends Component {
                 </Text>
               </TouchableOpacity>
             </Shadow>
-            { this._drawAcceptService()}
+            <Shadow setting={{width: 120, height: 40, borderRadius: 30}}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={[style.button, style.accept]}
+                onPress={this.acceptOrder.bind(this)}>
+                <Text style={[style.tText, style.tAccept]}>
+                  {text.app.label.accept}
+                </Text>
+              </TouchableOpacity>
+            </Shadow>
           </View>
         </View>
       </Modal>

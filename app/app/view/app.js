@@ -38,7 +38,6 @@ export default class Taxitura extends Component {
     super(props)
     this.state = {
       isModalPermission: false,
-      isCredit: true,
       isModalOrder: false,
       isMenu: false,
       title: text.app.label.sessionStarting,
@@ -125,11 +124,7 @@ export default class Taxitura extends Component {
           order.action === kts.action.order && global.service === null &&
           global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
           global.service = order
-          this.openModalOrder(global.position, global.service.position_user, true)
-        } else if ((parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) <= 0) {
-          // Si el usuario no tiene creditos
-          global.service = order
-          this.openModalOrder(global.position, global.service.position_user, false)
+          this.openModalOrder(global.position, global.service.position_user)
         }
       })
       socket.on(kts.socket.orderCanceled, order => {
@@ -273,7 +268,7 @@ export default class Taxitura extends Component {
     }
   }
 
-  openModalOrder (start, end, _isCredit) {
+  openModalOrder (start, end) {
     EventRegister.emit(kts.event.onShow)
     util.isInternet().then(status => {
       if (status) {
@@ -289,7 +284,6 @@ export default class Taxitura extends Component {
               name: global.service.user.name,
               address: global.service.position_user.address,
               isMenu: false,
-              isCredit: _isCredit,
               isModalOrder: true
             })
           })
@@ -330,8 +324,7 @@ export default class Taxitura extends Component {
           global.service[kts.json.cabman] = {
             id: global.user.id,
             name: global.user.nombre,
-            photo: urls.getUrlPhoto(global.user.foto.url),
-            placa: global.user.taxis[0].placa
+            photo: urls.getUrlPhoto(global.user.foto.url)
           }
           global.service[kts.json.position_cabman] = {
             distance: this.state.distance,
@@ -477,7 +470,6 @@ export default class Taxitura extends Component {
           navigate={this.navigate.bind(this)}
           closeSession={() => { this.closeSession() }} />
         <ModalOrder
-          isCredit={this.state.isCredit}
           isVisible={this.state.isModalOrder}
           uri={this.state.uri}
           name={this.state.name}
