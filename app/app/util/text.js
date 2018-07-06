@@ -42,7 +42,8 @@ module.exports = {
       notAddress: 'Dirección no definida',
       sessionEnding: 'Cerrando sesión',
       sessionStarting: 'Iniciando sesión',
-      internetTry: 'Intentar de nuevo'
+      internetTry: 'Intentar de nuevo',
+      location_reference: 'Referencia de ubicación'
     },
     gps: {
       update: 'Actualizar',

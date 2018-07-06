@@ -1,7 +1,15 @@
 /* eslint handle-callback-err: ["error", "error"] */
 /* eslint no-useless-return: 0 */
 import React, {Component} from 'react'
-import {View, Image, Text, TouchableOpacity, Animated, Vibration} from 'react-native'
+import {
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  Animated,
+  Vibration,
+  ScrollView
+} from 'react-native'
 import Play from 'react-native-sound'
 
 import style from '../style/modalOrder.style'
@@ -114,6 +122,11 @@ class ModalOrder extends Component {
             ellipsizeMode={kts.hardware.tail}>
             { this.props.address }
           </Text>
+          <ScrollView style={[style.reference, {display: (this.props.reference && this.props.reference.length > 0) ? 'flex' : 'none'}]}>
+            <Text style={[style.text_reference]}>
+              { this.props.reference }
+            </Text>
+          </ScrollView>
           <View style={style.progress}>
             <Animated.View
               style={[style.animated, {

@@ -217,6 +217,7 @@ export default class Taxitura extends Component {
       this.drawPosition(global.position)
     }
     Gps.getLocation(Gps.NETWORK, kts.time.TIME_GPS, kts.time.DISTANCE_GPS)
+    Gps.getLocation(Gps.GPS, kts.time.TIME_GPS, kts.time.DISTANCE_GPS)
     DeviceEventEmitter.removeListener(Gps.GET_LOCATION)
     DeviceEventEmitter.addListener(Gps.GET_LOCATION, (location) => {
       global.position = location
@@ -288,6 +289,7 @@ export default class Taxitura extends Component {
               uri: global.service.user.url_pic,
               name: global.service.user.name,
               address: global.service.position_user.address,
+              reference: global.service.position_user.ref,
               isMenu: false,
               isCredit: _isCredit,
               isModalOrder: true
@@ -344,6 +346,9 @@ export default class Taxitura extends Component {
           socket.emit(kts.socket.responseService, global.service, global.user.token)
           global.waitId = global.service.service.id
           global.service = null
+          this.setState({
+            addressReference: global.service.position_user.ref
+          })
         }
       } else {
         this.cleanService()
@@ -358,7 +363,13 @@ export default class Taxitura extends Component {
     coords = []
     global.waitCanceled = false
     EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
-    this.setState({isButton: false, isService: false, loadService: false})
+    this.setState({
+      isButton: false,
+      isService: false,
+      loadService: false,
+      addressReference: undefined,
+      reference: ''
+    })
   }
 
   async getInfoOrder () {
@@ -453,6 +464,7 @@ export default class Taxitura extends Component {
         latitudeService={this.state.latitudeService}
         longitudeService={this.state.longitudeService}
         address={this.state.address}
+        addressReference={this.state.addressReference}
         coords={coords}
         textButton={this.state.textButton}
         onProcess={() => { this.processService() }}
@@ -483,6 +495,7 @@ export default class Taxitura extends Component {
           name={this.state.name}
           distance={this.state.distance}
           address={this.state.address}
+          reference={this.state.reference}
           onCancel={() => { this.cancelOrder(true) }}
           onAccept={() => { this.acceptOrder() }} />
         <ModalPermission

@@ -8,7 +8,8 @@ import {
   Animated,
   AsyncStorage,
   TouchableWithoutFeedback,
-  Vibration
+  Vibration,
+  ScrollView
 } from 'react-native'
 import { EventRegister } from 'react-native-event-listeners'
 import Switch from 'react-native-switch-pro'
@@ -39,7 +40,8 @@ class ContainerApp extends Component {
       animaAccept: new Animated.Value(0),
       color: kts.color.active,
       countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
-      countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact)
+      countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact),
+      displayRef: true
     }
     isState = false
     this.state.color = global.state ? kts.color.active : kts.color.inactive
@@ -231,6 +233,11 @@ class ContainerApp extends Component {
       }
     })
   }
+  displayReference () {
+    if (!this.props.displayReference) {
+      this.setState({displayRef: !this.state.displayRef})
+    }
+  }
   render () {
     let { animated, animaNoti, animaAccept } = this.state
     return (
@@ -291,6 +298,35 @@ class ContainerApp extends Component {
               size={24}
               color={kts.color.white} />
           </View>
+          <TouchableWithoutFeedback onPress={() => {this.displayReference()}}
+            style={[
+              {display: this.props.addressReference ? 'flex' : 'none'}]}
+          >
+            <View style={[
+              {height: this.state.displayRef ? 30 : 120},
+              style.reference]}
+            >
+              <View style={[
+                {display: this.state.displayRef ? 'flex' : 'none'},
+                style.minRef]}
+              >
+                <Text
+                  style={[style.ref_text]}
+                  numberOfLines={1}
+                  ellipsizeMode={kts.hardware.tail}>
+                    { this.props.addressReference}
+                </Text>
+              </View>
+              <ScrollView style={[
+                {display: this.state.displayRef ? 'none' : 'flex'},
+                style.scrollRef]}
+              >
+                <Text style={[style.ref_text]}>
+                  { this.props.addressReference}
+                </Text>
+              </ScrollView>
+            </View>
+          </TouchableWithoutFeedback>
           <Animated.View
             style={[style.notification, style.onMyWay, {
               transform: [{translateX: animaNoti.interpolate({

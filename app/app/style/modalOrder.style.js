@@ -31,6 +31,15 @@ export default StyleSheet.create({
     color: '#110f0f',
     marginTop: 16
   },
+  reference: {
+    paddingVertical: 5,
+    height: 180,
+    maxHeight: 180
+  },
+  text_reference: {
+    fontSize: 15,
+    color: '#7c7979'
+  },
   progress: {
     width: 270,
     height: 20,

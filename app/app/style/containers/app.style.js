@@ -33,6 +33,21 @@ export default StyleSheet.create({
     backgroundColor: 'rgba(34, 33, 33, 0.7)',
     height: 35
   },
+  reference: {
+    backgroundColor: 'rgba(34, 32, 32, 0.4)'
+  },
+  minRef: {
+    height: 30
+  },
+  scrollRef: {
+    height: 120
+  },
+  ref_text: {
+    color: 'rgb(245, 245, 245)',
+    fontSize: 18,
+    paddingLeft: 5,
+    paddingRight: 5
+  },
   menu: {
     position: 'absolute',
     left: 20,
@@ -103,10 +118,10 @@ export default StyleSheet.create({
     paddingLeft: 5
   },
   onMyWay: {
-    top: 120
+    top: 125
   },
   otherAccept: {
-    top: 185
+    top: 190
   },
   photo: {
     width: 50,
