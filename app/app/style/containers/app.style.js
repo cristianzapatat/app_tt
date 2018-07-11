@@ -34,7 +34,8 @@ export default StyleSheet.create({
     height: 35
   },
   reference: {
-    backgroundColor: 'rgba(34, 32, 32, 0.4)'
+    backgroundColor: 'rgba(34, 32, 32, 0.4)',
+    width: '100%'
   },
   minRef: {
     height: 30

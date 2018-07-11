@@ -1,0 +1,26 @@
+{
+  "_id": "taxitura-changemapdesign@0.0.1",
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Libreria de soporte de cambio de estilo de mapa para Android.",
+  "devDependencies": {
+    "react-native": "^0.46.1"
+  },
+  "keywords": [
+    "react-native",
+    "react-component",
+    "ios",
+    "android",
+    "location",
+    "gps",
+    "taxitura",
+    "map",
+    "style",
+    "design",
+    "alarm"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "taxitura-changemapdesign",
+  "version": "0.0.1"
+}

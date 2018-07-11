@@ -123,6 +123,9 @@ class ModalOrder extends Component {
             { this.props.address }
           </Text>
           <ScrollView style={[style.reference, {display: (this.props.reference && this.props.reference.length > 0) ? 'flex' : 'none'}]}>
+            <Text style={[style.title_reference]}>
+              { text.app.label.location_reference}:
+            </Text>
             <Text style={[style.text_reference]}>
               { this.props.reference }
             </Text>

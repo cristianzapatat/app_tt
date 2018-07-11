@@ -11,7 +11,6 @@
     "react": "16.0.0-alpha.12",
     "react-native": "^0.46.1",
     "react-native-animatable": "^1.2.4",
-    "react-native-background-timer": "^2.0.0",
     "react-native-event-listeners": "^1.0.3",
     "react-native-gps-state": "0.0.1",
     "react-native-keep-awake": "^3.0.1",

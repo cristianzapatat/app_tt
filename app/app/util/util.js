@@ -36,13 +36,10 @@ module.exports = {
   },
   getIsMap: () => {
     let date = new Date()
-    if ((((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) >= kts.time.START_NIGHT &&
-    ((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) <= kts.time.MIDDLE_NIGHT) ||
-    (date.getHours() >= kts.time.ZERO &&
-    ((date.getHours() * kts.time.FOR_MINUTE) + date.getMinutes()) <= kts.time.END_NIGHT)) {
-      return false
+    if (date.getHours() >= 5 && date.getHours() < 18) {
+      return true
     }
-    return true
+    return false
   },
   getDateFormat: (value) => {
     let date = new Date(value)

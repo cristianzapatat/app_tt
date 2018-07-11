@@ -49,11 +49,11 @@ class ContainerApp extends Component {
     this.state.isMap = global.isDay
   }
   componentWillMount () {
-    EventRegister.addEventListener(kts.event.changeMap, (data) => {
+    /*EventRegister.addEventListener(kts.event.changeMap, (data) => {
       if (this.state.isMap !== data) {
         this.setState({isMap: data})
       }
-    })
+    })*/
     this.eventeChangeState = EventRegister.addEventListener(kts.event.changeState, (value) => {
       if (value.case === 0) {
         this.setState({disabled: !this.state.disabled})
@@ -298,11 +298,9 @@ class ContainerApp extends Component {
               size={24}
               color={kts.color.white} />
           </View>
-          <TouchableWithoutFeedback onPress={() => {this.displayReference()}}
-            style={[
-              {display: this.props.addressReference ? 'flex' : 'none'}]}
-          >
+          <TouchableWithoutFeedback onPress={() => {this.displayReference()}}>
             <View style={[
+              {display: this.props.addressReference.length > 0 ? 'flex' : 'none'},
               {height: this.state.displayRef ? 30 : 120},
               style.reference]}
             >

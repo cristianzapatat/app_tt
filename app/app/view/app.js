@@ -39,6 +39,7 @@ export default class Taxitura extends Component {
     this.state = {
       isModalPermission: false,
       isCredit: true,
+      addressReference: '',
       isModalOrder: false,
       isMenu: false,
       title: text.app.label.sessionStarting,
@@ -346,9 +347,6 @@ export default class Taxitura extends Component {
           socket.emit(kts.socket.responseService, global.service, global.user.token)
           global.waitId = global.service.service.id
           global.service = null
-          this.setState({
-            addressReference: global.service.position_user.ref
-          })
         }
       } else {
         this.cleanService()
@@ -367,7 +365,7 @@ export default class Taxitura extends Component {
       isButton: false,
       isService: false,
       loadService: false,
-      addressReference: undefined,
+      addressReference: '',
       reference: ''
     })
   }
@@ -394,7 +392,8 @@ export default class Taxitura extends Component {
     this.setState({
       latitudeService: global.service.position_user.latitude,
       longitudeService: global.service.position_user.longitude,
-      address: global.service.position_user.andress,
+      addressReference: global.service.action === kts.action.accept ? global.service.position_user.ref : '',
+      address: global.service.position_user.address,
       textButton: util.getTextButton(global.service.action),
       isService: global.service.action === kts.action.accept,
       loadService: false,
@@ -408,7 +407,12 @@ export default class Taxitura extends Component {
       if (status) {
         global.service.action = util.getAction(global.service.action)
         socket.emit(kts.socket.responseService, global.service, global.user.token)
-        this.setState({isButton: null, loadService: true, isMns: false})
+        this.setState({
+          isButton: null,
+          addressReference: '',
+          loadService: true,
+          isMns: false
+        })
       } else {
         this.setState({isMns: true})
       }
