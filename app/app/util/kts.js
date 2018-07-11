@@ -1,11 +1,5 @@
 module.exports = {
   time: {
-    ZERO: 0,
-    MINUTE: 60000, // dato en milisegundos = 1 minuto
-    START_NIGHT: 1080, // dato en minutos = 6pm
-    MIDDLE_NIGHT: 1440, // dato en minutos = 11:53pm
-    END_NIGHT: 360, // dato en minutos = 5am
-    FOR_MINUTE: 60,
     DISTANCE_GPS: 2,
     TIME_GPS: 500
   },

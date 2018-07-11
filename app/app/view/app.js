@@ -39,6 +39,7 @@ export default class Taxitura extends Component {
     this.state = {
       isModalPermission: false,
       isCredit: true,
+      addressReference: '',
       isModalOrder: false,
       isMenu: false,
       title: text.app.label.sessionStarting,
@@ -217,6 +218,7 @@ export default class Taxitura extends Component {
       this.drawPosition(global.position)
     }
     Gps.getLocation(Gps.NETWORK, kts.time.TIME_GPS, kts.time.DISTANCE_GPS)
+    Gps.getLocation(Gps.GPS, kts.time.TIME_GPS, kts.time.DISTANCE_GPS)
     DeviceEventEmitter.removeListener(Gps.GET_LOCATION)
     DeviceEventEmitter.addListener(Gps.GET_LOCATION, (location) => {
       global.position = location
@@ -288,6 +290,7 @@ export default class Taxitura extends Component {
               uri: global.service.user.url_pic,
               name: global.service.user.name,
               address: global.service.position_user.address,
+              reference: global.service.position_user.ref,
               isMenu: false,
               isCredit: _isCredit,
               isModalOrder: true
@@ -358,7 +361,13 @@ export default class Taxitura extends Component {
     coords = []
     global.waitCanceled = false
     EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
-    this.setState({isButton: false, isService: false, loadService: false})
+    this.setState({
+      isButton: false,
+      isService: false,
+      loadService: false,
+      addressReference: '',
+      reference: ''
+    })
   }
 
   async getInfoOrder () {
@@ -383,7 +392,8 @@ export default class Taxitura extends Component {
     this.setState({
       latitudeService: global.service.position_user.latitude,
       longitudeService: global.service.position_user.longitude,
-      address: global.service.position_user.andress,
+      addressReference: global.service.action === kts.action.accept ? global.service.position_user.ref : '',
+      address: global.service.position_user.address,
       textButton: util.getTextButton(global.service.action),
       isService: global.service.action === kts.action.accept,
       loadService: false,
@@ -397,7 +407,12 @@ export default class Taxitura extends Component {
       if (status) {
         global.service.action = util.getAction(global.service.action)
         socket.emit(kts.socket.responseService, global.service, global.user.token)
-        this.setState({isButton: null, loadService: true, isMns: false})
+        this.setState({
+          isButton: null,
+          addressReference: '',
+          loadService: true,
+          isMns: false
+        })
       } else {
         this.setState({isMns: true})
       }
@@ -453,6 +468,7 @@ export default class Taxitura extends Component {
         latitudeService={this.state.latitudeService}
         longitudeService={this.state.longitudeService}
         address={this.state.address}
+        addressReference={this.state.addressReference}
         coords={coords}
         textButton={this.state.textButton}
         onProcess={() => { this.processService() }}
@@ -483,6 +499,7 @@ export default class Taxitura extends Component {
           name={this.state.name}
           distance={this.state.distance}
           address={this.state.address}
+          reference={this.state.reference}
           onCancel={() => { this.cancelOrder(true) }}
           onAccept={() => { this.acceptOrder() }} />
         <ModalPermission

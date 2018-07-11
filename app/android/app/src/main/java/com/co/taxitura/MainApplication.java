@@ -9,7 +9,6 @@ import com.zmxv.RNSound.RNSoundPackage;
 import com.opensettings.OpenSettingsPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import br.com.dopaminamob.gpsstate.GPSStatePackage;
-import com.ocetnik.timer.BackgroundTimerPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -35,7 +34,6 @@ public class MainApplication extends Application implements ReactApplication {
             new OpenSettingsPackage(),
             new MapsPackage(),
             new GPSStatePackage(),
-            new BackgroundTimerPackage(),
             new RNGpsPackage()
       );
     }

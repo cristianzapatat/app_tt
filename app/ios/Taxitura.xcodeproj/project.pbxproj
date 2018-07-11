@@ -37,7 +37,6 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		B46D40045B414F33B0DD433B /* libDPMGpsState.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1B1C312E2714C349CEFF80A /* libDPMGpsState.a */; };
 		2FD44E3603E54E61942A2397 /* libReact Native Open Settings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4231FF73DEFB4CC9B20042D2 /* libReact Native Open Settings.a */; };
-		4673F74E84644829A1A154CA /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A07BCBA54FE4460BD11224E /* libRNBackgroundTimer.a */; };
 		8592087CE6D6451D9D9387C5 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C178C14A182435BB3193D6D /* libAirMaps.a */; };
 		B8C6808AC9974F118844DF25 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F468990EF0F24C0493D54784 /* libRNSound.a */; };
 		5354ACD7C831444EAC326B4B /* libRNLocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EDBD436F02D496BAF0BF06C /* libRNLocation.a */; };
@@ -265,8 +264,6 @@
 		F1B1C312E2714C349CEFF80A /* libDPMGpsState.a */ = {isa = PBXFileReference; name = "libDPMGpsState.a"; path = "libDPMGpsState.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		CE315AAF6DEE412E84FD942E /* React Native Open Settings.xcodeproj */ = {isa = PBXFileReference; name = "React Native Open Settings.xcodeproj"; path = "../node_modules/react-native-open-settings/React Native Open Settings.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		4231FF73DEFB4CC9B20042D2 /* libReact Native Open Settings.a */ = {isa = PBXFileReference; name = "libReact Native Open Settings.a"; path = "libReact Native Open Settings.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		808EA04BCD954EAEAD4AB572 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; name = "RNBackgroundTimer.xcodeproj"; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		6A07BCBA54FE4460BD11224E /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; name = "libRNBackgroundTimer.a"; path = "libRNBackgroundTimer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		3CDF916AA50346389777BC86 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; name = "AirMaps.xcodeproj"; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		6C178C14A182435BB3193D6D /* libAirMaps.a */ = {isa = PBXFileReference; name = "libAirMaps.a"; path = "libAirMaps.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		E81AA65E333040A6A8EE056C /* RNSound.xcodeproj */ = {isa = PBXFileReference; name = "RNSound.xcodeproj"; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
@@ -303,7 +300,6 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				B46D40045B414F33B0DD433B /* libDPMGpsState.a in Frameworks */,
 				2FD44E3603E54E61942A2397 /* libReact Native Open Settings.a in Frameworks */,
-				4673F74E84644829A1A154CA /* libRNBackgroundTimer.a in Frameworks */,
 				8592087CE6D6451D9D9387C5 /* libAirMaps.a in Frameworks */,
 				B8C6808AC9974F118844DF25 /* libRNSound.a in Frameworks */,
 				5354ACD7C831444EAC326B4B /* libRNLocation.a in Frameworks */,
@@ -476,7 +472,6 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				A7ED9B49FDB34702A24168DB /* DPMGpsState.xcodeproj */,
 				CE315AAF6DEE412E84FD942E /* React Native Open Settings.xcodeproj */,
-				808EA04BCD954EAEAD4AB572 /* RNBackgroundTimer.xcodeproj */,
 				3CDF916AA50346389777BC86 /* AirMaps.xcodeproj */,
 				E81AA65E333040A6A8EE056C /* RNSound.xcodeproj */,
 				3ADF899967294033868A12DE /* RNLocation.xcodeproj */,
@@ -1017,16 +1012,11 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taxitura.app/Taxitura";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
-					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-gps",
@@ -1051,16 +1041,11 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Taxitura.app/Taxitura";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
-					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-gps",
@@ -1088,7 +1073,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
-					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-gps",
@@ -1115,7 +1099,6 @@
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
-					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-gps",
@@ -1149,16 +1132,11 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
-					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-gps",
@@ -1192,16 +1170,11 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-gps-state\ios",
 					"$(SRCROOT)\..\node_modules\react-native-open-settings",
-					"$(SRCROOT)\..\node_modules\react-native-background-timer\ios",
 					"$(SRCROOT)\..\node_modules\react-native-maps\lib\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\react-native-gps",
@@ -1230,10 +1203,6 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Debug;
@@ -1258,10 +1227,6 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 			};
 			name = Release;

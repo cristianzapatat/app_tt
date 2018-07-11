@@ -8,9 +8,9 @@ import {
   ProgressBarAndroid
 } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import Background from 'react-native-background-timer'
 import { EventRegister } from 'react-native-event-listeners'
 import KeepAwake from 'react-native-keep-awake'
+//import ChangeMap from '../native/changemapdesign'
 
 import styles from './style/main.style'
 
@@ -49,7 +49,7 @@ config[kts.navigation.initialRouteName] = kts.app.id
 const RouteNavigationApp = StackNavigator(roots, config)
 
 let idSet
-global.isDay = util.getIsMap()
+//global.isDay = util.getIsMap()
 
 export default class Main extends Component {
   constructor () {
@@ -103,18 +103,15 @@ export default class Main extends Component {
         }
       }
     })
-    Background.runBackgroundTimer(() => {
-      let status = util.getIsMap()
-      if (global.isDay !== status) {
-        global.isDay = status
-        EventRegister.emit(kts.event.changeMap, status)
-      }
-    }, kts.time.MINUTE)
+    /* ChangeMap.active((data) => {
+      console.log('change map', !global.isDay)
+      global.isDay = !global.isDay
+      EventRegister.emit(kts.event.changeMap, global.isDay)
+    }, true); */
   }
 
   componentWillUnmount () {
     EventRegister.removeAllListeners()
-    Background.stopBackgroundTimer()
   }
 
   goView (user, json, data) {
