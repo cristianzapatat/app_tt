@@ -146,7 +146,6 @@ android {
 dependencies {
     compile project(':RNGps')
     compile project(':react-native-sound')
-    compile project(':react-native-background-timer')
     compile project(':react-native-open-settings')
     compile project(':react-native-gps-state')
     compile (project(':react-native-maps')){

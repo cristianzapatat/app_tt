@@ -6,7 +6,7 @@ import {
   Text,
   ProgressBarAndroid
 } from 'react-native'
-import { EventRegister } from 'react-native-event-listeners'
+//import { EventRegister } from 'react-native-event-listeners'
 
 import style from '../../style/containers/login.style'
 
@@ -27,11 +27,11 @@ class ContainerLogin extends Component {
     this.state.isMap = global.isDay
   }
   componentWillMount () {
-    EventRegister.addEventListener(kts.event.changeMap, (data) => {
+    /*EventRegister.addEventListener(kts.event.changeMap, (data) => {
       if (this.state.isMap !== data) {
         this.setState({isMap: data})
       }
-    })
+    })*/
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isMns && !this.state.isMns) {

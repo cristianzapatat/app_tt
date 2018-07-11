@@ -32,7 +32,8 @@ public class RNGps extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private LocationManager locationManager;
     private Location location;
-    private LocationListener locationListener = null;
+    private LocationListener locationListenerNetwork = null;
+    private LocationListener locationListenerGps = null;
 
     /**
      * Constructor de la clase, quien recibe el contexto del app de react-native
@@ -77,34 +78,56 @@ public class RNGps extends ReactContextBaseJavaModule {
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this.reactContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (this.locationListener == null) {
-              this.locationListener = new LocationListener() {
-                  @Override
-                  public void onLocationChanged(Location loc) {
-                      location = loc;
-                      if (location != null) {
-                          WritableMap map = Arguments.createMap();
-                          map.putDouble("longitude", location.getLongitude());
-                          map.putDouble("latitude", location.getLatitude());
-                          sendLocation(reactContext, RNGps.GET_LOCATION, map);
-                      }
-                  }
-
-                  @Override
-                  public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-                  @Override
-                  public void onProviderEnabled(String s) {}
-
-                  @Override
-                  public void onProviderDisabled(String s) {}
-              };
-              if (ContextCompat.checkSelfPermission(reactContext,
-                      Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                      || ContextCompat.checkSelfPermission(reactContext,
-                      Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                  this.locationManager.requestLocationUpdates(provider, time, distance, this.locationListener);
-              }
+            if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
+                this.locationListenerNetwork = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location loc) {
+                        location = loc;
+                        if (location != null) {
+                            WritableMap map = Arguments.createMap();
+                            map.putDouble("longitude", location.getLongitude());
+                            map.putDouble("latitude", location.getLatitude());
+                            sendLocation(reactContext, RNGps.GET_LOCATION, map);
+                        }
+                    }
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {}
+                    @Override
+                    public void onProviderEnabled(String s) {}
+                    @Override
+                    public void onProviderDisabled(String s) {}
+                };
+            }
+            if (provider.equals(LocationManager.GPS_PROVIDER)) {
+                this.locationListenerGps = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location loc) {
+                        location = loc;
+                        if (location != null) {
+                            WritableMap map = Arguments.createMap();
+                            map.putDouble("longitude", location.getLongitude());
+                            map.putDouble("latitude", location.getLatitude());
+                            sendLocation(reactContext, RNGps.GET_LOCATION, map);
+                        }
+                    }
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {}
+                    @Override
+                    public void onProviderEnabled(String s) {}
+                    @Override
+                    public void onProviderDisabled(String s) {}
+                };
+            }
+            if (ContextCompat.checkSelfPermission(reactContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(reactContext,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (provider.equals(LocationManager.NETWORK_PROVIDER)) {
+                    this.locationManager.requestLocationUpdates(provider, time, distance, this.locationListenerNetwork);
+                }
+                if (provider.equals(LocationManager.GPS_PROVIDER)) {
+                    this.locationManager.requestLocationUpdates(provider, time, distance, this.locationListenerGps);
+                }
             }
         }
     }
@@ -114,9 +137,13 @@ public class RNGps extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void stopLocation(){
-        if (this.locationListener != null) {
-            this.locationManager.removeUpdates(this.locationListener);
-            this.locationListener = null;
+        if (this.locationListenerNetwork != null) {
+            this.locationManager.removeUpdates(this.locationListenerNetwork);
+            this.locationListenerNetwork = null;
+        }
+        if (this.locationListenerGps != null) {
+            this.locationManager.removeUpdates(this.locationListenerGps);
+            this.locationListenerGps = null;
         }
     }
 

@@ -4,7 +4,7 @@ module.exports = {
   service: null,
   waitId: null,
   waitCanceled: false,
-  isDay: true,
+  isDay: false,
   state: true,
   tempState: null,
   serviceFact: 0,
