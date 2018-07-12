@@ -97,8 +97,8 @@ android {
         applicationId "com.co.taxitura"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 5
-        versionName "1.4"
+        versionCode 7
+        versionName "1.6"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
