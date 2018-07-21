@@ -19,7 +19,7 @@ module.exports = {
     if (val < 0) return '000'
     else if (val < 10) return `00${val}`
     else if (val < 100) return `0${val}`
-    else if (val === undefined || val === null || val.isNaN()) return '---'
+    else if (val === undefined || val === null || isNaN(val)) return '---'
     return val
   },
   getAction: (action) => {

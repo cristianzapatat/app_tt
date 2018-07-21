@@ -25,13 +25,14 @@ import ModalOrder from '../component/modalOrder'
 import ModalPermission from '../component/modalPermission'
 
 const socket = io(urls.urlInterface, {
-  transports: [kts.main.websocket],
-  path: '/client'
+  path: '/client',
+  transports: [kts.main.websocket]
 })
 
 let coords = []
 let permissionsStatus = false
 let isServiceInMemory = false
+let __setTimeOut
 
 export default class Taxitura extends Component {
   constructor (props) {
@@ -46,6 +47,7 @@ export default class Taxitura extends Component {
       load: true,
       loadService: false,
       loadIsService: true,
+      disabledBtn: false,
       isButton: false,
       message: text.intenet.without,
       typeMessage: kts.enum.WITHOUT,
@@ -64,7 +66,7 @@ export default class Taxitura extends Component {
       })
     }
     this.appEventAcceptCancel = EventRegister.addEventListener(kts.event.appAcceptCancel, (service) => {
-      socket.emit(kts.socket.acceptCancel, service, global.user.token)
+      socket.emit(kts.socket.acceptCancel, service)
       this.setState({isButton: null, loadService: true})
       EventRegister.emit(kts.event.changeState, {state: false, case: 0})
     })
@@ -156,12 +158,24 @@ export default class Taxitura extends Component {
         }
       })
       socket.on(kts.socket.processService, order => {
+        clearTimeout(__setTimeOut)
         global.service = order
         if (global.service.action === kts.action.arrive) {
           coords = []
-          this.setState({textButton: text.app.label.aboard, isService: false, isButton: true, loadService: false})
+          this.setState({
+            textButton: text.app.label.aboard,
+            isService: false,
+            disabledBtn: false,
+            isButton: true,
+            loadService: false
+          })
         } else if (global.service.action === kts.action.aboard) {
-          this.setState({textButton: text.app.label.weArrived, isButton: true, loadService: false})
+          this.setState({
+            textButton: text.app.label.weArrived,
+            disabledBtn: false,
+            isButton: true,
+            loadService: false
+          })
         } else if (global.service.action === kts.action.end) {
           EventRegister.emit(kts.event.addServiceToday, 1)
           this.cleanService()
@@ -277,29 +291,21 @@ export default class Taxitura extends Component {
 
   openModalOrder (start, end, _isCredit) {
     EventRegister.emit(kts.event.onShow)
-    util.isInternet().then(status => {
-      if (status) {
-        fetch(urls.getDistanceMatrix(start, end))
-          .then(result => {
-            return result.json()
-          })
-          .then(json => {
-            this.setState({
-              distance: json.rows[0].elements[0].distance.value,
-              time: json.rows[0].elements[0].duration.value,
-              uri: global.service.user.url_pic,
-              name: global.service.user.name,
-              address: global.service.position_user.address,
-              reference: global.service.position_user.ref,
-              isMenu: false,
-              isCredit: _isCredit,
-              isModalOrder: true
-            })
-          })
-      } else {
-        this.setState({isMns: true})
-      }
-    })
+    fetch(urls.getDistanceMatrix(start, end))
+      .then(result => result.json())
+      .then(json => {
+        this.setState({
+          distance: json.rows[0].elements[0].distance.value,
+          time: json.rows[0].elements[0].duration.value,
+          uri: global.service.user.url_pic,
+          name: global.service.user.name,
+          address: global.service.position_user.address,
+          reference: global.service.position_user.ref,
+          isMenu: false,
+          isCredit: _isCredit,
+          isModalOrder: true
+        })
+      })
   }
 
   cancelOrder (status) {
@@ -309,7 +315,7 @@ export default class Taxitura extends Component {
       util.isInternet().then(status => {
         if (status) {
           global.service[kts.json.cabman] = {id: global.user.id}
-          socket.emit(kts.socket.addServiceCanceled, global.service, global.user.token)
+          socket.emit(kts.socket.addServiceCanceled, global.service)
         } else {
           this.setState({isMns: true})
         }
@@ -344,7 +350,7 @@ export default class Taxitura extends Component {
           }
           global.tempState = true
           EventRegister.emit(kts.event.changeState, {state: false, case: 0})
-          socket.emit(kts.socket.responseService, global.service, global.user.token)
+          socket.emit(kts.socket.responseService, global.service)
           global.waitId = global.service.service.id
           global.service = null
         }
@@ -362,6 +368,7 @@ export default class Taxitura extends Component {
     global.waitCanceled = false
     EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
     this.setState({
+      disabledBtn: false,
       isButton: false,
       isService: false,
       loadService: false,
@@ -398,6 +405,7 @@ export default class Taxitura extends Component {
       isService: global.service.action === kts.action.accept,
       loadService: false,
       loadIsService: false,
+      disabledBtn: false,
       isButton: true
     })
   }
@@ -406,9 +414,16 @@ export default class Taxitura extends Component {
     util.isInternet().then(status => {
       if (status) {
         global.service.action = util.getAction(global.service.action)
-        socket.emit(kts.socket.responseService, global.service, global.user.token)
+        socket.emit(kts.socket.responseService, global.service)
+        __setTimeOut = setTimeout(() => {
+          this.setState({
+            disabledBtn: false,
+            isButton: true,
+          })
+        }, 20000);
         this.setState({
-          isButton: null,
+          disabledBtn: true,
+          isButton: true,
           addressReference: '',
           loadService: true,
           isMns: false
@@ -462,6 +477,7 @@ export default class Taxitura extends Component {
         title={this.state.title}
         onPressMenu={() => { this.setState({isMenu: true}) }}
         isService={this.state.isService}
+        disabledBtn={this.state.disabledBtn}
         isButton={this.state.isButton}
         latitude={this.state.latitude}
         longitude={this.state.longitude}
