@@ -102,9 +102,10 @@ class ContainerApp extends Component {
         <Shadow setting={{height: 50, width: 290, borderRadius: 30}}>
           <TouchableOpacity
             activeOpacity={0.8}
+            disabled={this.props.disabledBtn}
             onPressIn={this.onShowState.bind(this)}
             onPressOut={this.props.onProcess}
-            style={style.button}>
+            style={[this.props.disabledBtn ? style.buttonFalse : style.buttonTrue, style.button]}>
             <Text style={style.text}>
               {this.props.textButton}
             </Text>

@@ -1,7 +1,7 @@
 module.exports = {
   time: {
-    DISTANCE_GPS: 2,
-    TIME_GPS: 500
+    DISTANCE_GPS: 100,
+    TIME_GPS: 700
   },
   position: {
     DELTA: 0.015,

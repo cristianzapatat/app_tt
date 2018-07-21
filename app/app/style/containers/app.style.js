@@ -185,12 +185,17 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   button: {
-    backgroundColor: '#ffaf18',
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
     width: 290,
     borderRadius: 30
+  },
+  buttonTrue: {
+    backgroundColor: '#ffaf18',
+  },
+  buttonFalse: {
+    backgroundColor: '#B6B6B6',
   },
   text: {
     fontSize: 22,
