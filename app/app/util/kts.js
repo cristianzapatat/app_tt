@@ -53,7 +53,8 @@ module.exports = {
     acceptCancel: 'acceptCancel',
     onMyWay: 'onMyWay',
     sessionEnd: 'sessionEnd',
-    sessionStart: 'sessionStart'
+    sessionStart: 'sessionStart',
+    cancelService: 'cancelService'
   },
   event: {
     changeMap: 'changeMap',
@@ -129,6 +130,6 @@ module.exports = {
     white: '#FFF'
   },
   help: {
-    image: 'https://scontent.feoh3-1.fna.fbcdn.net/v/t1.0-1/p50x50/17903408_1044586812340472_7176591297268243543_n.png?oh=20bc54a7ec0faffce536dfa16eff5388&oe=5AA9803D'
+    image: 'https://www.taxitura.com/assets/logo.png'
   }
 }

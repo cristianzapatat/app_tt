@@ -59,7 +59,7 @@ module.exports = {
     return num
   },
   getMeters: (meters) => {
-    if (meters !== null && meters !== undefined) {
+    if (meters !== null && meters !== undefined && !isNaN(meters)) {
       if (meters < 1000) {
         if (meters === 1) {
           return `un metro`
