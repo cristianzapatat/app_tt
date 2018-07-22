@@ -19,6 +19,11 @@ module.exports = {
       errorTaxi: 'Su taxi esta ocupado o no se ha resgistrado'
     }
   },
+  service: {
+    cancel: {
+      service: 'Ha cancelado el servicio'
+    }
+  },
   app: {
     get: {
       position: 'Obteniendo posición'

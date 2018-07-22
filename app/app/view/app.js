@@ -23,6 +23,7 @@ import Container from '../component/container'
 import Menu from '../component/menu'
 import ModalOrder from '../component/modalOrder'
 import ModalPermission from '../component/modalPermission'
+import ModalCancelService from "../component/modalCancelService";
 
 const socket = io(urls.urlInterface, {
   path: '/client',
@@ -41,6 +42,7 @@ export default class Taxitura extends Component {
       isModalPermission: false,
       isCredit: true,
       addressReference: '',
+      serviceCancel: null,
       isModalOrder: false,
       isMenu: false,
       title: text.app.label.sessionStarting,
@@ -184,11 +186,20 @@ export default class Taxitura extends Component {
       socket.on(kts.socket.deleteService, idService => {
         if (global.service && global.service.service.id === idService) {
           this.cancelOrder(false)
+          this.cleanService()
         }
       })
       socket.on(kts.socket.onMyWay, (data) => {
         if (global.service && global.service.service.id === parseInt(data.service.id)) {
           EventRegister.emit(kts.event.showOnMyWay, true)
+        }
+      })
+      socket.on(kts.socket.cancelService, (data) => {
+        if (global.service && global.service.service.id === data.service.id) {
+          this.cleanService()
+          this.setState({
+            serviceCancel: data
+          })
         }
       })
       if (status) this.getStatus(true)
@@ -295,6 +306,7 @@ export default class Taxitura extends Component {
       .then(result => result.json())
       .then(json => {
         this.setState({
+          serviceCancel: null,
           distance: json.rows[0].elements[0].distance.value,
           time: json.rows[0].elements[0].duration.value,
           uri: global.service.user.url_pic,
@@ -418,6 +430,7 @@ export default class Taxitura extends Component {
         __setTimeOut = setTimeout(() => {
           this.setState({
             disabledBtn: false,
+            loadIsService: false,
             isButton: true,
           })
         }, 20000);
@@ -508,6 +521,9 @@ export default class Taxitura extends Component {
           onClose={() => { this.setState({isMenu: false}) }}
           navigate={this.navigate.bind(this)}
           closeSession={() => { this.closeSession() }} />
+        <ModalCancelService
+          service={this.state.serviceCancel} 
+          close={() => { this.setState({serviceCancel: null}) }}/>
         <ModalOrder
           isCredit={this.state.isCredit}
           isVisible={this.state.isModalOrder}
