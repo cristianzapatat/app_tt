@@ -404,6 +404,21 @@ class ContainerApp extends Component {
               </Text>
             </TouchableOpacity>
           </View>
+          <View style={[
+              {display: this.props.isButton === true ? 'flex' : 'none'}, style.userContent
+            ]}>
+            <Image
+              style={[style.userPhoto]}
+              source={{uri: global.service !== null ? global.service.user.url_pic : kts.help.image}} />
+            <View style={[style.userNameContent]}>
+              <Text 
+                style={[style.userName]}
+                numberOfLines={1}
+                ellipsizeMode={kts.hardware.tail}>
+                { global.service !== null ? global.service.user.name : ''}
+              </Text>
+            </View>
+          </View>
           <View style={[style.content, style.footer]}>
             { this.__drawFooter() }
           </View>
