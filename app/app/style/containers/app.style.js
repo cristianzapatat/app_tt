@@ -177,6 +177,39 @@ export default StyleSheet.create({
     textAlign: 'center',
     color: '#FFF'
   },
+  userContent: {
+    position: 'absolute',
+    bottom: 90,
+    left: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+  userPhoto: {
+    width: 66,
+    height: 66,
+    borderRadius: 33,
+    borderColor: '#000000',
+    borderWidth: 1,
+    zIndex: 2
+  },
+  userNameContent: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(34, 33, 33, 0.7)',
+    height: 35,
+    width: 180,
+    borderBottomRightRadius: 20,
+    borderTopRightRadius: 20,
+    marginLeft: -5,
+    zIndex: 1
+  },
+  userName: {
+    fontSize: 18,
+    textAlign: 'left',
+    paddingLeft: 10,
+    color: '#FFF'
+  },
   footer: {
     width: 350,
     position: 'absolute',
@@ -185,12 +218,17 @@ export default StyleSheet.create({
     justifyContent: 'center'
   },
   button: {
-    backgroundColor: '#ffaf18',
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
     width: 290,
     borderRadius: 30
+  },
+  buttonTrue: {
+    backgroundColor: '#ffaf18',
+  },
+  buttonFalse: {
+    backgroundColor: '#B6B6B6',
   },
   text: {
     fontSize: 22,

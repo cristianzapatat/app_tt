@@ -77,15 +77,15 @@ class ModalOrder extends Component {
     if (this.props.isCredit) { 
       return ( 
         <Shadow setting={{width: 120, height: 40, borderRadius: 30}}> 
-              <TouchableOpacity 
-                activeOpacity={0.8} 
-                style={[style.button, style.accept]} 
-                onPress={this.acceptOrder.bind(this)}> 
-                <Text style={[style.tText, style.tAccept]}> 
-                  {text.app.label.accept} 
-                </Text> 
-              </TouchableOpacity> 
-            </Shadow> 
+          <TouchableOpacity 
+            activeOpacity={0.8} 
+            style={[style.button, style.accept]} 
+            onPress={this.acceptOrder.bind(this)}> 
+            <Text style={[style.tText, style.tAccept]}> 
+              {text.app.label.accept} 
+            </Text> 
+          </TouchableOpacity> 
+        </Shadow> 
       ) 
     } else { 
       return null 

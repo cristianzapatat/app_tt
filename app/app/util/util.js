@@ -14,12 +14,12 @@ module.exports = {
       return false
     }
   },
-  getValueText: (value, item, add) => {
+  getValueText: (value, item = 0, add = 0) => {
     let val = parseInt(value + item) - (add)
     if (val < 0) return '000'
     else if (val < 10) return `00${val}`
     else if (val < 100) return `0${val}`
-    else if (val === undefined || val === null || val.isNaN()) return '---'
+    else if (val === undefined || val === null || isNaN(val)) return '---'
     return val
   },
   getAction: (action) => {
@@ -59,7 +59,7 @@ module.exports = {
     return num
   },
   getMeters: (meters) => {
-    if (meters !== null && meters !== undefined) {
+    if (meters !== null && meters !== undefined && !isNaN(meters)) {
       if (meters < 1000) {
         if (meters === 1) {
           return `un metro`

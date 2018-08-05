@@ -144,7 +144,6 @@ export default class Login extends Component {
       global.user = json
       global.state = true
       global.tempState = null
-      global.serviceFact = 0
       global.serviceToday = data ? data.cant : 0
       global.isSession = true
       global.isApp = true

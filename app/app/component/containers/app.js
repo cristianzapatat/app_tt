@@ -22,6 +22,7 @@ import global from '../../util/global'
 import text from '../../util/text'
 import kts from '../../util/kts'
 import util from '../../util/util'
+import urls from '../../util/urls'
 
 import Map from '../map'
 
@@ -39,8 +40,9 @@ class ContainerApp extends Component {
       animaNoti: new Animated.Value(0),
       animaAccept: new Animated.Value(0),
       color: kts.color.active,
-      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
-      countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact),
+      isConsultAvailable: true,
+      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia),
+      countToday: util.getValueText(global.serviceToday),
       displayRef: true
     }
     isState = false
@@ -79,12 +81,8 @@ class ContainerApp extends Component {
     this.eventShowOtherAccept = EventRegister.addEventListener(kts.event.showOtherAccept, value => {
       this.showNotification(value, this.state.animaAccept, false)
     })
-    this.eventAddServiceToday = EventRegister.addEventListener(kts.event.addServiceToday, value => {
-      global.serviceFact += value
-      this.setState({
-        countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
-        countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact)
-      })
+    this.eventAddServiceToday = EventRegister.addEventListener(kts.event.addServiceToday, (callBack = null) => {
+      this.getAvailableService(callBack)
     })
   }
   componentWillUnmount () {
@@ -102,9 +100,10 @@ class ContainerApp extends Component {
         <Shadow setting={{height: 50, width: 290, borderRadius: 30}}>
           <TouchableOpacity
             activeOpacity={0.8}
+            disabled={this.props.disabledBtn}
             onPressIn={this.onShowState.bind(this)}
             onPressOut={this.props.onProcess}
-            style={style.button}>
+            style={[this.props.disabledBtn ? style.buttonFalse : style.buttonTrue, style.button]}>
             <Text style={style.text}>
               {this.props.textButton}
             </Text>
@@ -115,23 +114,33 @@ class ContainerApp extends Component {
       return (
         <View style={style.contentFooter}>
           <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
-            <View style={style.itemFooter}>
-              <Text style={style.tNumber}>{this.state.countAvailable}</Text>
-              <Text
-                style={style.tText}
-                numberOfLines={2}
-                ellipsizeMode={kts.hardware.tail}>
-                {text.app.label.available}
-              </Text>
-            </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPressIn={this.onShowState.bind(this)}
+              onPressOut={() => { this.getAvailableService() }}>
+              <View style={style.itemFooter}>
+                <Text style={style.tNumber}>{this.state.countAvailable}</Text>
+                <Text
+                  style={style.tText}
+                  numberOfLines={2}
+                  ellipsizeMode={kts.hardware.tail}>
+                  {text.app.label.available}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </Shadow>
           <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
-            <View style={style.itemFooter}>
-              <Text style={style.tNumber}>{this.state.countToday}</Text>
-              <Text style={style.tText}>
-                {text.app.label.borroweb}
-              </Text>
-            </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPressIn={this.onShowState.bind(this)}
+              onPressOut={() => { this.getAvailableService() }}>
+              <View style={style.itemFooter}>
+                <Text style={style.tNumber}>{this.state.countToday}</Text>
+                <Text style={style.tText}>
+                  {text.app.label.borroweb}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </Shadow>
         </View>
       )
@@ -203,6 +212,50 @@ class ContainerApp extends Component {
   }
   onShowState () {
     if (isState) this.showState()
+  }
+  getAvailableService (callBack = null) {
+    if (this.state.isConsultAvailable) {
+      this.setState({isConsultAvailable: false})
+      let myHeaders = new Headers()
+      myHeaders.append(kts.key.userToken, global.user.token)
+      let init = {
+        method: kts.method.get,
+        headers: myHeaders
+      }
+      fetch(urls.meService, init)
+        .then(response => response.json())
+        .then(json => {
+          if (json) {
+            if (json.activo) {
+              fetch(urls.getCantServiceFact(json.id))
+                .then(response => response.json())
+                .then(data => {
+                  global.user.credito = json.credito
+                  global.user.credito_ganancia = json.credito_ganancia
+                  global.serviceToday = data.cant
+                  if (callBack !== null) {
+                    callBack({
+                      credito: json.credito,
+                      credito_ganancia: json.credito_ganancia,
+                      cant: data.cant
+                    })
+                  }
+                  this.setState({
+                    countAvailable: util.getValueText(json.credito, json.credito_ganancia),
+                    countToday: util.getValueText(data.cant),
+                    isConsultAvailable: true
+                  })
+                })
+                .catch(err => this.setState({isConsultAvailable: true}))
+            } else {
+              this.setState({isConsultAvailable: true})
+            }
+          } else {
+            this.setState({isConsultAvailable: true})
+          }
+        })
+        .catch(err => this.setState({isConsultAvailable: true}))
+    }
   }
   modifyState () {
     let state = !this.state.state
@@ -402,6 +455,21 @@ class ContainerApp extends Component {
                 {text.app.label.internetTry}
               </Text>
             </TouchableOpacity>
+          </View>
+          <View style={[
+              {display: this.props.isButton === true ? 'flex' : 'none'}, style.userContent
+            ]}>
+            <Image
+              style={[style.userPhoto]}
+              source={{uri: global.service !== null ? global.service.user.url_pic : kts.help.image}} />
+            <View style={[style.userNameContent]}>
+              <Text 
+                style={[style.userName]}
+                numberOfLines={1}
+                ellipsizeMode={kts.hardware.tail}>
+                { global.service !== null ? global.service.user.name : ''}
+              </Text>
+            </View>
           </View>
           <View style={[style.content, style.footer]}>
             { this.__drawFooter() }
