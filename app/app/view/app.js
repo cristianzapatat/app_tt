@@ -128,10 +128,10 @@ export default class Taxitura extends Component {
         if (global.state && navigation.state.routeName === kts.app.id &&
           global.position !== null && !global.waitCanceled && global.isSession &&
           order.action === kts.action.order && global.service === null &&
-          global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+          global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia)) > 0) {
           global.service = order
           this.openModalOrder(global.position, global.service.position_user, true) 
-        } else if ((parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) <= 0) { 
+        } else if ((parseInt(global.user.credito + global.user.credito_ganancia)) <= 0) { 
           // Si el usuario no tiene creditos 
           global.service = order 
           this.openModalOrder(global.position, global.service.position_user, false)
@@ -142,7 +142,7 @@ export default class Taxitura extends Component {
           const { navigation } = this.props
           if (navigation.state.routeName === kts.app.id && global.position !== null &&
             global.waitCanceled && order.action === kts.action.accept && global.isSession &&
-            global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia) - global.serviceFact) > 0) {
+            global.service === null && global.waitId === null && (parseInt(global.user.credito + global.user.credito_ganancia)) > 0) {
             global.service = order
             this.getInfoOrder()
           }
@@ -179,7 +179,7 @@ export default class Taxitura extends Component {
             loadService: false
           })
         } else if (global.service.action === kts.action.end) {
-          EventRegister.emit(kts.event.addServiceToday, 1)
+          EventRegister.emit(kts.event.addServiceToday)
           this.cleanService()
         }
       })

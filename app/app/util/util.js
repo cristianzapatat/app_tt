@@ -14,7 +14,7 @@ module.exports = {
       return false
     }
   },
-  getValueText: (value, item, add) => {
+  getValueText: (value, item = 0, add = 0) => {
     let val = parseInt(value + item) - (add)
     if (val < 0) return '000'
     else if (val < 10) return `00${val}`
