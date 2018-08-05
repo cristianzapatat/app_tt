@@ -34,8 +34,8 @@ class ContainerGeneral extends Component {
       disabled: false,
       animated: new Animated.Value(0),
       color: kts.color.active,
-      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia, global.serviceFact),
-      countToday: util.getValueText(global.serviceToday, 0, -global.serviceFact)
+      countAvailable: util.getValueText(global.user.credito, global.user.credito_ganancia),
+      countToday: util.getValueText(global.serviceToday)
     }
     isState = false
     this.state.disabled = global.service !== null || global.waitId !== null || global.waitCanceled
@@ -52,6 +52,7 @@ class ContainerGeneral extends Component {
     this.eventOnShow = EventRegister.addEventListener(kts.event.onShow, () => {
       this.onShowState()
     })
+    this.getAvailableService()
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.isMns && !this.state.isMns) {
@@ -93,6 +94,14 @@ class ContainerGeneral extends Component {
   }
   onShowState () {
     if (isState) this.showState()
+  }
+  getAvailableService () {
+    EventRegister.emit(kts.event.addServiceToday, (json) => {
+      this.setState({
+        countAvailable: util.getValueText(json.credito, json.credito_ganancia),
+        countToday: util.getValueText(json.cant)
+      })
+    })
   }
   modifyState () {
     let state = !this.state.state
@@ -222,23 +231,33 @@ class ContainerGeneral extends Component {
             style.footer ]}>
             <View style={style.contentFooter}>
               <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
-                <View style={style.itemFooter}>
-                  <Text style={style.tNumber}>{this.state.countAvailable}</Text>
-                  <Text
-                    style={style.tText}
-                    numberOfLines={2}
-                    ellipsizeMode={'tail'}>
-                    {text.app.label.available}
-                  </Text>
-                </View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPressIn={this.onShowState.bind(this)}
+                  onPressOut={this.getAvailableService.bind(this)}>
+                  <View style={style.itemFooter}>
+                    <Text style={style.tNumber}>{this.state.countAvailable}</Text>
+                    <Text
+                      style={style.tText}
+                      numberOfLines={2}
+                      ellipsizeMode={'tail'}>
+                      {text.app.label.available}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </Shadow>
               <Shadow setting={{height: 50, width: 170, borderRadius: 30}}>
-                <View style={style.itemFooter}>
-                  <Text style={style.tNumber}>{this.state.countToday}</Text>
-                  <Text style={style.tText}>
-                    {text.app.label.borroweb}
-                  </Text>
-                </View>
+              <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPressIn={this.onShowState.bind(this)}
+                  onPressOut={this.getAvailableService.bind(this)}>
+                  <View style={style.itemFooter}>
+                    <Text style={style.tNumber}>{this.state.countToday}</Text>
+                    <Text style={style.tText}>
+                      {text.app.label.borroweb}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               </Shadow>
             </View>
           </View>

@@ -121,7 +121,6 @@ export default class Main extends Component {
       global.user = json
       global.state = json.state_app
       global.tempState = user.state_temp
-      global.serviceFact = 0
       global.serviceToday = data ? data.cant : 0
       global.isSession = true
       global.isApp = true
