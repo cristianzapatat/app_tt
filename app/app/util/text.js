@@ -48,7 +48,8 @@ module.exports = {
       sessionEnding: 'Cerrando sesión',
       sessionStarting: 'Iniciando sesión',
       internetTry: 'Intentar de nuevo',
-      location_reference: 'Referencia de ubicación'
+      location_reference: 'Referencia de ubicación',
+      cancelService: 'Cancelar Servicio'
     },
     gps: {
       update: 'Actualizar',

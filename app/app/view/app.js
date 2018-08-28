@@ -166,6 +166,7 @@ export default class Taxitura extends Component {
           coords = []
           this.setState({
             textButton: text.app.label.aboard,
+            typeButton: kts.action.arrive,
             isService: false,
             disabledBtn: false,
             isButton: true,
@@ -174,6 +175,7 @@ export default class Taxitura extends Component {
         } else if (global.service.action === kts.action.aboard) {
           this.setState({
             textButton: text.app.label.weArrived,
+            typeButton: kts.action.aboard,
             disabledBtn: false,
             isButton: true,
             loadService: false
@@ -199,6 +201,18 @@ export default class Taxitura extends Component {
           this.cleanService()
           this.setState({
             serviceCancel: data
+          })
+        }
+      })
+      socket.on(kts.socket.responseCancelServiceCab, data => {
+        clearTimeout(__setTimeOut)
+        if (data && global.service && global.service.service.id === data.service.id) {
+          this.cleanService()
+        } else {
+          this.setState({
+            disabledBtn: false,
+            loadService: false,
+            isButton: true,
           })
         }
       })
@@ -305,18 +319,20 @@ export default class Taxitura extends Component {
     fetch(urls.getDistanceMatrix(start, end))
       .then(result => result.json())
       .then(json => {
-        this.setState({
-          serviceCancel: null,
-          distance: json.rows[0].elements[0].distance.value,
-          time: json.rows[0].elements[0].duration.value,
-          uri: global.service.user.url_pic,
-          name: global.service.user.name,
-          address: global.service.position_user.address,
-          reference: global.service.position_user.ref,
-          isMenu: false,
-          isCredit: _isCredit,
-          isModalOrder: true
-        })
+        if (json.rows[0]) {
+          this.setState({
+            serviceCancel: null,
+            distance: json.rows[0].elements[0].distance.value,
+            time: json.rows[0].elements[0].duration.value,
+            uri: global.service.user.url_pic,
+            name: global.service.user.name,
+            address: global.service.position_user.address,
+            reference: global.service.position_user.ref,
+            isMenu: false,
+            isCredit: _isCredit,
+            isModalOrder: true
+          })
+        }
       })
   }
 
@@ -382,6 +398,7 @@ export default class Taxitura extends Component {
     this.setState({
       disabledBtn: false,
       isButton: false,
+      typeButton: '',
       isService: false,
       loadService: false,
       addressReference: '',
@@ -414,6 +431,7 @@ export default class Taxitura extends Component {
       addressReference: global.service.action === kts.action.accept ? global.service.position_user.ref : '',
       address: global.service.position_user.address,
       textButton: util.getTextButton(global.service.action),
+      typeButton: global.service.action,
       isService: global.service.action === kts.action.accept,
       loadService: false,
       loadIsService: false,
@@ -430,7 +448,31 @@ export default class Taxitura extends Component {
         __setTimeOut = setTimeout(() => {
           this.setState({
             disabledBtn: false,
-            loadIsService: false,
+            loadService: false,
+            isButton: true,
+          })
+        }, 20000);
+        this.setState({
+          disabledBtn: true,
+          isButton: true,
+          addressReference: '',
+          loadService: true,
+          isMns: false
+        })
+      } else {
+        this.setState({isMns: true})
+      }
+    })
+  }
+
+  cancelService() {
+    util.isInternet().then(status => {
+      if (status) {
+        socket.emit(kts.socket.cancelServiceCab, global.service, global.position)
+        __setTimeOut = setTimeout(() => {
+          this.setState({
+            disabledBtn: false,
+            loadService: false,
             isButton: true,
           })
         }, 20000);
@@ -492,6 +534,7 @@ export default class Taxitura extends Component {
         isService={this.state.isService}
         disabledBtn={this.state.disabledBtn}
         isButton={this.state.isButton}
+        typeButton={this.state.typeButton}
         latitude={this.state.latitude}
         longitude={this.state.longitude}
         latitudeService={this.state.latitudeService}
@@ -501,6 +544,7 @@ export default class Taxitura extends Component {
         coords={coords}
         textButton={this.state.textButton}
         onProcess={() => { this.processService() }}
+        onCancelService={() => { this.cancelService() }}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}
         isMns={this.state.isMns}
