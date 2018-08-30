@@ -23,7 +23,8 @@ import Container from '../component/container'
 import Menu from '../component/menu'
 import ModalOrder from '../component/modalOrder'
 import ModalPermission from '../component/modalPermission'
-import ModalCancelService from "../component/modalCancelService";
+import ModalCancelService from '../component/modalCancelService'
+import ConfirmCancelService from '../component/confirmCancelService'
 
 const socket = io(urls.urlInterface, {
   path: '/client',
@@ -44,6 +45,7 @@ export default class Taxitura extends Component {
       addressReference: '',
       serviceCancel: null,
       isModalOrder: false,
+      isConfirmCancel: false,
       isMenu: false,
       title: text.app.label.sessionStarting,
       load: true,
@@ -398,6 +400,7 @@ export default class Taxitura extends Component {
     this.setState({
       disabledBtn: false,
       isButton: false,
+      isConfirmCancel: false,
       typeButton: '',
       isService: false,
       loadService: false,
@@ -478,6 +481,7 @@ export default class Taxitura extends Component {
         }, 20000);
         this.setState({
           disabledBtn: true,
+          isConfirmCancel: false,
           isButton: true,
           addressReference: '',
           loadService: true,
@@ -544,7 +548,7 @@ export default class Taxitura extends Component {
         coords={coords}
         textButton={this.state.textButton}
         onProcess={() => { this.processService() }}
-        onCancelService={() => { this.cancelService() }}
+        onCancelService={() => { this.setState({isConfirmCancel: true}) }}
         isNoGps={this.state.isNoGps}
         textNoGps={this.state.textNoGps}
         isMns={this.state.isMns}
@@ -578,6 +582,10 @@ export default class Taxitura extends Component {
           reference={this.state.reference}
           onCancel={() => { this.cancelOrder(true) }}
           onAccept={() => { this.acceptOrder() }} />
+        <ConfirmCancelService
+          isVisible={this.state.isConfirmCancel} 
+          onClose={() => { this.setState({isConfirmCancel: false}) }} 
+          onCancel={() => { this.cancelService() }} />
         <ModalPermission
           isVisible={this.state.isModalPermission}
           onClose={() => {

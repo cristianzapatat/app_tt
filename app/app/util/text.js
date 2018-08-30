@@ -1,5 +1,9 @@
 /** Archivo que contiene los textos del aplicativo. **/
 module.exports = {
+  answer: {
+    yes: 'Si',
+    no:  'No'
+  },
   intenet: {
     without: 'Sin conexión a internet'
   },
@@ -49,7 +53,8 @@ module.exports = {
       sessionStarting: 'Iniciando sesión',
       internetTry: 'Intentar de nuevo',
       location_reference: 'Referencia de ubicación',
-      cancelService: 'Cancelar Servicio'
+      cancelService: 'Cancelar Servicio',
+      confirmCancelService: '¿Esta seguro que desea cancelar el servicio?'
     },
     gps: {
       update: 'Actualizar',
