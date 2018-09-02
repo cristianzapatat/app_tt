@@ -214,6 +214,7 @@ export default class Taxitura extends Component {
                     this.cleanService()
                 } else {
                     this.setState({
+                        title: text.app.label.inService,
                         disabledBtn: false,
                         loadService: false,
                         isButton: true,
@@ -285,7 +286,12 @@ export default class Taxitura extends Component {
 
     drawPosition (position) {
         this.sendPosition(position)
-        this.getAddress(position)
+        if (this.state.title !== text.app.label.waitService) {
+            this.setState({
+                title: text.app.label.waitService,
+                load: false
+            })
+        }
         EventRegister.emit(kts.event.changePosition, position)
         this.setState({
             latitude: position.latitude,
@@ -309,26 +315,6 @@ export default class Taxitura extends Component {
                     longitude: position.longitude
                 }
             })
-        }
-    }
-
-    async getAddress (position) {
-        if (position) {
-            fetch(urls.getGeocoding(position))
-                .then(result => {
-                    return result.json()
-                })
-                .then(json => {
-                    if (json.status && json.status === kts.json.ok) {
-                        let pos = json.results[0].formatted_address.split(kts.board.coma)
-                        this.setState({title: `${pos[0]}, ${pos[1]}`, load: false})
-                    } else {
-                        this.setState({title: text.app.label.notAddress, load: false})
-                    }
-                })
-                .catch(err => {
-                    this.setState({title: text.app.label.notAddress, load: false})
-                })
         }
     }
 
@@ -416,6 +402,7 @@ export default class Taxitura extends Component {
         EventRegister.emit(kts.event.changeState, {state: true, case: 0, temp: true})
         this.setState({
             disabledBtn: false,
+            title: text.app.label.waitService,
             isButton: false,
             isConfirmCancel: false,
             typeButton: '',
@@ -450,6 +437,7 @@ export default class Taxitura extends Component {
             longitudeService: global.service.position_user.longitude,
             addressReference: global.service.action === kts.action.accept ? global.service.position_user.ref : '',
             address: global.service.position_user.address,
+            title: text.app.label.inService,
             textButton: util.getTextButton(global.service.action),
             typeButton: global.service.action,
             isService: global.service.action === kts.action.accept,
