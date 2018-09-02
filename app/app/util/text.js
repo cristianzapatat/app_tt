@@ -125,5 +125,11 @@ module.exports = {
     cause: 'Debido a que se bloqueó la ventana de permisos el proceso debe ser manual',
     go: 'Ir a proceso manual',
     close: 'Cerrar'
+  },
+  score: {
+    text: 'Calificación',
+    star: 'Estrellas',
+    legend: 'Colega taxista, de nuestro servicio depende la felicidad de nuestros clientes, queremos bonaverenses más felices, sigamos mejorando.',
+    close: 'Cerrar'
   }
 }

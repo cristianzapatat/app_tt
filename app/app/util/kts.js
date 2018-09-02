@@ -56,7 +56,8 @@ module.exports = {
     sessionStart: 'sessionStart',
     cancelService: 'cancelService',
     cancelServiceCab: 'cancelServiceCab',
-    responseCancelServiceCab: 'responseCancelServiceCab'
+    responseCancelServiceCab: 'responseCancelServiceCab',
+    scoreCab: 'scoreCab'
   },
   event: {
     changeMap: 'changeMap',
