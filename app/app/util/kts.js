@@ -54,7 +54,9 @@ module.exports = {
     onMyWay: 'onMyWay',
     sessionEnd: 'sessionEnd',
     sessionStart: 'sessionStart',
-    cancelService: 'cancelService'
+    cancelService: 'cancelService',
+    cancelServiceCab: 'cancelServiceCab',
+    responseCancelServiceCab: 'responseCancelServiceCab'
   },
   event: {
     changeMap: 'changeMap',

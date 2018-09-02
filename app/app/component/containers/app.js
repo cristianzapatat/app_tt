@@ -50,6 +50,7 @@ class ContainerApp extends Component {
     this.state.state = global.state
     this.state.isMap = global.isDay
   }
+
   componentWillMount () {
     /*EventRegister.addEventListener(kts.event.changeMap, (data) => {
       if (this.state.isMap !== data) {
@@ -85,6 +86,7 @@ class ContainerApp extends Component {
       this.getAvailableService(callBack)
     })
   }
+
   componentWillUnmount () {
     EventRegister.removeEventListener(this.eventeChangeState)
     EventRegister.removeEventListener(this.eventOnShow)
@@ -92,12 +94,13 @@ class ContainerApp extends Component {
     EventRegister.removeEventListener(this.eventShowOtherAccept)
     EventRegister.removeEventListener(this.eventAddServiceToday)
   }
+
   __drawFooter () {
     if (this.props.isButton === null) {
       return (<View />)
     } else if (this.props.isButton === true) {
       return (
-        <Shadow setting={{height: 50, width: 290, borderRadius: 30}}>
+        <Shadow setting={{height: 45, width: 290, borderRadius: 30}}>
           <TouchableOpacity
             activeOpacity={0.8}
             disabled={this.props.disabledBtn}
@@ -146,6 +149,32 @@ class ContainerApp extends Component {
       )
     }
   }
+
+  __drawButtonCancel() {
+    if (this.props.isButton === true && this.isTypeButtonCancel(this.props.typeButton)) {
+      return (
+        <Shadow setting={{height: 45, width: 290, borderRadius: 30}}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            disabled={this.props.disabledBtn}
+            onPressIn={this.onShowState.bind(this)}
+            onPressOut={this.props.onCancelService}
+            style={[this.props.disabledBtn ? style.buttonFalse : style.buttonCancelService, style.button]}>
+            <Text style={style.text}>
+              {text.app.label.cancelService}
+            </Text>
+          </TouchableOpacity>
+        </Shadow>
+      )
+    } else {
+      return null
+    }
+  }
+
+  isTypeButtonCancel(type) {
+    return (type === kts.action.accept || type === kts.action.arrive)
+  }
+
   getMapService () {
     if (this.state.isMap) {
       return (
@@ -457,7 +486,9 @@ class ContainerApp extends Component {
             </TouchableOpacity>
           </View>
           <View style={[
-              {display: this.props.isButton === true ? 'flex' : 'none'}, style.userContent
+              {display: this.props.isButton === true ? 'flex' : 'none'},
+              {bottom: this.isTypeButtonCancel(this.props.typeButton) ? 130 : 80},
+              style.userContent
             ]}>
             <Image
               style={[style.userPhoto]}
@@ -473,6 +504,7 @@ class ContainerApp extends Component {
           </View>
           <View style={[style.content, style.footer]}>
             { this.__drawFooter() }
+            { this.__drawButtonCancel()}
           </View>
           {this.props.children}
         </View>
