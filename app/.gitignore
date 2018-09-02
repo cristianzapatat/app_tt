@@ -1,3 +1,8 @@
+# Android  por seguridad
+
+##Este archivo debe estar configurado a la hora de realizar APK
+app/android/gradle.properties 
+
 # OSX
 #
 .DS_Store
