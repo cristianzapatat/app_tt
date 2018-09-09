@@ -57,7 +57,8 @@ module.exports = {
     cancelService: 'cancelService',
     cancelServiceCab: 'cancelServiceCab',
     responseCancelServiceCab: 'responseCancelServiceCab',
-    scoreCab: 'scoreCab'
+    scoreCab: 'scoreCab',
+    cabmancantAccept: 'cabmancantAccept'
   },
   event: {
     changeMap: 'changeMap',

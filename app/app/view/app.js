@@ -137,8 +137,11 @@ export default class Taxitura extends Component {
                     this.openModalOrder(global.position, global.service.position_user, true) 
                 } else if ((parseInt(global.user.credito + global.user.credito_ganancia)) <= 0) { 
                     // Si el usuario no tiene creditos 
-                    global.service = order 
+                    global.service = order
                     this.openModalOrder(global.position, global.service.position_user, false)
+                    socket.emit(kts.socket.cabmancantAccept, global.user.id)
+                } else {
+                    socket.emit(kts.socket.cabmancantAccept, global.user.id)
                 }
             })
             socket.on(kts.socket.orderCanceled, order => {
