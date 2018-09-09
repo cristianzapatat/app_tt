@@ -68,7 +68,11 @@ module.exports = {
       } else {
         let value = `${parseFloat(meters / 1000)}`
         let mts = value.split('.')
-        return `${mts[0]}.${mts[1].substring(0, 2)} Km`
+        let decimal = 0
+        if (mts[1] && mts[1].length >= 2) {
+          decimal = mts[1].substring(0, 2)
+        }
+        return `${mts[0]}.${decimal} Km`
       }
     } else {
       return `Distacia indefinida`

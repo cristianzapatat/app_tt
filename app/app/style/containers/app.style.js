@@ -179,11 +179,10 @@ export default StyleSheet.create({
   },
   userContent: {
     position: 'absolute',
-    bottom: 90,
-    left: 5,
+    width: 350,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'center'
   },
   userPhoto: {
     width: 66,
@@ -198,7 +197,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(34, 33, 33, 0.7)',
     height: 35,
-    width: 180,
+    width: 224,
     borderBottomRightRadius: 20,
     borderTopRightRadius: 20,
     marginLeft: -5,
@@ -220,7 +219,7 @@ export default StyleSheet.create({
   button: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
+    height: 45,
     width: 290,
     borderRadius: 30
   },
@@ -229,6 +228,9 @@ export default StyleSheet.create({
   },
   buttonFalse: {
     backgroundColor: '#B6B6B6',
+  },
+  buttonCancelService: {
+    backgroundColor: '#EA7121'
   },
   text: {
     fontSize: 22,
