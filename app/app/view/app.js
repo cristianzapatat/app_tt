@@ -26,6 +26,7 @@ import ModalPermission from '../component/modalPermission'
 import ModalCancelService from '../component/modalCancelService'
 import ConfirmCancelService from '../component/confirmCancelService'
 import Score from '../component/score'
+import AlertSocket from '../component/alertSocket'
 
 const socket = io(urls.urlInterface, {
     path: '/client',
@@ -48,6 +49,7 @@ export default class Taxitura extends Component {
             isScore: false,
             isButton: false,
             isMns: false,
+            isAlertSocket: false,
             isCredit: true,
             load: true,
             loadService: false,
@@ -110,8 +112,26 @@ export default class Taxitura extends Component {
 
     onSocket (status) {
         socket.open()
+        socket.on(kts.socket.disconnect, () => {
+            if (this.state.isModalOrder) {
+                this.cleanService()
+            }
+            this.setState({
+                isMenu: false,
+                isModalOrder: false,
+                isConfirmCancel: false,
+                isScore: false,
+                isAlertSocket: true
+            })
+        })
         socket.on(kts.socket.connect, () => {
             socket.emit(kts.socket.changeSocket, global.user.id)
+            if (this.state.isAlertSocket) {
+                this.setState({isAlertSocket: false})
+                if (this.state.message === text.intenet.without) {
+                    this.setState({isMns: false})
+                }
+            }
         })
         socket.on(kts.socket.sessionEnd, (id, token) => {
             if (global.user.id === id && global.user.token !== token) {
@@ -608,6 +628,8 @@ export default class Taxitura extends Component {
                     isVisible={this.state.isScore} 
                     info={this.state.infoScore}
                     onClose={() => { this.setState({isScore: false, infoScore: null}) }} />
+                <AlertSocket
+                    isVisible={this.state.isAlertSocket} />
             </Container.ContainerApp>
         )
     }

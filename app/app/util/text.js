@@ -132,5 +132,8 @@ module.exports = {
         star: 'Estrellas',
         legend: 'Colega taxista, de nuestro servicio depende la felicidad de nuestros clientes, queremos bonaverenses más felices, sigamos mejorando.',
         close: 'Cerrar'
+    },
+    socket: {
+        reconnect: 'Reconectado con el servidor'
     }
 }

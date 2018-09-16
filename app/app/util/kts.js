@@ -40,6 +40,7 @@ module.exports = {
   },
   socket: {
     connect: 'connect',
+    disconnect: 'disconnect',
     changeSocket: 'changeSocket',
     isServiceInMemory: 'isServiceInMemory',
     receiveService: 'receiveService',
