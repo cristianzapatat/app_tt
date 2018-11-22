@@ -1,0 +1,153 @@
+{
+    "env": {
+        "es6": true,
+        "node": true,
+        "react-native/react-native": true
+    },
+    "parser": "babel-eslint",
+    "extends": [
+        "airbnb-base",
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-native/all"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "react-native"
+    ],
+    "settings": {
+        "react": {
+            "version": "default"
+        }
+    },
+    "globals": {
+        "Headers": true
+    },
+    "rules": {
+        "arrow-body-style" : "off",
+        "no-console": "error",
+        "space-before-function-paren": [
+            "error", {
+                "anonymous": "never",
+                "named": "always"
+            }
+        ],
+        "class-methods-use-this": "off",
+        "object-curly-newline": [
+            "error",
+            { "consistent": true }
+        ],
+        "comma-dangle": [
+            "error",
+            "never"
+        ],
+        "indent": [
+            "error",
+            4
+        ],
+        "no-param-reassign": [
+            "error",
+            { "props": false }
+        ],
+        "camelcase": "off",
+        "newline-per-chained-call": "off",
+        "global-require": "off",
+        "import/no-unresolved": "off",
+        "arrow-parens": [
+            "error",
+            "as-needed"
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "triple-equals": [
+            true,
+            "allow-null-check"
+        ],
+        "no-trailing-spaces": "error",
+        "lines-between-class-members": [
+            "error",
+            "always"
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "no-self-assign": [
+            "error",
+            { "props": false }
+        ],
+        "newline-before-return": "error",
+        "constructor-super": "error",
+        "no-useless-constructor": "off",
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 1,
+                "maxEOF": 0,
+                "maxBOF": 0
+            }
+        ],
+        "eol-last": [
+            "error", 
+            "always"
+        ],
+        "import/no-extraneous-dependencies": "off",
+        "react-native/split-platform-components": "off",
+        "react/prop-types": [
+            "off",
+            { "ignore": "ignore" }
+        ],
+        "react/no-danger": "error",
+        "react/self-closing-comp": [
+            "error",
+            { "component": true }
+        ],
+        "react/react-in-jsx-scope": "error",
+        "react/jsx-tag-spacing": [
+            "error",
+            {
+                "closingSlash": "never",
+                "beforeSelfClosing": "never",
+                "afterOpening": "never",
+                "beforeClosing": "never"
+            }
+        ],
+        "react/jsx-props-no-multi-spaces": "error",
+        "react/jsx-pascal-case": [
+            "error",
+            {
+                "allowAllCaps": false
+            }
+        ],
+        "react/jsx-no-duplicate-props": "error",
+        "react/jsx-key": "error",
+        "react/jsx-indent": [
+            "error",
+            4
+        ],
+        "react/jsx-curly-spacing": [
+            "error",
+            {"when": "always", "children": true}
+        ],
+        "react/jsx-equals-spacing": "error",
+        "react/jsx-boolean-value": "error"
+    }
+}

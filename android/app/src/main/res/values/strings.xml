@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Taxitura</string>
+    <string name="taxitura_notification_channel">taxitura_default_channel</string>
+    <string name="google_map_key">AIzaSyCIIWIeiE6UhtWwgdGTucB9SabAQIc3GV4</string>
+</resources>

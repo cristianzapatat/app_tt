@@ -1,0 +1,6 @@
+export default {
+    URL: {
+        SERVER: 'http://<your-ip>:3001',
+        INTERFACE: 'http://<your-ip>:3003'
+    }
+}

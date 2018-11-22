@@ -1,0 +1,55 @@
+{
+  "name": "taxitura",
+  "version": "0.0.2",
+  "private": true,
+  "scripts": {
+    "init": "cp ./src/util/environment.js.example ./src/util/environment.js",
+    "prebuild": "watchman watch-del-all && npm cache clean --force",
+    "logandroid": "react-native log-android",
+    "logios": "react-native log-ios",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "apk": "cd android && ./gradlew assembleRelease",
+    "rename": "node ./bin/rename.js",
+    "start_2": "react-native start",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.2.1",
+    "react": "16.8.3",
+    "react-native": "^0.59.1",
+    "react-native-awesome-alerts": "^1.2.0",
+    "react-native-firebase": "^5.2.3",
+    "react-native-geolocation-service": "^2.0.0",
+    "react-native-gps-state": "^2.0.3",
+    "react-native-keep-awake": "^4.0.0",
+    "react-native-maps": "^0.23.0",
+    "react-native-simple-encryption": "^1.2.1",
+    "react-navigation": "^1.1.489"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/runtime": "^7.3.4",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.5.0",
+    "babel-preset-react-native": "^4.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-react-native": "^4.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-react-native": "^3.5.0",
+    "fs-extra": "^7.0.0",
+    "jest": "^24.5.0",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "react-test-renderer": "16.8.3",
+    "replace-in-file": "^3.4.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "_comment1": "react-native-simple-encryption revisar para suprimir por ser tan pequeña",
+  "_comment2": ""
+}
