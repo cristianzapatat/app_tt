@@ -32,6 +32,10 @@ export default StyleSheet.create({
         ...button,
         backgroundColor: '#FF8A65'
     },
+    okButton: {
+        ...button,
+        backgroundColor: '#81C784'
+    },
     warningText: {
         ...text
     },

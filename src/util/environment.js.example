@@ -2,5 +2,8 @@ export default {
     URL: {
         SERVER: 'http://<your-ip>:3001',
         INTERFACE: 'http://<your-ip>:3003'
+    },
+    MAP: {
+        KEY: '<your-key>' // Incluir en el string.xml android
     }
 }

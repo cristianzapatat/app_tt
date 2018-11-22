@@ -1,4 +1,5 @@
 import Env from './environment'
+import Constants from './constants'
 import { isInternet as validateInternet } from '../services/interface.service'
 
 const _isEmpty = field => (field === '' || field.length === 0 || field === null || field === undefined)
@@ -36,4 +37,39 @@ export const getValueText = (value, item = 0, add = 0) => {
     else if (val === undefined || val === null || isNaN(val)) return '---'
 
     return val
+}
+
+export const getMeters = meters => {
+    if (meters !== null && meters !== undefined && !isNaN(meters)) {
+        if (meters < 1000) {
+            if (meters === 1) {
+                return 'un metro'
+            }
+
+            return `${meters} metros`
+        } else {
+            let value = `${parseFloat(meters / 1000)}`
+            let mts = value.split('.')
+            let decimal = 0
+            if (mts[1] && mts[1].length >= 2) {
+                decimal = mts[1].substring(0, 2)
+            }
+
+            return `${mts[0]}.${decimal} Km`
+        }
+    }
+
+    return 'Distacia indefinida'
+}
+
+export const getActionOrder = order => {
+    if (order && order.action && Constants.STATUS_ORDER[order.action.toUpperCase()]) {
+        return order.action.toUpperCase()
+    }
+
+    return Constants.STATUS_ORDER.ACCEPT.toUpperCase()
+}
+
+export const isActiveBtnCancelService = order => {
+    return order && order.action && Constants.STATUS_FOR_CANCEL.includes(order.action)
 }

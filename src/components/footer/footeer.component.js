@@ -23,20 +23,14 @@ export default class Footer extends Component {
     }
 
     render () {
-        return (
-            <View style={ Style.container }>
-                { this.renderComponent() }
-            </View>
-        )
-    }
-
-    renderComponent () {
         const { render } = this.props
-        if (render === false) {
+        if (render) {
             return (
-                <View style={ Style.buttonsInfo }>
-                    { this.renderItemInfo(Texts.LABEL.SERVICES_AVAILABLE, this.state.servicesAvailable) }
-                    { this.renderItemInfo(Texts.LABEL.SERVICES_TODAY, this.state.servicesToday) }
+                <View style={ Style.container }>
+                    <View style={ Style.buttonsInfo }>
+                        { this.renderItemInfo(Texts.LABEL.SERVICES_AVAILABLE, this.state.servicesAvailable) }
+                        { this.renderItemInfo(Texts.LABEL.SERVICES_TODAY, this.state.servicesToday) }
+                    </View>
                 </View>
             )
         }

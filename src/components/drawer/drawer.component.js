@@ -17,9 +17,8 @@ export default class Drawer extends Component {
 
     componentDidMount () {
         LocalStorage.getObject(Constants.LOCALSTORAGE.USER,
-            result => {
-                this.setState({ user: result })
-            }, () => this.setState({ user: null }))
+            result => this.setState({ user: result }),
+            () => this.setState({ user: null }))
     }
 
     logout () {

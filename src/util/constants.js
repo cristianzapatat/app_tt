@@ -12,17 +12,37 @@ export default {
             ]
         }
     },
+    RESPONSE: {
+        STATUS: {
+            OK: 200
+        },
+        OK: 'OK'
+    },
+    FIREBASE: {
+        NEW_ORDER: '/topics/order'
+    },
     CHIPER: {
         KEY: '(T,kVS{9pRKe?S,R'
     },
     COLOR: {
         TAXITURA: '#FFAF18',
+        INACTIVE: '#B6B6B6',
         PLACE_HOLDER: '#A8A8A8',
         PROGESS_BAR: '#000000'
     },
     SIZE: {
         SMALL: 'small'
     },
+    STATUS_ORDER: {
+        ORDER: 'order',
+        ACCEPT: 'accept',
+        ARRIVE: 'arrive',
+        ABOARD: 'aboard',
+        END: 'end',
+        COMPLETE: 'complete',
+        CANCEL: 'cancel'
+    },
+    STATUS_FOR_CANCEL: ['order', 'accept', 'arrive'],
     ENUM: {
         WINDOW: 'window',
         PADDING: 'padding',
@@ -33,6 +53,7 @@ export default {
         ACCESS_DENIED: 'acceso_denegado',
         USER_TOKEN: 'USER-TOKEN',
         AUTHORIZATION: 'Authorization',
+        CONTEN_TYPE: 'Content-Type',
         TAIL: 'tail',
         DELTA: 0.015,
         LATITUDE: 3.8804178377998277,
@@ -70,6 +91,10 @@ export default {
             LOGIN: 'login'
         }
     },
+    MAP: {
+        STROKE_WIDTH: 3,
+        STROKE_COLOR: '#000'
+    },
     GET_CURRENT_POSITION: {
         enableHighAccuracy: true,
         timeout: 15000,
@@ -87,5 +112,8 @@ export default {
     TIME: {
         DISTANCE_GPS: 100,
         TIME_GPS: 700
+    },
+    HELP: {
+        IMAGE: 'https://www.taxitura.com/assets/logo.png'
     }
 }

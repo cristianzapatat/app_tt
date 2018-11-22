@@ -27,6 +27,9 @@ export default {
                 TITLE: 'Advertencia',
                 MESSAGE: 'Falta información',
                 BUTTON: 'Ajustar'
+            },
+            GENERIC: {
+                OK: 'Entiendo'
             }
         },
         LOGIN: {
@@ -36,10 +39,46 @@ export default {
     MAP: {
         CAB: {
             YOU: 'Tú'
+        },
+        USER: {
+            USER: 'Usuario'
         }
     },
+    ACTIONS: {
+        ACCEPT: 'Aceptar',
+        CANCEL: 'Cancelar',
+        VALIDATE_PERMISSION: 'Validar permisos'
+    },
     LABEL: {
+        A: 'a',
         SERVICES_AVAILABLE: 'Servicios\ndisponibles',
-        SERVICES_TODAY: 'Servicios hoy\nprestados'
+        SERVICES_TODAY: 'Servicios hoy\nprestados',
+        LOCATION_REFERENCE: 'Referencia de ubicación',
+        CANCEL_SERVICE: 'Cancelar Servicio',
+        GPS: 'GPS',
+        GPS_OFF: 'Favor enceder GPS',
+        GPS_ON_ACTION: 'Ya active el GPS',
+        GPS_UNPERMISSION: 'Sin permisos de GPS',
+        GPS_ON_PERMISSION_MANUAL: 'Proceso manual',
+        ORDER_PROCCESSING: {
+            TITLE: 'Servicio en proceso',
+            MESSAGE: 'El servicio ya ha sido aceptado por otro conductor'
+        },
+        BTN_ACTIONS_SERVICE: {
+            ORDER: 'Aceptar',
+            ACCEPT: 'Llegué',
+            ARRIVE: 'Pasajero abordo',
+            ABOARD: 'Llegamos!',
+            WE_ARRIVED: 'Orden finalizada'
+        },
+        PERMISSION: {
+            REQUIRE: 'Taxitura requiere permisos de ubicación.',
+            CAUSE: 'Debido a que se bloqueó la ventana de permisos el proceso debe ser manual',
+            PERMISSION_ON: 'Permisos concedidos'
+        },
+        WITHOUT_ORDERS: {
+            TITLE: 'Sin servicios',
+            MESSAGE: 'Actualmente no cuentas con servicios en proceso'
+        }
     }
 }

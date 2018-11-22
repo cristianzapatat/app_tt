@@ -27,22 +27,11 @@ export default class Map extends Component {
         }
     }
 
-    renderMarkers (markers) {
-        return markers.map((marker, index) => (
-            <MapView.Marker
-                key={ `${index}_marker` }
-                image={ this.getIcon(marker.type) }
-                coordinate={ {
-                    latitude: parseFloat(marker.latitude),
-                    longitude: parseFloat(marker.longitude)
-                } }
-                title={ marker.title || '' }
-                description={ marker.description || '' }/>
-        ))
-    }
-
     render () {
-        const { markers = [], position = { latitude, longitude } } = this.props
+        const {
+            markers = [], position = { latitude, longitude },
+            route = []
+        } = this.props
 
         return (
             <MapView
@@ -55,7 +44,25 @@ export default class Map extends Component {
                     longitudeDelta
                 } }>
                 { this.renderMarkers(markers) }
+                <MapView.Polyline
+                    coordinates={ route }
+                    strokeWidth={ Constants.MAP.STROKE_WIDTH }
+                    strokeColor={ Constants.MAP.STROKE_COLOR }/>
             </MapView>
         )
+    }
+
+    renderMarkers (markers) {
+        return markers.filter(({ type }) => type !== undefined ).map((marker, index) => (
+            <MapView.Marker
+                key={ `${index}_marker` }
+                image={ this.getIcon(marker.type) }
+                coordinate={ {
+                    latitude: parseFloat(marker.latitude),
+                    longitude: parseFloat(marker.longitude)
+                } }
+                title={ marker.title || '' }
+                description={ marker.description || '' }/>
+        ))
     }
 }
